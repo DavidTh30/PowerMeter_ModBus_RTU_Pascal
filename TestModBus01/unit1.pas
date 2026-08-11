@@ -28,6 +28,8 @@ type
     HMILabel2: THMILabel;
     Label1: TLabel;
     Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
     ListBox1: TListBox;
     ListBox2: TListBox;
     ModBusRTUDriver1: TModBusRTUDriver;
@@ -57,6 +59,8 @@ type
     procedure SpinEditEx1EditingDone(Sender: TObject);
     procedure SpinEditEx2Change(Sender: TObject);
     procedure SpinEditEx2EditingDone(Sender: TObject);
+    procedure Tag1ValueChange(Sender: TObject);
+    procedure Tag2ValueChange(Sender: TObject);
   private
 
   public
@@ -330,6 +334,27 @@ begin
   Tag2.MemAddress:=SpinEditEx2.Value;
   label1.Caption:='MemAddress: '+Tag1.MemAddress.ToString;
   label2.Caption:='MemAddress: '+Tag2.MemAddress.ToString;
+end;
+
+procedure TForm1.Tag1ValueChange(Sender: TObject);
+begin
+
+  //// Convert Byte to 8-bit binary
+  //s:='';
+  //for j := 7 downto 0 do
+  //begin
+  //  if (ByteVal and (1 shl j)) <> 0 then
+  //    s := s + '1'
+  //else
+  //    s := s + '0';
+  //end;
+
+  Label3.Caption:= BinStr(Round(Tag1.Value), 16);
+end;
+
+procedure TForm1.Tag2ValueChange(Sender: TObject);
+begin
+  Label4.Caption:= BinStr(Round(Tag2.Value), 16);
 end;
 
 end.

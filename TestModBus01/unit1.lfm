@@ -55,7 +55,7 @@ object Form1: TForm1
       ClientHeight = 222
       ClientWidth = 519
       object HMILabel1: THMILabel
-        Left = 56
+        Left = 41
         Height = 15
         Top = 81
         Width = 15
@@ -66,7 +66,7 @@ object Form1: TForm1
         FormatDateTimeOptions = []
       end
       object HMILabel2: THMILabel
-        Left = 304
+        Left = 273
         Height = 15
         Top = 81
         Width = 15
@@ -188,6 +188,20 @@ object Form1: TForm1
         NullValue = 0
         Value = 3202
       end
+      object Label3: TLabel
+        Left = 24
+        Height = 15
+        Top = 112
+        Width = 48
+        Caption = '00000000'
+      end
+      object Label4: TLabel
+        Left = 248
+        Height = 15
+        Top = 112
+        Width = 48
+        Caption = '00000000'
+      end
     end
   end
   object Button2: TButton
@@ -222,6 +236,7 @@ object Form1: TForm1
   end
   object Tag1: TPLCTagNumber
     TagGUID = '{5E03F763-6942-4AA6-B1D4-2BB7854AA585}'
+    OnValueChangeLast = Tag1ValueChange
     AutoRead = False
     AutoWrite = False
     PLCRack = 0
@@ -244,6 +259,7 @@ object Form1: TForm1
   end
   object Tag2: TPLCTagNumber
     TagGUID = '{1C0D0A5C-A812-436F-9C21-E46C537E380D}'
+    OnValueChangeLast = Tag2ValueChange
     AutoRead = False
     AutoWrite = False
     PLCRack = 0

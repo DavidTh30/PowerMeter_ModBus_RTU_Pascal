@@ -97,6 +97,12 @@
     </RunParams>
     <RequiredPackages>
       <Item>
+        <PackageName Value="LazControls"/>
+      </Item>
+      <Item>
+        <PackageName Value="LazControlDsgn"/>
+      </Item>
+      <Item>
         <PackageName Value="pascalscada_hmi"/>
       </Item>
       <Item>

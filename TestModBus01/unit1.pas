@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls,
-  SerialPort, ModBusSerial, PLCTagNumber, PLCBlock, PLCBlockElement, HMIEdit,
-  HMILabel, Tag, TypInfo, registry;
+  SpinEx, SerialPort, ModBusSerial, PLCTagNumber, PLCBlock, PLCBlockElement,
+  HMIEdit, HMILabel, Tag, TypInfo, registry;
 
 type
 
@@ -33,6 +33,8 @@ type
     ModBusRTUDriver1: TModBusRTUDriver;
     PageControl1: TPageControl;
     SerialPortDriver1: TSerialPortDriver;
+    SpinEditEx1: TSpinEditEx;
+    SpinEditEx2: TSpinEditEx;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     Tag1: TPLCTagNumber;
@@ -51,6 +53,10 @@ type
     procedure FormCreate(Sender: TObject);
     procedure ListBox1SelectionChange(Sender: TObject; User: boolean);
     procedure ListBox2SelectionChange(Sender: TObject; User: boolean);
+    procedure SpinEditEx1Change(Sender: TObject);
+    procedure SpinEditEx1EditingDone(Sender: TObject);
+    procedure SpinEditEx2Change(Sender: TObject);
+    procedure SpinEditEx2EditingDone(Sender: TObject);
   private
 
   public
@@ -188,6 +194,8 @@ end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
+  if (Tag1.MemAddress -1) < 0 then exit;
+  if (Tag2.MemAddress -1) < 0 then exit;
   Tag1.MemAddress:=Tag1.MemAddress-1;
   Tag2.MemAddress:=Tag2.MemAddress-1;
   label1.Caption:='MemAddress: '+Tag1.MemAddress.ToString;
@@ -298,6 +306,30 @@ begin
   begin
     if GetEnumName(TypeInfo(TTagType), Ord(T_TagType)) = ListBox2.Items[ListBox2.ItemIndex] then Tag2.TagType:=T_TagType;
   end;
+end;
+
+procedure TForm1.SpinEditEx1Change(Sender: TObject);
+begin
+  SpinEditEx1EditingDone(Sender);
+end;
+
+procedure TForm1.SpinEditEx1EditingDone(Sender: TObject);
+begin
+  Tag1.MemAddress:=SpinEditEx1.Value;
+  label1.Caption:='MemAddress: '+Tag1.MemAddress.ToString;
+  label2.Caption:='MemAddress: '+Tag2.MemAddress.ToString;
+end;
+
+procedure TForm1.SpinEditEx2Change(Sender: TObject);
+begin
+  SpinEditEx2EditingDone(Sender);
+end;
+
+procedure TForm1.SpinEditEx2EditingDone(Sender: TObject);
+begin
+  Tag2.MemAddress:=SpinEditEx2.Value;
+  label1.Caption:='MemAddress: '+Tag1.MemAddress.ToString;
+  label2.Caption:='MemAddress: '+Tag2.MemAddress.ToString;
 end;
 
 end.

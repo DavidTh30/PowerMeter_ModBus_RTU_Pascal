@@ -1,0 +1,168 @@
+object Form1: TForm1
+  Left = 462
+  Height = 578
+  Top = 91
+  Width = 647
+  Caption = 'Form1'
+  ClientHeight = 578
+  ClientWidth = 647
+  LCLVersion = '4.8.0.0'
+  OnClose = FormClose
+  object PageControl1: TPageControl
+    Left = 32
+    Height = 204
+    Top = 208
+    Width = 506
+    ActivePage = TabSheet2
+    TabIndex = 1
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'TabSheet1'
+      ClientHeight = 176
+      ClientWidth = 498
+      object Button1: TButton
+        Left = 32
+        Height = 34
+        Top = 24
+        Width = 121
+        Caption = 'Online'
+        TabOrder = 0
+        OnClick = Button1Click
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'TabSheet2'
+      ClientHeight = 176
+      ClientWidth = 498
+      object HMILabel1: THMILabel
+        Left = 56
+        Height = 24
+        Top = 41
+        Width = 96
+        Enabled = True
+        NumberFormat = '#0.0'
+        PLCTag = Tag1
+        FormatDateTimeOptions = []
+      end
+      object HMILabel2: THMILabel
+        Left = 160
+        Height = 24
+        Top = 48
+        Width = 96
+        Enabled = True
+        NumberFormat = '#0.0'
+        PLCTag = Tag2
+        FormatDateTimeOptions = []
+      end
+    end
+  end
+  object Button2: TButton
+    Left = 216
+    Height = 33
+    Top = 144
+    Width = 68
+    Caption = 'Button2'
+    TabOrder = 1
+    OnClick = Button2Click
+  end
+  object Label1: TLabel
+    Left = 128
+    Height = 15
+    Top = 168
+    Width = 34
+    Caption = 'Label1'
+  end
+  object Button3: TButton
+    Left = 32
+    Height = 33
+    Top = 144
+    Width = 68
+    Caption = 'Button3'
+    TabOrder = 2
+    OnClick = Button3Click
+  end
+  object CheckBox1: TCheckBox
+    Left = 431
+    Height = 19
+    Top = 114
+    Width = 74
+    Caption = 'SwapBytes'
+    TabOrder = 3
+    OnEditingDone = CheckBox1EditingDone
+  end
+  object CheckBox2: TCheckBox
+    Left = 431
+    Height = 19
+    Top = 136
+    Width = 88
+    Caption = 'SwapDWords'
+    TabOrder = 4
+    OnEditingDone = CheckBox2EditingDone
+  end
+  object CheckBox3: TCheckBox
+    Left = 432
+    Height = 19
+    Top = 160
+    Width = 80
+    Caption = 'SwapWords'
+    TabOrder = 5
+    OnEditingDone = CheckBox3EditingDone
+  end
+  object SerialPortDriver1: TSerialPortDriver
+    Active = True
+    COMPort = 'COM3'
+    Timeout = 300
+    BackupPortSettings = True
+    AcceptAnyPortName = True
+    Left = 8
+    Top = 16
+  end
+  object ModBusRTUDriver1: TModBusRTUDriver
+    CommunicationPort = SerialPortDriver1
+    ReadOnly = True
+    Left = 115
+    Top = 16
+  end
+  object Tag1: TPLCTagNumber
+    TagGUID = '{5E03F763-6942-4AA6-B1D4-2BB7854AA585}'
+    AutoWrite = False
+    PLCRack = 0
+    PLCSlot = 0
+    PLCStation = 29
+    MemFile_DB = 0
+    MemAddress = 3201
+    MemSubElement = 0
+    MemReadFunction = 3
+    MemWriteFunction = 0
+    ProtocolDriver = ModBusRTUDriver1
+    UpdateTime = 500
+    LongAddress = ''
+    TagType = pttInt64
+    SwapWords = True
+    EnableMaxValue = False
+    EnableMinValue = False
+    Left = 264
+    Top = 64
+  end
+  object Tag2: TPLCTagNumber
+    TagGUID = '{1C0D0A5C-A812-436F-9C21-E46C537E380D}'
+    AutoWrite = False
+    PLCRack = 0
+    PLCSlot = 0
+    PLCStation = 29
+    MemFile_DB = 0
+    MemAddress = 3202
+    MemSubElement = 0
+    MemReadFunction = 3
+    MemWriteFunction = 0
+    ProtocolDriver = ModBusRTUDriver1
+    UpdateTime = 500
+    LongAddress = ''
+    TagType = pttInt64
+    SwapWords = True
+    EnableMaxValue = False
+    EnableMinValue = False
+    Left = 344
+    Top = 64
+  end
+end

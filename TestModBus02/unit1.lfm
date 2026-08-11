@@ -1,0 +1,325 @@
+object Form1: TForm1
+  Left = 462
+  Height = 578
+  Top = 91
+  Width = 647
+  Caption = 'Form1'
+  ClientHeight = 578
+  ClientWidth = 647
+  LCLVersion = '4.8.0.0'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  object PageControl1: TPageControl
+    Left = 32
+    Height = 264
+    Top = 208
+    Width = 506
+    ActivePage = TabSheet2
+    TabIndex = 1
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'TabSheet1'
+      ClientHeight = 236
+      ClientWidth = 498
+      object Button1: TButton
+        Left = 32
+        Height = 34
+        Top = 24
+        Width = 121
+        Caption = 'Online'
+        TabOrder = 0
+        OnClick = Button1Click
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'TabSheet2'
+      ClientHeight = 236
+      ClientWidth = 498
+      object HMILabel1: THMILabel
+        Left = 128
+        Height = 15
+        Top = 32
+        Width = 85
+        AutoSize = True
+        Enabled = True
+        NumberFormat = '#0.0'
+        PLCTag = N3_PM5300_Current_A
+        Prefix = 'Current_A: '
+        Sufix = ' A'
+        FormatDateTimeOptions = []
+      end
+      object HMILabel2: THMILabel
+        Left = 128
+        Height = 15
+        Top = 56
+        Width = 84
+        AutoSize = True
+        Enabled = True
+        NumberFormat = '#0.0'
+        PLCTag = N3_PM5300_Current_B
+        Prefix = 'Current_B: '
+        Sufix = ' A'
+        FormatDateTimeOptions = []
+      end
+      object HMILabel3: THMILabel
+        Left = 128
+        Height = 15
+        Top = 80
+        Width = 85
+        AutoSize = True
+        Enabled = True
+        NumberFormat = '#0.0'
+        PLCTag = N3_PM5300_Current_C
+        Prefix = 'Current_C: '
+        Sufix = ' A'
+        FormatDateTimeOptions = []
+      end
+      object HMILabel4: THMILabel
+        Left = 128
+        Height = 15
+        Top = 104
+        Width = 86
+        AutoSize = True
+        Enabled = True
+        NumberFormat = '#0.0'
+        PLCTag = N3_PM5300_Current_N
+        Prefix = 'Current_N: '
+        Sufix = ' A'
+        FormatDateTimeOptions = []
+      end
+      object HMILabel5: THMILabel
+        Left = 128
+        Height = 15
+        Top = 128
+        Width = 85
+        AutoSize = True
+        Enabled = True
+        NumberFormat = '#0.0'
+        PLCTag = N3_PM5300_Current_G
+        Prefix = 'Current_G: '
+        Sufix = ' A'
+        FormatDateTimeOptions = []
+      end
+      object HMILabel6: THMILabel
+        Left = 128
+        Height = 15
+        Top = 152
+        Width = 100
+        AutoSize = True
+        Enabled = True
+        NumberFormat = '#0.0'
+        PLCTag = N3_PM5300_Current_AVG
+        Prefix = 'Current_AVG: '
+        Sufix = ' A'
+        FormatDateTimeOptions = []
+      end
+      object Label1: TLabel
+        Left = 128
+        Height = 15
+        Top = 8
+        Width = 62
+        Caption = 'N3 Node 29'
+      end
+      object HMILabel7: THMILabel
+        Left = 128
+        Height = 15
+        Top = 176
+        Width = 107
+        AutoSize = True
+        Enabled = True
+        NumberFormat = '#0.0'
+        PLCTag = N3_PM5300_Active_Power_Total
+        Prefix = 'Power_Total: '
+        Sufix = ' KW'
+        FormatDateTimeOptions = []
+      end
+      object HMILabel8: THMILabel
+        Left = 128
+        Height = 15
+        Top = 200
+        Width = 174
+        AutoSize = True
+        Enabled = True
+        NumberFormat = '#0.0'
+        PLCTag = N3_PM5300_EnergyDeliveredIntoLoad
+        Prefix = 'EnergyDeliveredIntoLoad: '
+        Sufix = ' Wh'
+        FormatDateTimeOptions = []
+      end
+    end
+  end
+  object SerialPortDriver1: TSerialPortDriver
+    Active = True
+    COMPort = 'COM3'
+    Timeout = 300
+    BackupPortSettings = True
+    AcceptAnyPortName = True
+    Left = 8
+    Top = 16
+  end
+  object ModBusRTUDriver1: TModBusRTUDriver
+    CommunicationPort = SerialPortDriver1
+    ReadOnly = True
+    Left = 115
+    Top = 16
+  end
+  object N3_PM5300_Current_A: TPLCTagNumber
+    TagGUID = '{5E03F763-6942-4AA6-B1D4-2BB7854AA585}'
+    AutoWrite = False
+    PLCRack = 0
+    PLCSlot = 0
+    PLCStation = 29
+    MemFile_DB = 0
+    MemAddress = 2999
+    MemSubElement = 0
+    MemReadFunction = 3
+    MemWriteFunction = 0
+    ProtocolDriver = ModBusRTUDriver1
+    LongAddress = ''
+    TagType = pttFloat
+    SwapWords = True
+    EnableMaxValue = False
+    EnableMinValue = False
+    Left = 224
+    Top = 16
+  end
+  object N3_PM5300_Current_B: TPLCTagNumber
+    TagGUID = '{1C0D0A5C-A812-436F-9C21-E46C537E380D}'
+    AutoWrite = False
+    PLCRack = 0
+    PLCSlot = 0
+    PLCStation = 29
+    MemFile_DB = 0
+    MemAddress = 3001
+    MemSubElement = 0
+    MemReadFunction = 3
+    MemWriteFunction = 0
+    ProtocolDriver = ModBusRTUDriver1
+    LongAddress = ''
+    TagType = pttFloat
+    SwapWords = True
+    EnableMaxValue = False
+    EnableMinValue = False
+    Left = 280
+    Top = 16
+  end
+  object N3_PM5300_Current_C: TPLCTagNumber
+    TagGUID = '{733950B0-D9CC-473E-9CDD-75BB9E0C50DD}'
+    AutoWrite = False
+    PLCRack = 0
+    PLCSlot = 0
+    PLCStation = 29
+    MemFile_DB = 0
+    MemAddress = 3003
+    MemSubElement = 0
+    MemReadFunction = 3
+    MemWriteFunction = 16
+    ProtocolDriver = ModBusRTUDriver1
+    LongAddress = ''
+    TagType = pttFloat
+    SwapWords = True
+    EnableMaxValue = False
+    EnableMinValue = False
+    Left = 328
+    Top = 16
+  end
+  object N3_PM5300_Current_N: TPLCTagNumber
+    TagGUID = '{581A8849-469D-434D-8430-CC129D342CDE}'
+    AutoWrite = False
+    PLCRack = 0
+    PLCSlot = 0
+    PLCStation = 29
+    MemFile_DB = 0
+    MemAddress = 3005
+    MemSubElement = 0
+    MemReadFunction = 3
+    MemWriteFunction = 16
+    ProtocolDriver = ModBusRTUDriver1
+    LongAddress = ''
+    TagType = pttFloat
+    SwapWords = True
+    EnableMaxValue = False
+    EnableMinValue = False
+    Left = 376
+    Top = 16
+  end
+  object N3_PM5300_Current_AVG: TPLCTagNumber
+    TagGUID = '{7ED59AE6-A0BF-45DA-89A5-6C29E46582D5}'
+    AutoWrite = False
+    PLCRack = 0
+    PLCSlot = 0
+    PLCStation = 29
+    MemFile_DB = 0
+    MemAddress = 3009
+    MemSubElement = 0
+    MemReadFunction = 3
+    MemWriteFunction = 16
+    ProtocolDriver = ModBusRTUDriver1
+    LongAddress = ''
+    TagType = pttFloat
+    SwapWords = True
+    EnableMaxValue = False
+    EnableMinValue = False
+    Left = 480
+    Top = 16
+  end
+  object N3_PM5300_Current_G: TPLCTagNumber
+    TagGUID = '{D7E97562-631D-41ED-87AC-8C575402DCD0}'
+    AutoWrite = False
+    PLCRack = 0
+    PLCSlot = 0
+    PLCStation = 29
+    MemFile_DB = 0
+    MemAddress = 3007
+    MemSubElement = 0
+    MemReadFunction = 3
+    MemWriteFunction = 16
+    ProtocolDriver = ModBusRTUDriver1
+    LongAddress = ''
+    TagType = pttFloat
+    SwapWords = True
+    EnableMaxValue = False
+    EnableMinValue = False
+    Left = 424
+    Top = 16
+  end
+  object N3_PM5300_Active_Power_Total: TPLCTagNumber
+    TagGUID = '{11432BEB-E79B-4AD3-99F5-BDFB8B17BA67}'
+    PLCRack = 0
+    PLCSlot = 0
+    PLCStation = 29
+    MemFile_DB = 0
+    MemAddress = 3059
+    MemSubElement = 0
+    MemReadFunction = 3
+    MemWriteFunction = 16
+    ProtocolDriver = ModBusRTUDriver1
+    LongAddress = ''
+    TagType = pttFloat
+    SwapWords = True
+    EnableMaxValue = False
+    EnableMinValue = False
+    Left = 520
+    Top = 16
+  end
+  object N3_PM5300_EnergyDeliveredIntoLoad: TPLCTagNumber
+    TagGUID = '{6E0EF67D-EBBB-454F-B336-19E7E9D388F3}'
+    PLCRack = 0
+    PLCSlot = 0
+    PLCStation = 29
+    MemFile_DB = 0
+    MemAddress = 3203
+    MemSubElement = 0
+    MemReadFunction = 3
+    MemWriteFunction = 16
+    ProtocolDriver = ModBusRTUDriver1
+    LongAddress = ''
+    TagType = pttInt64
+    SwapWords = True
+    SwapDWords = True
+    EnableMaxValue = False
+    EnableMinValue = False
+    Left = 560
+    Top = 16
+  end
+end

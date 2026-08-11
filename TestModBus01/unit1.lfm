@@ -1,142 +1,202 @@
 object Form1: TForm1
-  Left = 462
-  Height = 578
-  Top = 91
-  Width = 647
-  Caption = 'Form1'
-  ClientHeight = 578
-  ClientWidth = 647
+  Left = 323
+  Height = 280
+  Top = 162
+  Width = 527
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'TestModBus01'
+  ClientHeight = 280
+  ClientWidth = 527
+  Position = poWorkAreaCenter
   LCLVersion = '4.4.0.0'
   OnClose = FormClose
   OnCreate = FormCreate
   object PageControl1: TPageControl
-    Left = 32
-    Height = 204
-    Top = 208
-    Width = 506
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 216
+    Top = 64
+    Width = 527
     ActivePage = TabSheet2
+    Anchors = [akTop, akLeft, akRight, akBottom]
     TabIndex = 1
     TabOrder = 0
     object TabSheet1: TTabSheet
-      Caption = 'TabSheet1'
-      ClientHeight = 176
-      ClientWidth = 498
-      object Button1: TButton
+      Caption = 'Online'
+      ClientHeight = 188
+      ClientWidth = 519
+      object CmdConnect: TButton
         Left = 32
         Height = 34
         Top = 24
         Width = 121
-        Caption = 'Online'
+        Caption = 'Connect'
         TabOrder = 0
-        OnClick = Button1Click
+        OnClick = CmdConnectClick
+      end
+      object ComboBox1: TComboBox
+        Left = 164
+        Height = 23
+        Top = 29
+        Width = 175
+        ItemHeight = 15
+        ReadOnly = True
+        TabOrder = 1
+        OnEditingDone = ComboBox1EditingDone
       end
     end
     object TabSheet2: TTabSheet
-      Caption = 'TabSheet2'
-      ClientHeight = 176
-      ClientWidth = 498
+      Caption = 'Tester'
+      ClientHeight = 188
+      ClientWidth = 519
       object HMILabel1: THMILabel
         Left = 56
-        Height = 24
-        Top = 41
-        Width = 96
+        Height = 15
+        Top = 48
+        Width = 15
+        AutoSize = True
         Enabled = True
         NumberFormat = '#0.0'
         PLCTag = Tag1
         FormatDateTimeOptions = []
       end
       object HMILabel2: THMILabel
-        Left = 160
-        Height = 24
+        Left = 304
+        Height = 15
         Top = 48
-        Width = 96
+        Width = 15
+        AutoSize = True
         Enabled = True
         NumberFormat = '#0.0'
         PLCTag = Tag2
         FormatDateTimeOptions = []
       end
+      object CheckBox1: TCheckBox
+        Left = 40
+        Height = 19
+        Top = 106
+        Width = 74
+        Caption = 'SwapBytes'
+        TabOrder = 0
+        OnEditingDone = CheckBox1EditingDone
+      end
+      object CheckBox2: TCheckBox
+        Left = 40
+        Height = 19
+        Top = 128
+        Width = 88
+        Caption = 'SwapDWords'
+        TabOrder = 1
+        OnEditingDone = CheckBox2EditingDone
+      end
+      object CheckBox3: TCheckBox
+        Left = 41
+        Height = 19
+        Top = 152
+        Width = 80
+        Caption = 'SwapWords'
+        TabOrder = 2
+        OnEditingDone = CheckBox3EditingDone
+      end
+      object ListBox1: TListBox
+        Left = 129
+        Height = 155
+        Top = 24
+        Width = 89
+        ItemHeight = 0
+        TabOrder = 3
+        OnSelectionChange = ListBox1SelectionChange
+      end
+      object ListBox2: TListBox
+        Left = 361
+        Height = 155
+        Top = 24
+        Width = 89
+        ItemHeight = 0
+        TabOrder = 4
+        OnSelectionChange = ListBox2SelectionChange
+      end
+      object CheckBox4: TCheckBox
+        Left = 272
+        Height = 19
+        Top = 106
+        Width = 74
+        Caption = 'SwapBytes'
+        TabOrder = 5
+        OnEditingDone = CheckBox4EditingDone
+      end
+      object CheckBox5: TCheckBox
+        Left = 272
+        Height = 19
+        Top = 128
+        Width = 88
+        Caption = 'SwapDWords'
+        TabOrder = 6
+        OnEditingDone = CheckBox5EditingDone
+      end
+      object CheckBox6: TCheckBox
+        Left = 273
+        Height = 19
+        Top = 152
+        Width = 80
+        Caption = 'SwapWords'
+        TabOrder = 7
+        OnEditingDone = CheckBox6EditingDone
+      end
+      object Label1: TLabel
+        Left = 50
+        Height = 15
+        Top = 7
+        Width = 73
+        Caption = 'MemAddress:'
+      end
+      object Label2: TLabel
+        Left = 280
+        Height = 15
+        Top = 7
+        Width = 73
+        Caption = 'MemAddress:'
+      end
     end
   end
   object Button2: TButton
-    Left = 168
+    Left = 320
     Height = 33
-    Top = 144
+    Top = 16
     Width = 68
     Caption = '>>'
     TabOrder = 1
     OnClick = Button2Click
   end
-  object Label1: TLabel
-    AnchorSideTop.Control = Button2
-    AnchorSideTop.Side = asrCenter
-    Left = 112
-    Height = 15
-    Top = 153
-    Width = 34
-    Caption = 'Label1'
-  end
   object Button3: TButton
-    Left = 32
+    Left = 184
     Height = 33
-    Top = 144
+    Top = 16
     Width = 68
     Caption = '<<'
     TabOrder = 2
     OnClick = Button3Click
   end
-  object CheckBox1: TCheckBox
-    Left = 280
-    Height = 19
-    Top = 104
-    Width = 74
-    Caption = 'SwapBytes'
-    TabOrder = 3
-    OnEditingDone = CheckBox1EditingDone
-  end
-  object CheckBox2: TCheckBox
-    Left = 280
-    Height = 19
-    Top = 126
-    Width = 88
-    Caption = 'SwapDWords'
-    TabOrder = 4
-    OnEditingDone = CheckBox2EditingDone
-  end
-  object CheckBox3: TCheckBox
-    Left = 281
-    Height = 19
-    Top = 150
-    Width = 80
-    Caption = 'SwapWords'
-    TabOrder = 5
-    OnEditingDone = CheckBox3EditingDone
-  end
-  object ListBox1: TListBox
-    Left = 369
-    Height = 155
-    Top = 22
-    Width = 89
-    ItemHeight = 0
-    TabOrder = 6
-    OnSelectionChange = ListBox1SelectionChange
-  end
   object SerialPortDriver1: TSerialPortDriver
-    Active = True
-    COMPort = 'COM3'
     Timeout = 300
     BackupPortSettings = True
-    AcceptAnyPortName = True
     Left = 8
     Top = 16
   end
   object ModBusRTUDriver1: TModBusRTUDriver
     CommunicationPort = SerialPortDriver1
     ReadOnly = True
-    Left = 115
+    Left = 56
     Top = 16
   end
   object Tag1: TPLCTagNumber
     TagGUID = '{5E03F763-6942-4AA6-B1D4-2BB7854AA585}'
+    AutoRead = False
     AutoWrite = False
     PLCRack = 0
     PLCSlot = 0
@@ -153,11 +213,12 @@ object Form1: TForm1
     SwapWords = True
     EnableMaxValue = False
     EnableMinValue = False
-    Left = 88
-    Top = 96
+    Left = 104
+    Top = 16
   end
   object Tag2: TPLCTagNumber
     TagGUID = '{1C0D0A5C-A812-436F-9C21-E46C537E380D}'
+    AutoRead = False
     AutoWrite = False
     PLCRack = 0
     PLCSlot = 0
@@ -175,6 +236,6 @@ object Form1: TForm1
     EnableMaxValue = False
     EnableMinValue = False
     Left = 144
-    Top = 96
+    Top = 16
   end
 end

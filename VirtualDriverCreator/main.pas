@@ -51,6 +51,7 @@ type
     Button1: TButton;
     Button2: TButton;
     CheckBoxUseBit: TCheckBox;
+    CheckBoxUseBit1: TCheckBox;
     CmdConnect: TButton;
     Datasource2: TDataSource;
     DBGrid2: TDBGrid;
@@ -67,6 +68,8 @@ type
     EditSymbol: TEdit;
     EditType: TComboBox;
     EditUnit: TEdit;
+    FloatSpinEdit1: TFloatSpinEdit;
+    FloatSpinEdit2: TFloatSpinEdit;
     Label1: TLabel;
     Label10: TLabel;
     Label11: TLabel;
@@ -78,6 +81,9 @@ type
     Label17: TLabel;
     Label18: TLabel;
     Label19: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
@@ -90,6 +96,7 @@ type
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
     SaveDialog1: TSaveDialog;
+    SpinEdit1: TSpinEdit;
     SpinEditEx3: TSpinEditEx;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
@@ -134,11 +141,9 @@ var
 begin
   AList := TStringList.Create;
 
-  for T_TagType := Low(TTagType) to High(TTagType) do
-  begin
-    AList.Add(GetEnumName(TypeInfo(TTagType), Ord(T_TagType)));
-  end;
-
+  AList.Add('pttLongInt');
+  AList.Add('pttFloat');
+  AList.Add('pttInt64');
 end;
 
 procedure log(message_: string);
@@ -170,28 +175,34 @@ begin
 
   with BufDataset1.FieldDefs do
   begin
-    Add('Address', ftInteger, 0,false);
     Add('Symbol', ftWideString, 255);
     Add('Type', ftWideString, 255);
-    Add('SwapBytes', ftBoolean, 0,false);
-    Add('SwapDwords', ftBoolean, 0,false);
-    Add('SwapWords', ftBoolean, 0,false);
+    Add('Unit', ftWideString, 20);
+    Add('I_Min', ftInteger, 0,false);
+    Add('I_Max', ftInteger, 0,false);
+    Add('F_Min', ftFloat, 0,false);
+    Add('F_Max', ftFloat, 0,false);
+    Add('I64_Start', ftLargeint, 0,false);
+    Add('StartupReset', ftBoolean, 0,false);
     Add('UseBit', ftBoolean, 0,false);
     Add('BitNumber', ftInteger, 0,false);
-    Add('Unit', ftWideString, 20);
+    Add('I_Result', ftInteger,  0,false);
+    Add('F_Result', ftFloat,  0,false);
+    Add('I64_Result', ftLargeint,  0,false);
   end;
   BufDataset1.CreateDataset;
 
   with BufDataset2.FieldDefs do
   begin
     Add('Symbol', ftWideString, 255);
-    Add('Result', ftWideString, 255);
+    Add('I_Result', ftInteger,  0,false);
+    Add('F_Result', ftFloat,  0,false);
+    Add('I64_Result', ftLargeint,  0,false);
     Add('Unit', ftWideString, 20);
   end;
   BufDataset2.CreateDataset;
 
     BufDataset1.Append;
-    BufDataset1.FieldByName('Address').AsInteger := 2999;
     BufDataset1.FieldByName('Symbol').AsWideString := 'CurrentA';
     BufDataset1.FieldByName('Type').AsWideString := 'pttFloat';
     BufDataset1.FieldByName('SwapBytes').AsBoolean := false;

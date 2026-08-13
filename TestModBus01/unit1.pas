@@ -30,6 +30,7 @@ type
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
+    Label5: TLabel;
     ListBox1: TListBox;
     ListBox2: TListBox;
     ModBusRTUDriver1: TModBusRTUDriver;
@@ -37,6 +38,7 @@ type
     SerialPortDriver1: TSerialPortDriver;
     SpinEditEx1: TSpinEditEx;
     SpinEditEx2: TSpinEditEx;
+    SpinEditEx3: TSpinEditEx;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     Tag1: TPLCTagNumber;
@@ -59,6 +61,7 @@ type
     procedure SpinEditEx1EditingDone(Sender: TObject);
     procedure SpinEditEx2Change(Sender: TObject);
     procedure SpinEditEx2EditingDone(Sender: TObject);
+    procedure SpinEditEx3EditingDone(Sender: TObject);
     procedure Tag1ValueChange(Sender: TObject);
     procedure Tag2ValueChange(Sender: TObject);
   private
@@ -255,6 +258,9 @@ var
   i:integer;
 
 begin
+  SpinEditEx3.Value:=Tag1.PLCStation;
+  Tag2.PLCStation:=Tag1.PLCStation;
+
   PopulateEnumList(s);
   ListBox1.Items := s;
   ListBox2.Items := s;
@@ -334,6 +340,19 @@ begin
   Tag2.MemAddress:=SpinEditEx2.Value;
   label1.Caption:='MemAddress: '+Tag1.MemAddress.ToString;
   label2.Caption:='MemAddress: '+Tag2.MemAddress.ToString;
+end;
+
+procedure TForm1.SpinEditEx3EditingDone(Sender: TObject);
+var
+  AutoRead:boolean;
+begin
+  AutoRead:=Tag1.AutoRead;
+  Tag1.AutoRead:=false;
+  Tag2.AutoRead:=false;
+  Tag1.PLCStation:=SpinEditEx3.Value;
+  Tag2.PLCStation:=SpinEditEx3.Value;
+  Tag1.AutoRead:=AutoRead;
+  Tag2.AutoRead:=AutoRead;
 end;
 
 procedure TForm1.Tag1ValueChange(Sender: TObject);

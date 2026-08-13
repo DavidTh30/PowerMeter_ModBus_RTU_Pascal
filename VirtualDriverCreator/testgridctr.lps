@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="12"/>
+    <BuildModes Active="Release">
+      <Item Name="Debug">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="VirtualDriverCreator"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+            <VerifyObjMethodCallValidity Value="True"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf3"/>
+              <UseHeaptrc Value="True"/>
+              <TrashVariables Value="True"/>
+              <UseExternalDbgSyms Value="True"/>
+            </Debugging>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+        </CompilerOptions>
+      </Item>
+    </BuildModes>
+    <Units>
+      <Unit>
+        <Filename Value="testgridctr.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UsageCount Value="36"/>
+      </Unit>
+      <Unit>
+        <Filename Value="main.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="244"/>
+        <CursorPos X="28" Y="247"/>
+        <UsageCount Value="36"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Note.txt"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="9"/>
+        <CursorPos X="20" Y="39"/>
+        <UsageCount Value="32"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Text"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\lcl\forms.pp"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="470"/>
+        <CursorPos X="14" Y="487"/>
+        <UsageCount Value="18"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\fpc\3.2.2\source\packages\rtl-objpas\src\inc\system.uitypes.pp"/>
+        <UnitName Value="System.UITypes"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="197"/>
+        <CursorPos X="15" Y="203"/>
+        <UsageCount Value="18"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\lcl\dialogs.pp"/>
+        <UnitName Value="Dialogs"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="30"/>
+        <CursorPos Y="47"/>
+        <UsageCount Value="18"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\lcl\interfaces\win32\win32callback.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="108"/>
+        <CursorPos Y="125"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\lcl\lclclasses.pp"/>
+        <UnitName Value="LCLClasses"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="139"/>
+        <CursorPos Y="157"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\..\AppData\Local\lazarus\onlinepackagemanager\packages\jujiboutils\src\jdbgridcontrol.pas"/>
+        <UnitName Value="JDBGridControl"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="37"/>
+        <CursorPos X="29" Y="54"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="C:\lazarus\fpc\3.2.2\source\packages\fcl-db\src\base\db.pas"/>
+        <UnitName Value="DB"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="97"/>
+        <CursorPos X="5" Y="110"/>
+        <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+      </Unit>
+    </Units>
+    <JumpHistory HistoryIndex="29">
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="248" Column="69" TopLine="220"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="249" Column="77" TopLine="231"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="272" Column="33" TopLine="250"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="286" Column="7" TopLine="271"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="258" Column="58" TopLine="252"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="296" Column="13" TopLine="270"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="291" Column="32" TopLine="272"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="301" Column="52" TopLine="277"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="262" Column="28" TopLine="259"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="261" Column="28" TopLine="258"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="260" Column="28" TopLine="257"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="259" Column="28" TopLine="256"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="258" Column="28" TopLine="255"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="257" Column="28" TopLine="254"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="256" Column="28" TopLine="253"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="255" Column="28" TopLine="252"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="254" Column="28" TopLine="251"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="253" Column="28" TopLine="250"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="252" Column="28" TopLine="249"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="251" Column="28" TopLine="248"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="252" Column="28" TopLine="249"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="253" Column="28" TopLine="250"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="254" Column="28" TopLine="251"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="253" Column="28" TopLine="250"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="252" Column="28" TopLine="249"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="251" Column="28" TopLine="248"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="250" Column="28" TopLine="247"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="249" Column="28" TopLine="246"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="248" Column="28" TopLine="245"/>
+      </Position>
+      <Position>
+        <Filename Value="main.pas"/>
+        <Caret Line="247" Column="28" TopLine="244"/>
+      </Position>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+</CONFIG>

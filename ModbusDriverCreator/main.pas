@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, db, BufDataset, FileUtil, SpinEx, Forms, Controls,
   Graphics, Dialogs, DbCtrls, DBGrids, StdCtrls, Menus, Spin, ExtCtrls,
-  ComCtrls, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag, TypInfo, registry;
+  ComCtrls, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag, TypInfo,
+  registry, Math;
 
 type
 
@@ -119,10 +120,16 @@ type
     procedure BufDataset1AfterScroll(DataSet: TDataSet);
     procedure BufDataset1BeforeScroll(DataSet: TDataSet);
     procedure BufDataset1NewRecord(DataSet: TDataSet);
+    procedure CheckBoxSwapBytesEditingDone(Sender: TObject);
+    procedure CheckBoxSwapDwordsEditingDone(Sender: TObject);
+    procedure CheckBoxSwapWordsEditingDone(Sender: TObject);
+    procedure CheckBoxUseBitEditingDone(Sender: TObject);
     procedure Datasource1StateChange(Sender: TObject);
     procedure Datasource1UpdateData(Sender: TObject);
     procedure EditAddressEditingDone(Sender: TObject);
     procedure EditSymbolEditingDone(Sender: TObject);
+    procedure EditTypeEditingDone(Sender: TObject);
+    procedure EditUnitEditingDone(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure MenuExitClick(Sender: TObject);
     procedure MenuOpenClick(Sender: TObject);
@@ -136,6 +143,7 @@ type
 var
   Form1: TForm1;
   OnBootFinish:boolean;
+  BitNumber:int64;
 
 implementation
 
@@ -192,7 +200,7 @@ begin
     Add('SwapDwords', ftBoolean, 0,false);
     Add('SwapWords', ftBoolean, 0,false);
     Add('UseBit', ftBoolean, 0,false);
-    Add('BitNumber', ftInteger, 0,false);
+    Add('BitNumber', ftLargeint, 0,false);
     Add('Unit', ftWideString, 20);
   end;
   BufDataset1.CreateDataset;
@@ -213,7 +221,7 @@ begin
     BufDataset1.FieldByName('SwapDwords').AsBoolean := false;
     BufDataset1.FieldByName('SwapWords').AsBoolean := false;
     BufDataset1.FieldByName('UseBit').AsBoolean := false;
-    BufDataset1.FieldByName('BitNumber').AsInteger := 0;
+    BufDataset1.FieldByName('BitNumber').AsLargeInt := 0;
     BufDataset1.FieldByName('Unit').AsWideString := 'A';
     BufDataset1.Post;
 
@@ -225,7 +233,7 @@ begin
     BufDataset1.FieldByName('SwapDwords').AsBoolean := true;
     BufDataset1.FieldByName('SwapWords').AsBoolean := true;
     BufDataset1.FieldByName('UseBit').AsBoolean := false;
-    BufDataset1.FieldByName('BitNumber').AsInteger := 0;
+    BufDataset1.FieldByName('BitNumber').AsLargeInt := 0;
     BufDataset1.FieldByName('Unit').AsWideString := 'Wh';
     BufDataset1.Post;
 
@@ -244,6 +252,18 @@ begin
   BufDataset1.FieldByName('Symbol').AsWideString := EditSymbol.Caption;
 end;
 
+procedure TForm1.EditTypeEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('Type').AsWideString := EditType.Items[EditType.ItemIndex];
+end;
+
+procedure TForm1.EditUnitEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('Unit').AsWideString := EditUnit.Caption;
+end;
+
 procedure TForm1.EditAddressEditingDone(Sender: TObject);
 begin
   log({$I %LINE%}+' EditAddressEditingDone');
@@ -258,8 +278,33 @@ end;
 
 procedure TForm1.B0MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var
+  i: integer;
+  CurrentObj: TComponent;
 begin
   log({$I %LINE%}+' MouseUp');
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  begin
+    if (sender is TShape) and (TShape(sender).Brush.Color = clGreen) then
+    begin
+      TShape(sender).Brush.Color := clWhite;
+      BufDataset1.FieldByName('BitNumber').AsLargeInt := 0;
+      exit;
+    end;
+    if sender is TShape then TShape(sender).Brush.Color := clGreen;
+
+    for i := 0 to ComponentCount - 1 do
+    begin
+      CurrentObj := Components[i];
+      if (CurrentObj is TShape) and (CurrentObj.Name <> TShape(sender).Name) and
+      (LeftStr(CurrentObj.Name,1)='B') then TShape(CurrentObj).Brush.Color := clWhite;
+    end;
+
+    i:=StrToInt(RightStr(TShape(sender).Name,Length(TShape(sender).Name)-1));
+    BitNumber:= round(Power(2,i));
+    BufDataset1.FieldByName('BitNumber').AsLargeInt := BitNumber;
+    //showmessage(BitNumber.ToString);
+  end;
 end;
 
 procedure TForm1.BufDataset1AfterDelete(DataSet: TDataSet);
@@ -285,6 +330,7 @@ end;
 procedure TForm1.BufDataset1AfterScroll(DataSet: TDataSet);
 var
   i:integer;
+  CurrentObj: TComponent;
 begin
   log({$I %LINE%}+' AfterScroll');
   EditAddress.Value:= BufDataset1.FieldByName('Address').AsInteger;
@@ -305,6 +351,29 @@ begin
     end;
   end;
 
+  for i := 0 to ComponentCount - 1 do
+  begin
+    CurrentObj := Components[i];
+    if (CurrentObj is TShape) and (LeftStr(CurrentObj.Name,1)='B') then TShape(CurrentObj).Brush.Color := clWhite;
+  end;
+
+  if (BufDataset1.FieldByName('BitNumber').AsLargeInt = 1) then B0.Brush.Color := clgreen;
+
+  if (BufDataset1.FieldByName('BitNumber').AsLargeInt>0) then
+  if (BufDataset1.FieldByName('BitNumber').AsLargeInt<=2147483648) then
+  if ((BufDataset1.FieldByName('BitNumber').AsLargeInt mod 2) = 0)then
+  begin
+    for i := 0 to 31 do
+    begin
+      BitNumber:= round(Power(2,i));
+      if BitNumber = BufDataset1.FieldByName('BitNumber').AsLargeInt then
+      begin
+        CurrentObj := Self.FindComponent('B'+i.ToString);
+        if (CurrentObj <> nil) then TShape(CurrentObj).Brush.Color := clgreen;
+        break;
+      end;
+    end;
+  end;
 end;
 
 procedure TForm1.BufDataset1BeforeScroll(DataSet: TDataSet);
@@ -315,6 +384,30 @@ end;
 procedure TForm1.BufDataset1NewRecord(DataSet: TDataSet);
 begin
   log({$I %LINE%}+' NewRecord');
+end;
+
+procedure TForm1.CheckBoxSwapBytesEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('SwapBytes').AsBoolean := CheckBoxSwapBytes.Checked;
+end;
+
+procedure TForm1.CheckBoxSwapDwordsEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('SwapDwords').AsBoolean := CheckBoxSwapDwords.Checked;
+end;
+
+procedure TForm1.CheckBoxSwapWordsEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('SwapWords').AsBoolean := CheckBoxSwapWords.Checked;
+end;
+
+procedure TForm1.CheckBoxUseBitEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('UseBit').AsBoolean := CheckBoxUseBit.Checked;
 end;
 
 procedure TForm1.Datasource1StateChange(Sender: TObject);

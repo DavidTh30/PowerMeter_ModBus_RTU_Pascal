@@ -56,6 +56,18 @@
     </RunParams>
     <RequiredPackages>
       <Item>
+        <PackageName Value="pascalscada_dsng"/>
+      </Item>
+      <Item>
+        <PackageName Value="pascalscada"/>
+      </Item>
+      <Item>
+        <PackageName Value="LazControls"/>
+      </Item>
+      <Item>
+        <PackageName Value="LazControlDsgn"/>
+      </Item>
+      <Item>
         <PackageName Value="FCL"/>
       </Item>
       <Item>

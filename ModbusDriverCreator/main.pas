@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, db, BufDataset, FileUtil, SpinEx, Forms, Controls,
   Graphics, Dialogs, DbCtrls, DBGrids, StdCtrls, Menus, Spin, ExtCtrls,
   ComCtrls, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag, TypInfo,
-  registry, Math;
+  registry, Math, IniFiles;
 
 type
 
@@ -557,7 +557,7 @@ var
   CSV: TCSVDocument;
   Row, Col: Integer;
   Loop1:integer;
-
+  MyIni: TIniFile;
 begin
   Directory_:=ExtractFilePath(ParamStr(0));
   OpenDialog1.InitialDir:=ExtractFilePath(ParamStr(0));
@@ -635,6 +635,25 @@ begin
       CSV.Free;
       OnBootFinish:=true;
     end;
+
+    MyIni := TIniFile.Create(S_Name);
+    try
+      Device_Name.Caption:=MyIni.ReadString('DriverInfo', 'Device_Name', '');
+      Device_MFG.Caption:=MyIni.ReadString('DriverInfo', 'Device_MFG', '');
+      Device_Model.Caption:=MyIni.ReadString('DriverInfo', 'Device_Model', '');
+      Device_SN.Caption:=MyIni.ReadString('DriverInfo', 'Device_SN', '');
+      Device_Ver.Caption:=MyIni.ReadString('DriverInfo', 'Device_Ver', '');
+
+      Drv_Name.Caption:=MyIni.ReadString('DriverInfo', 'Drv_Name', '');
+      Drv_SN.Caption:=MyIni.ReadString('DriverInfo', 'Drv_SN', '');
+      Drv_Ver.Caption:=MyIni.ReadString('DriverInfo', 'Drv_Ver', '');
+      Drv_Other_Information.Caption:=MyIni.ReadString('DriverInfo', 'Drv_Other_Information', '');
+      Drv_CreatDate.Caption:=MyIni.ReadString('DriverInfo', 'Drv_CreatDate', '');
+    finally
+      // Always free the object
+      MyIni.Free;
+    end;
+
   end;
 end;
 

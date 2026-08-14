@@ -130,6 +130,7 @@ type
     procedure EditSymbolEditingDone(Sender: TObject);
     procedure EditTypeEditingDone(Sender: TObject);
     procedure EditUnitEditingDone(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MenuExitClick(Sender: TObject);
     procedure MenuOpenClick(Sender: TObject);
@@ -188,53 +189,54 @@ begin
 
   PopulateEnumList(s);
   EditType.Items := s;
+  s.Free;
 
   //showmessage(BufDataset1.FieldDefs.Count.ToString);
 
   with BufDataset1.FieldDefs do
   begin
     Add('Address', ftInteger, 0,false);
-    Add('Symbol', ftWideString, 255);
-    Add('Type', ftWideString, 255);
+    Add('Symbol', ftString, 255);
+    Add('Type', ftString, 255);
     Add('SwapBytes', ftBoolean, 0,false);
     Add('SwapDwords', ftBoolean, 0,false);
     Add('SwapWords', ftBoolean, 0,false);
     Add('UseBit', ftBoolean, 0,false);
     Add('BitNumber', ftLargeint, 0,false);
-    Add('Unit', ftWideString, 20);
+    Add('Unit', ftString, 20);
   end;
   BufDataset1.CreateDataset;
 
   with BufDataset2.FieldDefs do
   begin
-    Add('Symbol', ftWideString, 255);
-    Add('Result', ftWideString, 255);
-    Add('Unit', ftWideString, 20);
+    Add('Symbol', ftString, 255);
+    Add('Result', ftString, 255);
+    Add('Unit', ftString, 20);
   end;
   BufDataset2.CreateDataset;
 
     BufDataset1.Append;
     BufDataset1.FieldByName('Address').AsInteger := 2999;
-    BufDataset1.FieldByName('Symbol').AsWideString := 'CurrentA';
-    BufDataset1.FieldByName('Type').AsWideString := 'pttFloat';
+    BufDataset1.FieldByName('Symbol').AsString := 'CurrentA';
+    BufDataset1.FieldByName('Type').AsString := 'pttFloat';
     BufDataset1.FieldByName('SwapBytes').AsBoolean := false;
     BufDataset1.FieldByName('SwapDwords').AsBoolean := false;
     BufDataset1.FieldByName('SwapWords').AsBoolean := false;
     BufDataset1.FieldByName('UseBit').AsBoolean := false;
     BufDataset1.FieldByName('BitNumber').AsLargeInt := 0;
-    BufDataset1.FieldByName('Unit').AsWideString := 'A';
+    BufDataset1.FieldByName('Unit').AsString := 'A';
     BufDataset1.Post;
 
     BufDataset1.Append;
     BufDataset1.FieldByName('Address').AsInteger := 3201;
-    BufDataset1.FieldByName('Symbol').AsWideString := 'Watt-Hours';
-    BufDataset1.FieldByName('Type').AsWideString := 'pttInt64';
+    BufDataset1.FieldByName('Symbol').AsString := 'Watt-Hours';
+    BufDataset1.FieldByName('Type').AsString := 'pttInt64';
     BufDataset1.FieldByName('SwapBytes').AsBoolean := false;
     BufDataset1.FieldByName('SwapDwords').AsBoolean := true;
     BufDataset1.FieldByName('SwapWords').AsBoolean := true;
     BufDataset1.FieldByName('UseBit').AsBoolean := false;
     BufDataset1.FieldByName('BitNumber').AsLargeInt := 0;
-    BufDataset1.FieldByName('Unit').AsWideString := 'Wh';
+    BufDataset1.FieldByName('Unit').AsString := 'Wh';
     BufDataset1.Post;
 
 
@@ -249,19 +251,34 @@ procedure TForm1.EditSymbolEditingDone(Sender: TObject);
 begin
   log({$I %LINE%}+' EditSymboldEditingDone');
   if BufDataset1.State in [dsEdit, dsInsert] then
-  BufDataset1.FieldByName('Symbol').AsWideString := EditSymbol.Caption;
+  BufDataset1.FieldByName('Symbol').AsString := EditSymbol.Caption;
 end;
 
 procedure TForm1.EditTypeEditingDone(Sender: TObject);
 begin
   if BufDataset1.State in [dsEdit, dsInsert] then
-  BufDataset1.FieldByName('Type').AsWideString := EditType.Items[EditType.ItemIndex];
+  BufDataset1.FieldByName('Type').AsString := EditType.Items[EditType.ItemIndex];
 end;
 
 procedure TForm1.EditUnitEditingDone(Sender: TObject);
 begin
   if BufDataset1.State in [dsEdit, dsInsert] then
-  BufDataset1.FieldByName('Unit').AsWideString := EditUnit.Caption;
+  BufDataset1.FieldByName('Unit').AsString := EditUnit.Caption;
+end;
+
+procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+var
+  i:integer;
+begin
+  OnBootFinish:=false;
+  BufDataset1.Clear;
+  BufDataset1.Fields.Clear;
+  BufDataset1.FieldDefs.Clear;
+  BufDataset2.Clear;
+  BufDataset2.Fields.Clear;
+  BufDataset2.FieldDefs.Clear;
+  for i:=0 to DBGrid1.Columns.Count-1  do
+  DBGrid1.Columns.Delete(0);
 end;
 
 procedure TForm1.EditAddressEditingDone(Sender: TObject);
@@ -274,6 +291,7 @@ end;
 procedure TForm1.BufDataset1AfterCancel(DataSet: TDataSet);
 begin
   log({$I %LINE%}+' AfterCancel');
+  BufDataset1AfterScroll(DataSet);
 end;
 
 procedure TForm1.B0MouseUp(Sender: TObject; Button: TMouseButton;
@@ -333,9 +351,11 @@ var
   CurrentObj: TComponent;
 begin
   log({$I %LINE%}+' AfterScroll');
+  if not OnBootFinish then exit;
+
   EditAddress.Value:= BufDataset1.FieldByName('Address').AsInteger;
-  EditSymbol.Caption:= BufDataset1.FieldByName('Symbol').AsWideString;
-  EditUnit.Caption:= BufDataset1.FieldByName('Unit').AsWideString;
+  EditSymbol.Caption:= BufDataset1.FieldByName('Symbol').AsString;
+  EditUnit.Caption:= BufDataset1.FieldByName('Unit').AsString;
   CheckBoxSwapBytes.Checked:=BufDataset1.FieldByName('SwapBytes').AsBoolean;
   CheckBoxSwapDwords.Checked:=BufDataset1.FieldByName('SwapDwords').AsBoolean;
   CheckBoxSwapWords.Checked:=BufDataset1.FieldByName('SwapWords').AsBoolean;
@@ -344,7 +364,7 @@ begin
   if EditType.Items.Count > 0 then
   for i := 0 to EditType.Items.Count-1 do
   begin
-    if BufDataset1.FieldByName('Type').AsWideString = EditType.Items[i] then
+    if BufDataset1.FieldByName('Type').AsString = EditType.Items[i] then
     begin
       EditType.ItemIndex:=i;
       break;
@@ -415,6 +435,8 @@ begin
   log({$I %LINE%}+' Datasource1StateChange');
   if BufDataset1.State in [dsEdit, dsInsert] then
   begin
+    DBGrid1.Enabled:=false;
+    DBNavigator1.VisibleButtons := DBNavigator1.VisibleButtons - [nbFirst, nbPrior, nbNext, nbLast, nbInsert,nbDelete];
     EditAddress.Enabled:=true;
     EditSymbol.Enabled:=true;
     EditType.Enabled:=true;
@@ -462,6 +484,8 @@ begin
   end
   else
   begin
+    DBGrid1.Enabled:=true;
+    DBNavigator1.VisibleButtons := [nbFirst,nbPrior,nbNext,nbLast,nbInsert,nbDelete,nbEdit,nbPost,nbCancel];
     EditAddress.Enabled:=false;
     EditSymbol.Enabled:=false;
     EditType.Enabled:=false;
@@ -559,6 +583,8 @@ begin
 
       if CSV.RowCount > 0 then
       begin
+        OnBootFinish:=false;
+
         BufDataset1.Clear;
         BufDataset1.Fields.Clear;
         BufDataset1.FieldDefs.Clear;
@@ -571,34 +597,43 @@ begin
 
         if Row = 0 then
         begin
-          for Col := 0 to CSV.ColCount[Row] - 1 do
+          with BufDataset1.FieldDefs do
           begin
-            if BufDataset1.FieldDefs.Count<(Col+1) then
-            if BufDataset1.FieldDefs.IndexOf(CSV.Cells[Col, Row]) < 0 then
-            BufDataset1.FieldDefs.Add(CSV.Cells[Col, Row], ftWideString,255);
+            Add('Address', ftInteger, 0,false);
+            Add('Symbol', ftString, 255);
+            Add('Type', ftString, 255);
+            Add('SwapBytes', ftBoolean, 0,false);
+            Add('SwapDwords', ftBoolean, 0,false);
+            Add('SwapWords', ftBoolean, 0,false);
+            Add('UseBit', ftBoolean, 0,false);
+            Add('BitNumber', ftLargeint, 0,false);
+            Add('Unit', ftString, 20);
           end;
           BufDataset1.CreateDataset;
         end;
 
-        if Row > 0 then
+        if (CSV.Cells[0, Row]='[DriverInfo]') then break;
+
+        if (Row > 0) and (CSV.ColCount[Row]>8) then
         begin
           BufDataset1.Append;
-          //showmessage(BufDataset1.FieldDefs.Count.ToString + '/' + CSV.ColCount[Row].ToString);
-          Loop1:=BufDataset1.FieldDefs.Count;
-          if CSV.ColCount[Row] < Loop1 then Loop1 := CSV.ColCount[Row];
-          for Col := 0 to Loop1 - 1 do
-          begin
-            //if BufDataset1.FieldDefs.Count>=(Col+1) then showmessage(Col.ToString + ':'+BufDataset1.Fields[Col].FieldName+':' + CSV.Cells[Col, Row]);
-            if BufDataset1.FieldDefs.Count>=(Col+1) then BufDataset1.Fields[Col].AsWideString :=CSV.Cells[Col, Row];
-          end;
+          BufDataset1.FieldByName('Address').AsInteger := StrToInt(CSV.Cells[0, Row]);
+          BufDataset1.FieldByName('Symbol').AsString := CSV.Cells[1, Row];
+          BufDataset1.FieldByName('Type').AsString := CSV.Cells[2, Row];
+          BufDataset1.FieldByName('SwapBytes').AsBoolean := StrToBool(CSV.Cells[3, Row]);
+          BufDataset1.FieldByName('SwapDwords').AsBoolean := StrToBool(CSV.Cells[4, Row]);
+          BufDataset1.FieldByName('SwapWords').AsBoolean := StrToBool(CSV.Cells[5, Row]);
+          BufDataset1.FieldByName('UseBit').AsBoolean := StrToBool(CSV.Cells[6, Row]);
+          BufDataset1.FieldByName('BitNumber').AsLargeInt := StrToInt(CSV.Cells[7, Row]);
+          BufDataset1.FieldByName('Unit').AsString := CSV.Cells[8, Row];
           BufDataset1.Post;
         end;
 
       end;
-
     end;
     finally
       CSV.Free;
+      OnBootFinish:=true;
     end;
   end;
 end;
@@ -643,19 +678,19 @@ begin
       end;
     end;
 
-    if FileExists(S_Name) then
-    try
-      Append(fileout);
-    except
-      on E: EInOutError do
-      begin
-        showmessage('Append: '+E.ClassName+'/'+ E.Message+'/'+IntToStr(E.ErrorCode));
-        exit;
-      end;
-    end;
+    //if FileExists(S_Name) then
+    //try
+    //  Append(fileout);
+    //except
+    //  on E: EInOutError do
+    //  begin
+    //    showmessage('Append: '+E.ClassName+'/'+ E.Message+'/'+IntToStr(E.ErrorCode));
+    //    exit;
+    //  end;
+    //end;
 
-    if not FileExists(S_Name) then
-    begin
+    //if not FileExists(S_Name) then
+    //begin
       try
         rewrite (fileout);
         Txt:='';
@@ -672,20 +707,47 @@ begin
           exit;
         end;
       end;
-    end;
+    //end;
 
+    OnBootFinish:=false;
     BufDataset1.First;
     while not BufDataset1.EOF do
     begin
       Txt:='';
       for i := 0 to BufDataset1.FieldCount - 1 do
       begin
-        Txt:=Txt+BufDataset1.FieldByName(BufDataset1.Fields[i].FieldName).AsAnsiString;
+        Txt:=Txt+BufDataset1.FieldByName(BufDataset1.Fields[i].FieldName).AsString;
         if i<(BufDataset1.FieldCount - 1) then Txt:=Txt+',';
       end;
+      //log({$I %LINE%}+' '+Txt);
       writeln(fileout, Txt);
       BufDataset1.Next;
     end;
+    OnBootFinish:=true;
+
+    Txt:='[DriverInfo]';
+    writeln(fileout, Txt);
+    Txt:='Device_Name='+Device_Name.Caption;
+    writeln(fileout, Txt);
+    Txt:='Device_MFG='+Device_MFG.Caption;
+    writeln(fileout, Txt);
+    Txt:='Device_Model='+Device_Model.Caption;
+    writeln(fileout, Txt);
+    Txt:='Device_SN='+Device_SN.Caption;
+    writeln(fileout, Txt);
+    Txt:='Device_Ver='+Device_Ver.Caption;
+    writeln(fileout, Txt);
+    Txt:='Drv_Name='+Drv_Name.Caption;
+    writeln(fileout, Txt);
+    Txt:='Drv_SN='+Drv_SN.Caption;
+    writeln(fileout, Txt);
+    Txt:='Drv_Ver='+Drv_Ver.Caption;
+    writeln(fileout, Txt);
+    Txt:='Drv_Other_Information='+Drv_Other_Information.Caption;
+    writeln(fileout, Txt);
+    Txt:='Drv_CreatDate='+Drv_CreatDate.Caption;
+    writeln(fileout, Txt);
+
     CloseFile(fileout);
     BufDataset1.First;
   end;

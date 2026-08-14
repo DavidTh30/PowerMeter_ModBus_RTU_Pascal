@@ -49,7 +49,7 @@ type
     B9: TShape;
     BufDataset1: TBufDataset;
     BufDataset2: TBufDataset;
-    Button1: TButton;
+    CmdRandomSerial: TButton;
     Button2: TButton;
     Button3: TButton;
     CheckBoxSwapBytes: TCheckBox;
@@ -78,6 +78,7 @@ type
     EditType: TComboBox;
     EditRegisterType: TComboBox;
     EditUnit: TEdit;
+    ImageList1: TImageList;
     Label1: TLabel;
     Label10: TLabel;
     Label11: TLabel;
@@ -114,6 +115,24 @@ type
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
     Timer1: TTimer;
+    ToolBar1: TToolBar;
+    CmdMoveFirst: TToolButton;
+    ToolButton10: TToolButton;
+    CmdDelete: TToolButton;
+    ToolButton12: TToolButton;
+    CmdEdit: TToolButton;
+    ToolButton14: TToolButton;
+    CmdPost: TToolButton;
+    ToolButton16: TToolButton;
+    CmdCancel: TToolButton;
+    ToolButton2: TToolButton;
+    CmdPrior: TToolButton;
+    ToolButton4: TToolButton;
+    CmdMoveNext: TToolButton;
+    ToolButton6: TToolButton;
+    CmdMoveLast: TToolButton;
+    ToolButton8: TToolButton;
+    CmdInsert: TToolButton;
     procedure B0MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure BufDataset1AfterCancel(DataSet: TDataSet);
@@ -122,9 +141,16 @@ type
     procedure BufDataset1AfterInsert(DataSet: TDataSet);
     procedure BufDataset1AfterPost(DataSet: TDataSet);
     procedure BufDataset1AfterScroll(DataSet: TDataSet);
+    procedure BufDataset1BeforeEdit(DataSet: TDataSet);
+    procedure BufDataset1BeforeInsert(DataSet: TDataSet);
+    procedure BufDataset1BeforePost(DataSet: TDataSet);
     procedure BufDataset1BeforeScroll(DataSet: TDataSet);
+    procedure BufDataset1CalcFields(DataSet: TDataSet);
     procedure BufDataset1NewRecord(DataSet: TDataSet);
-    procedure Button1Click(Sender: TObject);
+    procedure CmdCancelClick(Sender: TObject);
+    procedure CmdMoveNextClick(Sender: TObject);
+    procedure CmdPostClick(Sender: TObject);
+    procedure CmdRandomSerialClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure CheckBoxSwapBytesEditingDone(Sender: TObject);
@@ -147,6 +173,12 @@ type
     procedure MenuOpenClick(Sender: TObject);
     procedure MenuSaveAsClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
+    procedure CmdInsertClick(Sender: TObject);
+    procedure CmdDeleteClick(Sender: TObject);
+    procedure CmdEditClick(Sender: TObject);
+    procedure CmdMoveFirstClick(Sender: TObject);
+    procedure CmdMoveLastClick(Sender: TObject);
+    procedure CmdPriorClick(Sender: TObject);
   private
     { private declarations }
   public
@@ -584,9 +616,29 @@ begin
   end;
 end;
 
+procedure TForm1.BufDataset1BeforeEdit(DataSet: TDataSet);
+begin
+  log({$I %LINE%}+' BeforeEdit(');
+end;
+
+procedure TForm1.BufDataset1BeforeInsert(DataSet: TDataSet);
+begin
+  log({$I %LINE%}+' BeforeInsert');
+end;
+
+procedure TForm1.BufDataset1BeforePost(DataSet: TDataSet);
+begin
+  log({$I %LINE%}+' BeforePost');
+end;
+
 procedure TForm1.BufDataset1BeforeScroll(DataSet: TDataSet);
 begin
   log({$I %LINE%}+' BeforeScroll');
+end;
+
+procedure TForm1.BufDataset1CalcFields(DataSet: TDataSet);
+begin
+  log({$I %LINE%}+' CalcFields');
 end;
 
 procedure TForm1.BufDataset1NewRecord(DataSet: TDataSet);
@@ -594,7 +646,22 @@ begin
   log({$I %LINE%}+' NewRecord');
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.CmdCancelClick(Sender: TObject);
+begin
+  BufDataset1.Cancel;
+end;
+
+procedure TForm1.CmdMoveNextClick(Sender: TObject);
+begin
+  BufDataset1.Next;
+end;
+
+procedure TForm1.CmdPostClick(Sender: TObject);
+begin
+  BufDataset1.Post;
+end;
+
+procedure TForm1.CmdRandomSerialClick(Sender: TObject);
 begin
   Drv_SN.Caption:=RandomSerial();
 end;
@@ -769,6 +836,23 @@ end;
 procedure TForm1.Datasource1StateChange(Sender: TObject);
 begin
   log({$I %LINE%}+' Datasource1StateChange');
+
+  if BufDataset1.State = dsInactive then log({$I %LINE%}+' dsInactive');
+  if BufDataset1.State = dsBrowse then log({$I %LINE%}+' dsBrowse');
+  if BufDataset1.State = dsEdit then log({$I %LINE%}+' dsEdit');
+  if BufDataset1.State = dsInsert then log({$I %LINE%}+' dsInsert');
+  if BufDataset1.State = dsSetKey then log({$I %LINE%}+' dsSetKey');
+  if BufDataset1.State = dsCalcFields then log({$I %LINE%}+' dsCalcFields');
+  if BufDataset1.State = dsFilter then log({$I %LINE%}+' dsFilter');
+  if BufDataset1.State = dsNewValue then log({$I %LINE%}+' dsNewValue');
+  if BufDataset1.State = dsOldValue then log({$I %LINE%}+' dsOldValue');
+  if BufDataset1.State = dsCurValue then log({$I %LINE%}+' dsCurValue');
+  if BufDataset1.State = dsBlockRead then log({$I %LINE%}+' dsBlockRead');
+  if BufDataset1.State = dsInternalCalc then log({$I %LINE%}+' dsInternalCalc');
+  if BufDataset1.State = dsOpening then log({$I %LINE%}+' dsOpening');
+  if BufDataset1.State = dsRefreshFields then log({$I %LINE%}+' dsRefreshFields');
+
+
   if BufDataset1.State in [dsEdit, dsInsert] then
   begin
     DBGrid1.Enabled:=false;
@@ -1225,6 +1309,41 @@ begin
 
     BufDataset2.Next;
   end;
+end;
+
+procedure TForm1.CmdInsertClick(Sender: TObject);
+begin
+  BufDataset1.Insert;
+end;
+
+procedure TForm1.CmdDeleteClick(Sender: TObject);
+begin
+  if MessageDlg('Confirmation', 'Do you want to delete?', mtConfirmation, [mbYes, mbNo], 0) = 7 then
+  begin
+    //showmessage('exit');
+    exit;
+  end;
+  BufDataset1.Delete;
+end;
+
+procedure TForm1.CmdEditClick(Sender: TObject);
+begin
+  BufDataset1.Edit;
+end;
+
+procedure TForm1.CmdMoveFirstClick(Sender: TObject);
+begin
+  BufDataset1.First;
+end;
+
+procedure TForm1.CmdMoveLastClick(Sender: TObject);
+begin
+  BufDataset1.Last;
+end;
+
+procedure TForm1.CmdPriorClick(Sender: TObject);
+begin
+  BufDataset1.Prior;
 end;
 
 end.

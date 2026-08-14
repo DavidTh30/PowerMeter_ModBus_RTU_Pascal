@@ -10,6 +10,7 @@ object Form1: TForm1
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poWorkAreaCenter
+  ShowHint = True
   LCLVersion = '3.4.0.0'
   object PageControl1: TPageControl
     AnchorSideLeft.Control = Owner
@@ -21,9 +22,9 @@ object Form1: TForm1
     Height = 442
     Top = 8
     Width = 1033
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Info'
@@ -219,14 +220,14 @@ object Form1: TForm1
         Anchors = [akTop, akRight]
         Caption = 'Driver Create Date: '
       end
-      object Button1: TButton
+      object CmdRandomSerial: TButton
         Left = 520
         Height = 23
         Top = 32
         Width = 26
         Caption = '...'
         TabOrder = 10
-        OnClick = Button1Click
+        OnClick = CmdRandomSerialClick
       end
       object Button2: TButton
         Left = 520
@@ -655,10 +656,10 @@ object Form1: TForm1
         OnMouseUp = B0MouseUp
       end
       object DBNavigator1: TDBNavigator
-        Left = 3
-        Height = 25
-        Top = 120
-        Width = 241
+        Left = 384
+        Height = 30
+        Top = 118
+        Width = 230
         BevelOuter = bvNone
         ChildSizing.EnlargeHorizontal = crsScaleChilds
         ChildSizing.EnlargeVertical = crsScaleChilds
@@ -666,8 +667,8 @@ object Form1: TForm1
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 100
-        ClientHeight = 25
-        ClientWidth = 241
+        ClientHeight = 30
+        ClientWidth = 230
         DataSource = Datasource1
         Options = []
         TabOrder = 8
@@ -710,6 +711,139 @@ object Form1: TForm1
         TabOrder = 10
         Text = 'Holding Registers'
         OnEditingDone = EditRegisterTypeEditingDone
+      end
+      object ToolBar1: TToolBar
+        Left = 0
+        Height = 30
+        Top = 118
+        Width = 344
+        Align = alCustom
+        ButtonHeight = 30
+        ButtonWidth = 30
+        Caption = 'ToolBar1'
+        Color = 15000804
+        Images = ImageList1
+        ParentColor = False
+        TabOrder = 11
+        object CmdMoveFirst: TToolButton
+          Left = 1
+          Top = 2
+          Caption = 'MoveFirst'
+          ImageIndex = 0
+          OnClick = CmdMoveFirstClick
+        end
+        object ToolButton2: TToolButton
+          Left = 31
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton2'
+          Style = tbsSeparator
+        end
+        object CmdPrior: TToolButton
+          Left = 39
+          Top = 2
+          Caption = 'MovePrior'
+          ImageIndex = 1
+          OnClick = CmdPriorClick
+        end
+        object ToolButton4: TToolButton
+          Left = 69
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton4'
+          Style = tbsSeparator
+        end
+        object CmdMoveNext: TToolButton
+          Left = 77
+          Top = 2
+          Caption = 'MoveNext'
+          ImageIndex = 2
+          OnClick = CmdMoveNextClick
+        end
+        object ToolButton6: TToolButton
+          Left = 107
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton6'
+          Style = tbsSeparator
+        end
+        object CmdMoveLast: TToolButton
+          Left = 115
+          Top = 2
+          Caption = 'MoveLast'
+          ImageIndex = 3
+          OnClick = CmdMoveLastClick
+        end
+        object ToolButton8: TToolButton
+          Left = 145
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton8'
+          Style = tbsSeparator
+        end
+        object CmdInsert: TToolButton
+          Left = 153
+          Top = 2
+          Caption = 'Insert'
+          ImageIndex = 4
+          OnClick = CmdInsertClick
+        end
+        object ToolButton10: TToolButton
+          Left = 183
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton10'
+          Style = tbsSeparator
+        end
+        object CmdDelete: TToolButton
+          Left = 191
+          Top = 2
+          Caption = 'Delete'
+          ImageIndex = 5
+          OnClick = CmdDeleteClick
+        end
+        object ToolButton12: TToolButton
+          Left = 221
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton12'
+          Style = tbsSeparator
+        end
+        object CmdEdit: TToolButton
+          Left = 229
+          Top = 2
+          Caption = 'Edit'
+          ImageIndex = 6
+          OnClick = CmdEditClick
+        end
+        object ToolButton14: TToolButton
+          Left = 259
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton14'
+          Style = tbsSeparator
+        end
+        object CmdPost: TToolButton
+          Left = 267
+          Top = 2
+          Caption = 'Post'
+          ImageIndex = 7
+          OnClick = CmdPostClick
+        end
+        object ToolButton16: TToolButton
+          Left = 297
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton16'
+          Style = tbsSeparator
+        end
+        object CmdCancel: TToolButton
+          Left = 305
+          Top = 2
+          Caption = 'Cancel'
+          ImageIndex = 8
+          OnClick = CmdCancelClick
+        end
       end
     end
     object TabSheet3: TTabSheet
@@ -812,7 +946,11 @@ object Form1: TForm1
     AfterInsert = BufDataset1AfterInsert
     AfterPost = BufDataset1AfterPost
     AfterScroll = BufDataset1AfterScroll
+    BeforeEdit = BufDataset1BeforeEdit
+    BeforeInsert = BufDataset1BeforeInsert
+    BeforePost = BufDataset1BeforePost
     BeforeScroll = BufDataset1BeforeScroll
+    OnCalcFields = BufDataset1CalcFields
     OnNewRecord = BufDataset1NewRecord
     Left = 288
   end
@@ -867,7 +1005,53 @@ object Form1: TForm1
     Enabled = False
     Interval = 500
     OnTimer = Timer1Timer
-    Left = 688
-    Top = 41
+    Left = 616
+  end
+  object ImageList1: TImageList
+    Height = 20
+    Width = 20
+    Left = 696
+    Bitmap = {
+      4C7A090000001400000014000000E90400000000000078DAEDD87B4C5B551C07
+      7046F68F3A261A4DF6F011C35FDBB23F808D0D228309A5CE814EB6E15C320111
+      04B2B5419CC6396232C72332484C8C423410B72C0D65C3B205D8989DB61B6E05
+      86D2B503D6166E8144FF5C328C7F38F3F59E63EE2CD0F6BE4E2D914BF24D9B9E
+      CBE79EC7EFDE7B5ABFDF0FFF324DEC899534D1F086C7875174AE044F37AE51E5
+      51C75C82B88627F0FCE9ED618F0FE78D4C8CA0ACAB02AB1A1EC7FAF62424DA4A
+      B1ED66956C2F942344AA27E6C8F18823CC4F92AD2CA8134D8FF57823B11E91AA
+      9748D573A4AE372D5AA21929752CD991789D858B92FB801C47CA7D4A8E23C763
+      759F8F94C77ABC91588F48D54BA4EA3952D79B162DFF45D69C5A4FEB95D42DAB
+      EF34CF7E9BC25FAFF128EA54EF128F5CEF49D7CAF1DC99543C5ABF1A6F98DEC4
+      E0D8A02A4F885A77A1A7D60DE53D74F9E78030BFA5E7CB978CC76ABCACD68365
+      BDB0AC67D6D79B162DD1FABD8BEC71E4D4B29847DAC85E8CECC9C8DE4CCC95E2
+      917B01D93392BD23D94392BD24D953AAF18488B9723D3157A91778AF17E697B8
+      4BC563355E56EBC1B25E58D633EBEB2DDABF7F6BD1B2301DC69D38FB6E0A0D79
+      AFD6230E3CD781091B7DCFC41BB302EE7E76DEED5E60F4A2222F70BE48CCC60C
+      E0670B70EB1CCC861DF3DA3A8C99B2FA233818EA001C67811BA7818176E0DAD7
+      80AD45527FA927E2E0872F00EBE7923C328679E3E5C728386643FAFCF11A3295
+      AD878CFE48F2AE3403973F63E7F5D5033D9F32F13A0C1901F395A1DD83B46859
+      A6CF5BB1FC1F9F1F61C7ABE0F9A1458B167971B926D1D737C1CC4A4CB4222E6E
+      1816CBB42ACBE7F3A1B6F62A56AC18424CCC2C6FFEA9D82456777737EC763BEA
+      EBFDBCF9176FFECA9B23E8ED1D97658D4DF870E8CBABE8B831048EE340FE1A1B
+      67111B7B0B9B377F0FA7D327CBCA6BBE82D50E0E4FDDBF8FD1B9DFE9E7A49F75
+      753FD2F95462C5CCCD61A5CB83849E61745A07F879B3C0EBF5AAB2E22D0E3CD3
+      7809C5A72ED1F9946535F507B5F23EB900F778742C92A6F34E3C3938B5C8DA73
+      E2223D971CCB393685E26617AA3AEFE211975755BF485A2DB751D8F44FAACFB8
+      F142D365C596C7EB437AF6AB283876817AA49FCDE651D96314623299909C9C8C
+      1779B3E53B1746F9B1ABB9D66D361B35493FB57BB21696F14E7951D353435F59
+      58D9ED3978AC211E59FCAB1A53B0D6B56EC2D6EB87B1B675A3A849DA82B5075A
+      293F1968C43CF279565B0E4DE031C2E7811679BFF0B850E70F3CAF927E911CEF
+      394EE798CC4BE0F9E5F64B6C4C4AAC70732E678C41F729533EE8DAF558FBD506
+      6CA59611EB5A3621E39B97E099F4A8AE33A5FD925A3B6A4D569696A593E9E919
+      916366657CBF98C1868DFD1818E042B6933DB8C9745792A5CB71E0FD630FA07F
+      79649149DAB3B21CA83CFC00AFECBE13D69C9C9C416A9A9D5A1FD600473F06B2
+      F5FF9A8156E511F0AF40FA8E5FF87D7EE87D535D9D13070E72D4AAFE0878EF03
+      DED48DA0AD6D7C91B5AFE01EF6EEBB293AD7B5BC597080A356D551C0580DE8F4
+      1E45D643B3D689FDBC492C431570C408C596908A8A21ECC9FF6D91B5658B55B6
+      156CEECB2B81B272329F2E49B512CE7AABE80F6A959601EF94027AFD1DC9F517
+      6C1D1312FA90F71A47AD9212E0ED627E8D74E2F5B76DBB3DE43A9E3CE9446E2E
+      47ADC2423E8780B4B4F0F547D6F5F5BD5CC87524E6AE5D1CB57277DF437EBEF8
+      3A93FFC9DCE90E5913A43D2DD52DC912D2D5E5097BAC58FB72CADF04FEFE63
+    }
   end
 end

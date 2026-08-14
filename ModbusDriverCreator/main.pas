@@ -98,6 +98,7 @@ type
     Label9: TLabel;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
+    MenuNew: TMenuItem;
     MenuSaveAs: TMenuItem;
     MenuOpen: TMenuItem;
     MenuExit: TMenuItem;
@@ -120,6 +121,8 @@ type
     procedure BufDataset1AfterScroll(DataSet: TDataSet);
     procedure BufDataset1BeforeScroll(DataSet: TDataSet);
     procedure BufDataset1NewRecord(DataSet: TDataSet);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
     procedure CheckBoxSwapBytesEditingDone(Sender: TObject);
     procedure CheckBoxSwapDwordsEditingDone(Sender: TObject);
     procedure CheckBoxSwapWordsEditingDone(Sender: TObject);
@@ -133,6 +136,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MenuExitClick(Sender: TObject);
+    procedure MenuNewClick(Sender: TObject);
     procedure MenuOpenClick(Sender: TObject);
     procedure MenuSaveAsClick(Sender: TObject);
   private
@@ -151,6 +155,22 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+function RandomSerial(): string;
+var
+  serial: string;
+  i: integer;
+  chars: string;
+begin
+  Randomize; // Initialize random number generator
+  chars := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  serial := '';
+
+  for i := 1 to 10 do // Generates a 10-character serial number
+    serial := serial + chars[Random(Length(chars)) + 1];
+
+  Result :=serial;
+end;
 
 procedure PopulateEnumList(out AList: TStringList);
 var
@@ -303,7 +323,7 @@ begin
   log({$I %LINE%}+' MouseUp');
   if BufDataset1.State in [dsEdit, dsInsert] then
   begin
-    if (sender is TShape) and (TShape(sender).Brush.Color = clGreen) then
+    if (sender is TShape) and (TShape(sender).Brush.Color = clGreen) and (LeftStr(TShape(sender).Name,1)='B') then
     begin
       TShape(sender).Brush.Color := clWhite;
       BufDataset1.FieldByName('BitNumber').AsLargeInt := 0;
@@ -352,6 +372,7 @@ var
 begin
   log({$I %LINE%}+' AfterScroll');
   if not OnBootFinish then exit;
+  if BufDataset1.State in [dsEdit, dsInsert] then exit;
 
   EditAddress.Value:= BufDataset1.FieldByName('Address').AsInteger;
   EditSymbol.Caption:= BufDataset1.FieldByName('Symbol').AsString;
@@ -404,6 +425,16 @@ end;
 procedure TForm1.BufDataset1NewRecord(DataSet: TDataSet);
 begin
   log({$I %LINE%}+' NewRecord');
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  Drv_SN.Caption:=RandomSerial();
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  Drv_CreatDate.Caption:= FormatDateTime('DD/MM/YYYY hh:nn:ss',Now);
 end;
 
 procedure TForm1.CheckBoxSwapBytesEditingDone(Sender: TObject);
@@ -550,6 +581,64 @@ begin
   halt;
 end;
 
+procedure TForm1.MenuNewClick(Sender: TObject);
+var
+  i:integer;
+  CurrentObj: TComponent;
+begin
+  OnBootFinish:=false;
+  BufDataset1.Clear;
+  BufDataset1.Fields.Clear;
+  BufDataset1.FieldDefs.Clear;
+  for i:=0 to DBGrid1.Columns.Count-1  do
+    DBGrid1.Columns.Delete(0);
+
+  Device_Name.Caption:='';
+  Device_MFG.Caption:='';
+  Device_Model.Caption:='';
+  Device_SN.Caption:='';
+  Device_Ver.Caption:='';
+
+  Drv_Name.Caption:='';
+  Drv_SN.Caption:=RandomSerial();
+  Drv_Ver.Caption:='0.1';
+  Drv_Other_Information.Caption:='';
+  Drv_CreatDate.Caption:=FormatDateTime('DD/MM/YYYY hh:nn:ss',Now);
+
+  EditAddress.Value:=0;
+  EditSymbol.Caption:='';
+  EditType.ItemIndex:=0;
+  EditUnit.Caption:='';
+  CheckBoxSwapBytes.Checked:=false;
+  CheckBoxSwapDwords.Checked:=false;
+  CheckBoxSwapWords.Checked:=false;
+  CheckBoxUseBit.Checked:=false;
+
+  for i := 0 to 31 do
+  begin
+
+    CurrentObj := Self.FindComponent('B'+i.ToString);
+    if (CurrentObj <> nil) then TShape(CurrentObj).Brush.Color := clWhite;
+
+  end;
+
+  with BufDataset1.FieldDefs do
+  begin
+    Add('Address', ftInteger, 0,false);
+    Add('Symbol', ftString, 255);
+    Add('Type', ftString, 255);
+    Add('SwapBytes', ftBoolean, 0,false);
+    Add('SwapDwords', ftBoolean, 0,false);
+    Add('SwapWords', ftBoolean, 0,false);
+    Add('UseBit', ftBoolean, 0,false);
+    Add('BitNumber', ftLargeint, 0,false);
+    Add('Unit', ftString, 20);
+  end;
+  BufDataset1.CreateDataset;
+
+  OnBootFinish:=true;
+end;
+
 procedure TForm1.MenuOpenClick(Sender: TObject);
 var
   i:integer;
@@ -561,10 +650,10 @@ var
 begin
   Directory_:=ExtractFilePath(ParamStr(0));
   OpenDialog1.InitialDir:=ExtractFilePath(ParamStr(0));
-  OpenDialog1.FileName:=FormatDateTime('DD MM YYYY hh nn ss',Now)+'.CSV';
-  OpenDialog1.Filter:='csv';
-  OpenDialog1.Filter := 'CSV files (*.csv)|*.csv|Text files (*.txt)|*.txt|All files (*.*)|*.*';
-  OpenDialog1.DefaultExt := 'csv';
+  OpenDialog1.FileName:='*.drv';
+  OpenDialog1.Filter:='drv';
+  OpenDialog1.Filter := 'DRV files (*.drv)|*.drv|Text files (*.txt)|*.txt|All files (*.*)|*.*';
+  OpenDialog1.DefaultExt := 'drv';
   OpenDialog1.FilterIndex := 1;
   if OpenDialog1.Execute then
   begin
@@ -610,12 +699,15 @@ begin
             Add('Unit', ftString, 20);
           end;
           BufDataset1.CreateDataset;
+          //BufDataset1.First;
         end;
 
         if (CSV.Cells[0, Row]='[DriverInfo]') then break;
 
         if (Row > 0) and (CSV.ColCount[Row]>8) then
         begin
+          if not (BufDataset1.State in [dsEdit, dsInsert]) then
+            BufDataset1.Edit;
           BufDataset1.Append;
           BufDataset1.FieldByName('Address').AsInteger := StrToInt(CSV.Cells[0, Row]);
           BufDataset1.FieldByName('Symbol').AsString := CSV.Cells[1, Row];
@@ -634,6 +726,7 @@ begin
     finally
       CSV.Free;
       OnBootFinish:=true;
+      BufDataset1.First;
     end;
 
     MyIni := TIniFile.Create(S_Name);
@@ -663,15 +756,17 @@ var
   fileout : TextFile;
   S_Name, Directory_:string;
   Txt:String;
-
+  FileName_:string;
 begin
+
+  FileName_:=FormatDateTime('DD MM YYYY hh nn ss',Now);
 
   Directory_:=ExtractFilePath(ParamStr(0));
   SaveDialog1.InitialDir:=ExtractFilePath(ParamStr(0));
-  SaveDialog1.FileName:=FormatDateTime('DD MM YYYY hh nn ss',Now)+'.CSV';
-  SaveDialog1.Filter:='csv';
-  SaveDialog1.Filter := 'CSV files (*.csv)|*.csv|Text files (*.txt)|*.txt|All files (*.*)|*.*';
-  SaveDialog1.DefaultExt := 'csv';
+  SaveDialog1.FileName:=FileName_+'.drv';
+  SaveDialog1.Filter:='drv';
+  SaveDialog1.Filter := 'DRV files (*.drv)|*.drv|Text files (*.txt)|*.txt|All files (*.*)|*.*';
+  SaveDialog1.DefaultExt := 'drv';
   SaveDialog1.FilterIndex := 1;
   if SaveDialog1.Execute then
   begin
@@ -756,14 +851,18 @@ begin
     writeln(fileout, Txt);
     Txt:='Device_Ver='+Device_Ver.Caption;
     writeln(fileout, Txt);
+    if Trim(Drv_Name.Caption)='' then Drv_Name.Caption:=FileName_;
     Txt:='Drv_Name='+Drv_Name.Caption;
     writeln(fileout, Txt);
+    if Trim(Drv_SN.Caption)='' then Drv_SN.Caption:=RandomSerial();
     Txt:='Drv_SN='+Drv_SN.Caption;
     writeln(fileout, Txt);
+    if Trim(Drv_Ver.Caption)='' then Drv_Ver.Caption:='0.1';
     Txt:='Drv_Ver='+Drv_Ver.Caption;
     writeln(fileout, Txt);
     Txt:='Drv_Other_Information='+Drv_Other_Information.Caption;
     writeln(fileout, Txt);
+    if Trim(Drv_CreatDate.Caption)='' then Drv_CreatDate.Caption:= FormatDateTime('DD/MM/YYYY hh:nn:ss',Now);
     Txt:='Drv_CreatDate='+Drv_CreatDate.Caption;
     writeln(fileout, Txt);
 

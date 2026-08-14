@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 477
+  Left = 385
   Height = 450
-  Top = 188
+  Top = 126
   Width = 638
   Caption = 'ModbusDriverCreator V0.1'
   ClientHeight = 450
@@ -21,9 +21,9 @@ object Form1: TForm1
     Height = 442
     Top = 8
     Width = 638
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Info'
@@ -226,6 +226,7 @@ object Form1: TForm1
         Width = 26
         Caption = '...'
         TabOrder = 10
+        OnClick = Button1Click
       end
       object Button2: TButton
         Left = 520
@@ -234,6 +235,7 @@ object Form1: TForm1
         Width = 26
         Caption = '...'
         TabOrder = 11
+        OnClick = Button2Click
       end
     end
     object TabSheet2: TTabSheet
@@ -788,6 +790,10 @@ object Form1: TForm1
     Left = 384
     object MenuItem1: TMenuItem
       Caption = 'File'
+      object MenuNew: TMenuItem
+        Caption = 'New'
+        OnClick = MenuNewClick
+      end
       object MenuSaveAs: TMenuItem
         Caption = 'SaveAs'
         OnClick = MenuSaveAsClick

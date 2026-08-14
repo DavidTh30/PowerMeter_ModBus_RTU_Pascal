@@ -1,0 +1,23 @@
+Address,Symbol,Type,RegisterType,SwapBytes,SwapDwords,SwapWords,UseBit,BitNumber,Unit
+767,Current phase 1,pttFloat,Holding Registers,False,False,True,False,0,mA
+769,Current phase 2,pttFloat,Holding Registers,False,False,True,False,0,mA
+771,Current phase 3,pttFloat,Holding Registers,False,False,True,False,0,mA
+775,U12: phase-to-phase voltage phase 1 to 2,pttFloat,Holding Registers,False,False,True,False,0,V/100
+777,U23: phase-to-phase voltage phase 2 to 3,pttFloat,Holding Registers,False,False,True,False,0,V/100
+779,U31: phase-to-phase voltage phase 3 to 1,pttFloat,Holding Registers,False,False,True,False,0,V/100
+781,U1N: phase-to-neutral voltage phase 1,pttFloat,Holding Registers,False,False,True,False,0,V/100
+783,U2N: phase-to-neutral voltage phase 2,pttFloat,Holding Registers,False,False,True,False,0,V/100
+785,U3N: phase-to-neutral voltage phase 3,pttFloat,Holding Registers,False,False,True,False,0,V/100
+789,Active Power Total,pttFloat,Holding Registers,False,False,True,False,0,kW
+855,Active Energy Delivered (Into Load),pttWord,Holding Registers,False,False,False,False,0,kWh
+[DriverInfo]
+Device_Name=PowerMeter
+Device_MFG=PowerLogic Schneider
+Device_Model=PM500 series
+Device_SN=
+Device_Ver=
+Drv_Name=PM500
+Drv_SN=7ZOFFOOIT0
+Drv_Ver=0.1
+Drv_Other_Information=
+Drv_CreatDate=14/08/2026 17:11:18

@@ -1,11 +1,11 @@
 object Form1: TForm1
-  Left = 385
+  Left = 409
   Height = 450
-  Top = 126
-  Width = 638
+  Top = 137
+  Width = 1033
   Caption = 'ModbusDriverCreator V0.1'
   ClientHeight = 450
-  ClientWidth = 638
+  ClientWidth = 1033
   Menu = MainMenu1
   OnClose = FormClose
   OnCreate = FormCreate
@@ -20,15 +20,15 @@ object Form1: TForm1
     Left = 0
     Height = 442
     Top = 8
-    Width = 638
-    ActivePage = TabSheet2
+    Width = 1033
+    ActivePage = TabSheet1
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Info'
       ClientHeight = 414
-      ClientWidth = 630
+      ClientWidth = 1025
       object Device_Name: TEdit
         Left = 88
         Height = 23
@@ -241,7 +241,7 @@ object Form1: TForm1
     object TabSheet2: TTabSheet
       Caption = 'Config'
       ClientHeight = 414
-      ClientWidth = 630
+      ClientWidth = 1025
       object Label11: TLabel
         AnchorSideTop.Control = EditAddress
         AnchorSideTop.Side = asrCenter
@@ -682,7 +682,7 @@ object Form1: TForm1
         Left = 0
         Height = 262
         Top = 152
-        Width = 630
+        Width = 1025
         AlternateColor = clMoneyGreen
         Anchors = [akTop, akLeft, akRight, akBottom]
         AutoFillColumns = True
@@ -692,11 +692,30 @@ object Form1: TForm1
         ReadOnly = True
         TabOrder = 9
       end
+      object EditRegisterType: TComboBox
+        Left = 264
+        Height = 23
+        Top = 86
+        Width = 131
+        Enabled = False
+        ItemHeight = 15
+        ItemIndex = 2
+        Items.Strings = (
+          'Coils (Outputs)'
+          'Inputs'
+          'Holding Registers'
+          'Input Registers'
+        )
+        ReadOnly = True
+        TabOrder = 10
+        Text = 'Holding Registers'
+        OnEditingDone = EditRegisterTypeEditingDone
+      end
     end
     object TabSheet3: TTabSheet
       Caption = 'Online Tester'
       ClientHeight = 414
-      ClientWidth = 630
+      ClientWidth = 1025
       object SpinEditEx3: TSpinEditEx
         Left = 336
         Height = 23
@@ -726,6 +745,7 @@ object Form1: TForm1
         Width = 81
         Caption = 'Connect'
         TabOrder = 1
+        OnClick = CmdConnectClick
       end
       object EditCom: TComboBox
         Left = 144
@@ -735,6 +755,7 @@ object Form1: TForm1
         ItemHeight = 15
         ReadOnly = True
         TabOrder = 2
+        OnEditingDone = EditComEditingDone
       end
       object Label20: TLabel
         AnchorSideTop.Control = EditCom
@@ -756,7 +777,7 @@ object Form1: TForm1
         Left = 0
         Height = 358
         Top = 56
-        Width = 630
+        Width = 1025
         AlternateColor = clMoneyGreen
         Anchors = [akTop, akLeft, akRight, akBottom]
         AutoFillColumns = True
@@ -765,6 +786,15 @@ object Form1: TForm1
         DataSource = Datasource2
         ReadOnly = True
         TabOrder = 3
+      end
+      object Button3: TButton
+        Left = 428
+        Height = 28
+        Top = 19
+        Width = 86
+        Caption = 'Init Driver'
+        TabOrder = 4
+        OnClick = Button3Click
       end
     end
   end
@@ -832,5 +862,12 @@ object Form1: TForm1
   object Datasource2: TDataSource
     DataSet = BufDataset2
     Left = 224
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = Timer1Timer
+    Left = 688
+    Top = 41
   end
 end

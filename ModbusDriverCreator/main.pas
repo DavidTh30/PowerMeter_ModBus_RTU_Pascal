@@ -7,8 +7,8 @@ interface
 uses
   Classes, SysUtils, db, BufDataset, FileUtil, SpinEx, Forms, Controls,
   Graphics, Dialogs, DbCtrls, DBGrids, StdCtrls, Menus, Spin, ExtCtrls,
-  ComCtrls, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag, TypInfo,
-  registry, Math, IniFiles;
+  ComCtrls, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag, PLCTagNumber,
+  TypInfo, registry, Math, IniFiles;
 
 type
 
@@ -51,6 +51,7 @@ type
     BufDataset2: TBufDataset;
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
     CheckBoxSwapBytes: TCheckBox;
     CheckBoxSwapDwords: TCheckBox;
     CheckBoxSwapWords: TCheckBox;
@@ -75,6 +76,7 @@ type
     EditAddress: TSpinEdit;
     EditSymbol: TEdit;
     EditType: TComboBox;
+    EditRegisterType: TComboBox;
     EditUnit: TEdit;
     Label1: TLabel;
     Label10: TLabel;
@@ -111,6 +113,7 @@ type
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
+    Timer1: TTimer;
     procedure B0MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure BufDataset1AfterCancel(DataSet: TDataSet);
@@ -123,13 +126,17 @@ type
     procedure BufDataset1NewRecord(DataSet: TDataSet);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
     procedure CheckBoxSwapBytesEditingDone(Sender: TObject);
     procedure CheckBoxSwapDwordsEditingDone(Sender: TObject);
     procedure CheckBoxSwapWordsEditingDone(Sender: TObject);
     procedure CheckBoxUseBitEditingDone(Sender: TObject);
+    procedure CmdConnectClick(Sender: TObject);
     procedure Datasource1StateChange(Sender: TObject);
     procedure Datasource1UpdateData(Sender: TObject);
     procedure EditAddressEditingDone(Sender: TObject);
+    procedure EditComEditingDone(Sender: TObject);
+    procedure EditRegisterTypeEditingDone(Sender: TObject);
     procedure EditSymbolEditingDone(Sender: TObject);
     procedure EditTypeEditingDone(Sender: TObject);
     procedure EditUnitEditingDone(Sender: TObject);
@@ -139,10 +146,12 @@ type
     procedure MenuNewClick(Sender: TObject);
     procedure MenuOpenClick(Sender: TObject);
     procedure MenuSaveAsClick(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     { private declarations }
   public
     { public declarations }
+    procedure GetSerialPortExt();
   end; 
 
 var
@@ -156,13 +165,113 @@ implementation
 
 { TForm1 }
 
+Function StrToBoolV2(BoolS_:string):boolean;
+begin
+  if((LowerCase(BoolS_)='true')or(LowerCase(BoolS_)='1')or
+     (LowerCase(BoolS_)='one')or(LowerCase(BoolS_)='t')or
+     (LowerCase(BoolS_)='a')or(LowerCase(BoolS_)='on')or
+     (LowerCase(BoolS_)='ok')or(LowerCase(BoolS_)='out')) then
+  result:= true
+  else
+  result:= false;
+end;
+
+procedure TForm1.GetSerialPortExt();
+var
+  reg  : TRegistry;
+  l,v  : TStringList;
+  n    : integer;
+  pn: string;
+  //fn: string;
+  //Result_:string;
+
+  function findFriendlyName(key: string; port: string): string;
+  var
+    r : TRegistry;
+    k : TStringList;
+    i : Integer;
+    ck: string;
+    rs: string;
+  begin
+    r := TRegistry.Create;
+    k := TStringList.Create;
+
+    r.RootKey := HKEY_LOCAL_MACHINE;
+    r.OpenKeyReadOnly(key);
+    r.GetKeyNames(k);
+    r.CloseKey;
+
+    try
+      for i := 0 to k.Count - 1 do
+      begin
+        ck := key + k[i] + '\'; // current key
+        // looking for "PortName" stringvalue in "Device Parameters" subkey
+        if r.OpenKeyReadOnly(ck + 'Device Parameters') then
+        begin
+          if r.ReadString('PortName') = port then
+          begin
+            //Memo1.Lines.Add('--> ' + ck);
+            r.CloseKey;
+            r.OpenKeyReadOnly(ck);
+            rs := r.ReadString('FriendlyName');
+            Break;
+          end // if r.ReadString('PortName') = port ...
+        end  // if r.OpenKeyReadOnly(ck + 'Device Parameters') ...
+        // keep looking on subkeys for "PortName"
+        else // if not r.OpenKeyReadOnly(ck + 'Device Parameters') ...
+        begin
+          if r.OpenKeyReadOnly(ck) and r.HasSubKeys then
+          begin
+            rs := findFriendlyName(ck, port);
+            if rs <> '' then Break;
+          end; // if not (r.OpenKeyReadOnly(ck) and r.HasSubKeys) ...
+        end; // if not r.OpenKeyReadOnly(ck + 'Device Parameters') ...
+      end; // for i := 0 to k.Count - 1 ...
+      result := rs;
+    finally
+      r.Free;
+      k.Free;
+    end; // try ...
+  end; // function findFriendlyName ...
+
+begin
+  v      := TStringList.Create;
+  l      := TStringList.Create;
+  reg    := TRegistry.Create;
+  //Result_ := '';
+  EditCom.Clear;
+
+  try
+    reg.RootKey := HKEY_LOCAL_MACHINE;
+    if reg.OpenKeyReadOnly('HARDWARE\DEVICEMAP\SERIALCOMM') then
+    begin
+      reg.GetValueNames(l);
+
+      for n := 0 to l.Count - 1 do
+      begin
+        pn := reg.ReadString(l[n]);
+        //fn := findFriendlyName('\System\CurrentControlSet\Enum\', pn);
+        EditCom.Items.Append(pn);
+      end; // for n := 0 to l.Count - 1 ...
+
+      //Result_ := v.CommaText;
+    end; // if reg.OpenKeyReadOnly('HARDWARE\DEVICEMAP\SERIALCOMM') ...
+  finally
+    reg.Free;
+    v.Free;
+    l.Free;
+  end; // try ...
+end;
+
 function RandomSerial(): string;
 var
   serial: string;
   i: integer;
   chars: string;
 begin
+  application.ProcessMessages;
   Randomize; // Initialize random number generator
+  application.ProcessMessages;
   chars := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   serial := '';
 
@@ -170,6 +279,17 @@ begin
     serial := serial + chars[Random(Length(chars)) + 1];
 
   Result :=serial;
+end;
+
+function StringToHex(const InputStr: string): string;
+begin
+  if InputStr = '' then Exit('');
+
+  // Each character requires 2 hex digits
+  SetLength(Result, Length(InputStr) * 2);
+
+  // Pass the raw memory buffers to BinToHex
+  BinToHex(PChar(InputStr), PChar(Result), Length(InputStr));
 end;
 
 procedure PopulateEnumList(out AList: TStringList);
@@ -198,6 +318,8 @@ begin
 
   OnBootFinish:=false;
 
+  GetSerialPortExt();
+
   BufDataset1.Clear;
   BufDataset1.Fields.Clear;
   BufDataset1.FieldDefs.Clear;
@@ -210,6 +332,7 @@ begin
   PopulateEnumList(s);
   EditType.Items := s;
   s.Free;
+  EditType.ItemIndex:=0;
 
   //showmessage(BufDataset1.FieldDefs.Count.ToString);
 
@@ -218,6 +341,7 @@ begin
     Add('Address', ftInteger, 0,false);
     Add('Symbol', ftString, 255);
     Add('Type', ftString, 255);
+    Add('RegisterType', ftString, 255);
     Add('SwapBytes', ftBoolean, 0,false);
     Add('SwapDwords', ftBoolean, 0,false);
     Add('SwapWords', ftBoolean, 0,false);
@@ -232,32 +356,35 @@ begin
     Add('Symbol', ftString, 255);
     Add('Result', ftString, 255);
     Add('Unit', ftString, 20);
+    Add('Obj', ftString, 600);
   end;
   BufDataset2.CreateDataset;
 
-    BufDataset1.Append;
-    BufDataset1.FieldByName('Address').AsInteger := 2999;
-    BufDataset1.FieldByName('Symbol').AsString := 'CurrentA';
-    BufDataset1.FieldByName('Type').AsString := 'pttFloat';
-    BufDataset1.FieldByName('SwapBytes').AsBoolean := false;
-    BufDataset1.FieldByName('SwapDwords').AsBoolean := false;
-    BufDataset1.FieldByName('SwapWords').AsBoolean := false;
-    BufDataset1.FieldByName('UseBit').AsBoolean := false;
-    BufDataset1.FieldByName('BitNumber').AsLargeInt := 0;
-    BufDataset1.FieldByName('Unit').AsString := 'A';
-    BufDataset1.Post;
-
-    BufDataset1.Append;
-    BufDataset1.FieldByName('Address').AsInteger := 3201;
-    BufDataset1.FieldByName('Symbol').AsString := 'Watt-Hours';
-    BufDataset1.FieldByName('Type').AsString := 'pttInt64';
-    BufDataset1.FieldByName('SwapBytes').AsBoolean := false;
-    BufDataset1.FieldByName('SwapDwords').AsBoolean := true;
-    BufDataset1.FieldByName('SwapWords').AsBoolean := true;
-    BufDataset1.FieldByName('UseBit').AsBoolean := false;
-    BufDataset1.FieldByName('BitNumber').AsLargeInt := 0;
-    BufDataset1.FieldByName('Unit').AsString := 'Wh';
-    BufDataset1.Post;
+    //BufDataset1.Append;
+    //BufDataset1.FieldByName('Address').AsInteger := 2999;
+    //BufDataset1.FieldByName('Symbol').AsString := 'CurrentA';
+    //BufDataset1.FieldByName('Type').AsString := 'pttFloat';
+    //BufDataset1.FieldByName('RegisterType').AsString := 'Holding Registers';
+    //BufDataset1.FieldByName('SwapBytes').AsBoolean := false;
+    //BufDataset1.FieldByName('SwapDwords').AsBoolean := false;
+    //BufDataset1.FieldByName('SwapWords').AsBoolean := false;
+    //BufDataset1.FieldByName('UseBit').AsBoolean := false;
+    //BufDataset1.FieldByName('BitNumber').AsLargeInt := 0;
+    //BufDataset1.FieldByName('Unit').AsString := 'A';
+    //BufDataset1.Post;
+    //
+    //BufDataset1.Append;
+    //BufDataset1.FieldByName('Address').AsInteger := 3201;
+    //BufDataset1.FieldByName('Symbol').AsString := 'Watt-Hours';
+    //BufDataset1.FieldByName('Type').AsString := 'pttInt64';
+    //BufDataset1.FieldByName('RegisterType').AsString := 'Holding Registers';
+    //BufDataset1.FieldByName('SwapBytes').AsBoolean := false;
+    //BufDataset1.FieldByName('SwapDwords').AsBoolean := true;
+    //BufDataset1.FieldByName('SwapWords').AsBoolean := true;
+    //BufDataset1.FieldByName('UseBit').AsBoolean := false;
+    //BufDataset1.FieldByName('BitNumber').AsLargeInt := 0;
+    //BufDataset1.FieldByName('Unit').AsString := 'Wh';
+    //BufDataset1.Post;
 
 
   BufDataset1.First;
@@ -288,8 +415,11 @@ end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 var
-  i:integer;
+  i,i2:integer;
+  CurrentObj: TComponent;
 begin
+  timer1.Enabled:=false;
+
   OnBootFinish:=false;
   BufDataset1.Clear;
   BufDataset1.Fields.Clear;
@@ -299,6 +429,22 @@ begin
   BufDataset2.FieldDefs.Clear;
   for i:=0 to DBGrid1.Columns.Count-1  do
   DBGrid1.Columns.Delete(0);
+
+  for i := 0 to ComponentCount - 1 do
+  begin
+    if i>(ComponentCount - 1) then i2:= (ComponentCount - 1);
+    if i<=(ComponentCount - 1) then i2:=i;
+    CurrentObj := Components[i2];
+    if (CurrentObj is TPLCTagNumber)then
+    begin
+      log({$I %LINE%}+' Found TPLCTagNumber: '+TPLCTagNumber(CurrentObj).Name);
+      TPLCTagNumber(CurrentObj).AutoRead:=false;
+      TPLCTagNumber(CurrentObj).DestroyComponents;
+      TPLCTagNumber(CurrentObj).Free;
+    end;
+  end;
+  SerialPortDriver1.Active:= false;
+  SerialPortDriver1.AcceptAnyPortName:=false;
 end;
 
 procedure TForm1.EditAddressEditingDone(Sender: TObject);
@@ -306,6 +452,17 @@ begin
   log({$I %LINE%}+' EditAddressEditingDone');
   if BufDataset1.State in [dsEdit, dsInsert] then
   BufDataset1.FieldByName('Address').AsInteger := EditAddress.Value;
+end;
+
+procedure TForm1.EditComEditingDone(Sender: TObject);
+begin
+  SerialPortDriver1.COMPort:=EditCom.Text;
+end;
+
+procedure TForm1.EditRegisterTypeEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('RegisterType').AsString := EditRegisterType.Items[EditRegisterType.ItemIndex];
 end;
 
 procedure TForm1.BufDataset1AfterCancel(DataSet: TDataSet);
@@ -392,6 +549,16 @@ begin
     end;
   end;
 
+  if EditRegisterType.Items.Count > 0 then
+  for i := 0 to EditRegisterType.Items.Count-1 do
+  begin
+    if BufDataset1.FieldByName('RegisterType').AsString = EditRegisterType.Items[i] then
+    begin
+      EditRegisterType.ItemIndex:=i;
+      break;
+    end;
+  end;
+
   for i := 0 to ComponentCount - 1 do
   begin
     CurrentObj := Components[i];
@@ -437,6 +604,107 @@ begin
   Drv_CreatDate.Caption:= FormatDateTime('DD/MM/YYYY hh:nn:ss',Now);
 end;
 
+procedure TForm1.Button3Click(Sender: TObject);
+var
+  i, i2: integer;
+  CurrentObj: TComponent;
+  DynamicTag: TPLCTagNumber;
+  addrStr:String;
+begin
+  log({$I %LINE%}+' Init Driver');
+
+  timer1.Enabled:=false;
+
+  BufDataset2.Clear;
+  BufDataset2.Fields.Clear;
+  BufDataset2.FieldDefs.Clear;
+  for i:=0 to DBGrid2.Columns.Count-1  do
+    DBGrid2.Columns.Delete(0);
+
+  with BufDataset2.FieldDefs do
+  begin
+    Add('Symbol', ftString, 255);
+    Add('Result', ftString, 255);
+    Add('Unit', ftString, 20);
+    Add('Obj', ftString, 600);
+  end;
+  BufDataset2.CreateDataset;
+
+  if (EditCom.Text='') and (not SerialPortDriver1.Active) then
+  begin
+    showmessage('No comport found');
+    //exit;
+  end;
+
+  for i := 0 to ComponentCount - 1 do
+  begin
+    if i>(ComponentCount - 1) then i2:= (ComponentCount - 1);
+    if i<=(ComponentCount - 1) then i2:=i;
+    CurrentObj := Components[i2];
+    if (CurrentObj is TPLCTagNumber)then
+    begin
+      log({$I %LINE%}+' Found TPLCTagNumber: '+TPLCTagNumber(CurrentObj).Name);
+      TPLCTagNumber(CurrentObj).AutoRead:=false;
+      TPLCTagNumber(CurrentObj).DestroyComponents;
+      TPLCTagNumber(CurrentObj).Free;
+    end;
+  end;
+
+  SerialPortDriver1.Active:= false;
+  SerialPortDriver1.AcceptAnyPortName:=false;
+
+  if (not SerialPortDriver1.Active) then CmdConnect.Caption:='Connect';
+  if (SerialPortDriver1.Active) then CmdConnect.Caption:='Disconnect';
+
+
+  OnBootFinish:=false;
+  BufDataset1.First;
+  i2:=0;
+  while not BufDataset1.EOF do
+  begin
+    DynamicTag := TPLCTagNumber.Create(Self);
+
+    addrStr:='H'+StringToHex(BufDataset1.FieldByName('Symbol').AsString);
+    CurrentObj := Self.FindComponent(addrStr);
+    if (CurrentObj <> nil) then
+    begin
+      addrStr:=BufDataset1.FieldByName('Symbol').AsString+RandomSerial()+i2.ToString;
+      i2:=i2+1;
+    end;
+
+    DynamicTag.Name:=addrStr;
+    DynamicTag.ProtocolDriver:=ModBusRTUDriver1;
+    DynamicTag.UpdateTime:=500;
+    DynamicTag.AutoRead:=false;
+    DynamicTag.AutoWrite:=false;
+    DynamicTag.PLCStation:=SpinEditEx3.Value;
+    DynamicTag.MemAddress:=BufDataset1.FieldByName('Address').AsInteger;
+    DynamicTag.TagType:=TTagType(GetEnumValue(TypeInfo(TTagType), BufDataset1.FieldByName('Type').AsString));
+    //if DynamicTag.TagType = pttfloat then showmessage('ok');
+    if BufDataset1.FieldByName('RegisterType').AsString = 'Coils (Outputs)' then DynamicTag.MemReadFunction:=1;
+    if BufDataset1.FieldByName('RegisterType').AsString = 'Inputs' then DynamicTag.MemReadFunction:=2;
+    if BufDataset1.FieldByName('RegisterType').AsString = 'Holding Registers' then DynamicTag.MemReadFunction:=3;
+    if BufDataset1.FieldByName('RegisterType').AsString = 'Input Registers' then DynamicTag.MemReadFunction:=4;
+    DynamicTag.SwapBytes:=BufDataset1.FieldByName('SwapBytes').AsBoolean;
+    DynamicTag.SwapDWords:=BufDataset1.FieldByName('SwapDwords').AsBoolean;
+    DynamicTag.SwapWords:=BufDataset1.FieldByName('SwapWords').AsBoolean;
+
+    if not (BufDataset2.State in [dsEdit, dsInsert]) then
+    BufDataset2.Edit;
+    BufDataset2.Append;
+    BufDataset2.FieldByName('Symbol').AsString := BufDataset1.FieldByName('Symbol').AsString;
+    BufDataset2.FieldByName('Result').AsString := '';
+    BufDataset2.FieldByName('Unit').AsString := BufDataset1.FieldByName('Unit').AsString;
+    BufDataset2.FieldByName('Obj').AsString := DynamicTag.Name;
+    BufDataset2.Post;
+
+    BufDataset1.Next;
+  end;
+  OnBootFinish:=true;
+
+
+end;
+
 procedure TForm1.CheckBoxSwapBytesEditingDone(Sender: TObject);
 begin
   if BufDataset1.State in [dsEdit, dsInsert] then
@@ -461,6 +729,43 @@ begin
   BufDataset1.FieldByName('UseBit').AsBoolean := CheckBoxUseBit.Checked;
 end;
 
+procedure TForm1.CmdConnectClick(Sender: TObject);
+var
+  i:integer;
+  CurrentObj: TComponent;
+begin
+  timer1.Enabled:=false;
+
+  if (EditCom.Text='') and (not SerialPortDriver1.Active) then
+  begin
+    showmessage('No comport found');
+    exit;
+  end;
+
+  for i := 0 to ComponentCount - 1 do
+  begin
+    CurrentObj := Components[i];
+      if (CurrentObj is TPLCTagNumber)then
+      begin
+        log({$I %LINE%}+' Found TPLCTagNumber: '+TPLCTagNumber(CurrentObj).Name);
+        TPLCTagNumber(CurrentObj).AutoRead:=not TPLCTagNumber(CurrentObj).AutoRead;
+      end;
+  end;
+  SerialPortDriver1.Active:= not SerialPortDriver1.Active;
+  SerialPortDriver1.AcceptAnyPortName:=not SerialPortDriver1.AcceptAnyPortName;
+
+  if (not SerialPortDriver1.Active) then
+  begin
+    CmdConnect.Caption:='Connect';
+    timer1.Enabled:=false;
+  end;
+  if (SerialPortDriver1.Active) then
+  begin
+    CmdConnect.Caption:='Disconnect';
+    timer1.Enabled:=true;
+  end;
+end;
+
 procedure TForm1.Datasource1StateChange(Sender: TObject);
 begin
   log({$I %LINE%}+' Datasource1StateChange');
@@ -471,6 +776,7 @@ begin
     EditAddress.Enabled:=true;
     EditSymbol.Enabled:=true;
     EditType.Enabled:=true;
+    EditRegisterType.Enabled:=true;
     EditUnit.Enabled:=true;
     CheckBoxSwapBytes.Enabled:=true;
     CheckBoxSwapDwords.Enabled:=true;
@@ -520,6 +826,7 @@ begin
     EditAddress.Enabled:=false;
     EditSymbol.Enabled:=false;
     EditType.Enabled:=false;
+    EditRegisterType.Enabled:=false;
     EditUnit.Enabled:=false;
     CheckBoxSwapBytes.Enabled:=false;
     CheckBoxSwapDwords.Enabled:=false;
@@ -608,11 +915,13 @@ begin
   EditAddress.Value:=0;
   EditSymbol.Caption:='';
   EditType.ItemIndex:=0;
+  EditRegisterType.ItemIndex:=2;
   EditUnit.Caption:='';
   CheckBoxSwapBytes.Checked:=false;
   CheckBoxSwapDwords.Checked:=false;
   CheckBoxSwapWords.Checked:=false;
   CheckBoxUseBit.Checked:=false;
+  EditRegisterType.ItemIndex:=2;
 
   for i := 0 to 31 do
   begin
@@ -627,6 +936,7 @@ begin
     Add('Address', ftInteger, 0,false);
     Add('Symbol', ftString, 255);
     Add('Type', ftString, 255);
+    Add('RegisterType', ftString, 255);
     Add('SwapBytes', ftBoolean, 0,false);
     Add('SwapDwords', ftBoolean, 0,false);
     Add('SwapWords', ftBoolean, 0,false);
@@ -688,9 +998,26 @@ begin
         begin
           with BufDataset1.FieldDefs do
           begin
+            if (CSV.Cells[0, Row] <> 'Address') or
+               (CSV.Cells[1, Row] <> 'Symbol') or
+               (CSV.Cells[2, Row] <> 'Type') or
+               (CSV.Cells[3, Row] <> 'RegisterType') or
+               (CSV.Cells[4, Row] <> 'SwapBytes') or
+               (CSV.Cells[5, Row] <> 'SwapDwords') or
+               (CSV.Cells[6, Row] <> 'SwapWords') or
+               (CSV.Cells[7, Row] <> 'UseBit') or
+               (CSV.Cells[8, Row] <> 'BitNumber') or
+               (CSV.Cells[9, Row] <> 'Unit') then
+            begin
+              showmessage('File Error');
+              MenuNewClick(Sender);
+              exit;
+            end;
+
             Add('Address', ftInteger, 0,false);
             Add('Symbol', ftString, 255);
             Add('Type', ftString, 255);
+            Add('RegisterType', ftString, 255);
             Add('SwapBytes', ftBoolean, 0,false);
             Add('SwapDwords', ftBoolean, 0,false);
             Add('SwapWords', ftBoolean, 0,false);
@@ -704,7 +1031,7 @@ begin
 
         if (CSV.Cells[0, Row]='[DriverInfo]') then break;
 
-        if (Row > 0) and (CSV.ColCount[Row]>8) then
+        if (Row > 0) and (CSV.ColCount[Row]>9) then
         begin
           if not (BufDataset1.State in [dsEdit, dsInsert]) then
             BufDataset1.Edit;
@@ -712,12 +1039,13 @@ begin
           BufDataset1.FieldByName('Address').AsInteger := StrToInt(CSV.Cells[0, Row]);
           BufDataset1.FieldByName('Symbol').AsString := CSV.Cells[1, Row];
           BufDataset1.FieldByName('Type').AsString := CSV.Cells[2, Row];
-          BufDataset1.FieldByName('SwapBytes').AsBoolean := StrToBool(CSV.Cells[3, Row]);
-          BufDataset1.FieldByName('SwapDwords').AsBoolean := StrToBool(CSV.Cells[4, Row]);
-          BufDataset1.FieldByName('SwapWords').AsBoolean := StrToBool(CSV.Cells[5, Row]);
-          BufDataset1.FieldByName('UseBit').AsBoolean := StrToBool(CSV.Cells[6, Row]);
-          BufDataset1.FieldByName('BitNumber').AsLargeInt := StrToInt(CSV.Cells[7, Row]);
-          BufDataset1.FieldByName('Unit').AsString := CSV.Cells[8, Row];
+          BufDataset1.FieldByName('RegisterType').AsString := CSV.Cells[3, Row];
+          BufDataset1.FieldByName('SwapBytes').AsBoolean := StrToBoolV2(CSV.Cells[4, Row]);
+          BufDataset1.FieldByName('SwapDwords').AsBoolean := StrToBoolV2(CSV.Cells[5, Row]);
+          BufDataset1.FieldByName('SwapWords').AsBoolean := StrToBoolV2(CSV.Cells[6, Row]);
+          BufDataset1.FieldByName('UseBit').AsBoolean := StrToBoolV2(CSV.Cells[7, Row]);
+          BufDataset1.FieldByName('BitNumber').AsLargeInt := StrToInt('0'+CSV.Cells[8, Row]);
+          BufDataset1.FieldByName('Unit').AsString := CSV.Cells[9, Row];
           BufDataset1.Post;
         end;
 
@@ -757,6 +1085,7 @@ var
   S_Name, Directory_:string;
   Txt:String;
   FileName_:string;
+  s:string;
 begin
 
   FileName_:=FormatDateTime('DD MM YYYY hh nn ss',Now);
@@ -830,7 +1159,12 @@ begin
       Txt:='';
       for i := 0 to BufDataset1.FieldCount - 1 do
       begin
-        Txt:=Txt+BufDataset1.FieldByName(BufDataset1.Fields[i].FieldName).AsString;
+        s:=BufDataset1.FieldByName(BufDataset1.Fields[i].FieldName).AsString;
+        if (BufDataset1.Fields[i].FieldName = 'Type') then
+        if BufDataset1.FieldByName('Type').AsString = ''then  s:=EditType.Items[0];
+        if (BufDataset1.Fields[i].FieldName = 'RegisterType') then
+        if BufDataset1.FieldByName('RegisterType').AsString = ''then  s:=EditRegisterType.Items[2];
+        Txt:=Txt+s;
         if i<(BufDataset1.FieldCount - 1) then Txt:=Txt+',';
       end;
       //log({$I %LINE%}+' '+Txt);
@@ -870,6 +1204,27 @@ begin
     BufDataset1.First;
   end;
 
+end;
+
+procedure TForm1.Timer1Timer(Sender: TObject);
+var
+  i: integer;
+  CurrentObj: TComponent;
+begin
+  BufDataset2.First;
+  while not BufDataset2.EOF do
+  begin
+
+    CurrentObj := Self.FindComponent(BufDataset2.FieldByName('Obj').AsString);
+    if (CurrentObj is TPLCTagNumber) then
+    begin
+      if not (BufDataset2.State in [dsEdit, dsInsert]) then BufDataset2.Edit;
+      BufDataset2.FieldByName('Result').AsString :=TPLCTagNumber(CurrentObj).Value.ToString;
+      BufDataset2.Post;
+    end;
+
+    BufDataset2.Next;
+  end;
 end;
 
 end.

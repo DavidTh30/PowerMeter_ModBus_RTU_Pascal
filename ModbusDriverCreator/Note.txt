@@ -1,3 +1,12 @@
+Coils (Outputs) =1
+Inputs =2
+Holding Registers = 3
+Input Registers = 4
+
+addrStr: String;
+addrStr := Format('%p', [@DynamicTag]);  { Returns hex string of the address }
+addrStr := IntToStr(NativeUInt(@x)); { Decimal string }
+
 //Get a Single Field Name by Index
 
 for i := 0 to BufDataset1.FieldCount - 1 do

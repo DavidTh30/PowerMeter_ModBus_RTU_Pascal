@@ -1,0 +1,22 @@
+Address,Symbol,Type,RegisterType,SwapBytes,SwapDwords,SwapWords,UseBit,BitNumber,Unit
+2999,Current A,pttFloat,Holding Registers,False,False,True,False,0,A
+3001,Current B,pttFloat,Holding Registers,False,False,True,False,0,A
+3003,Current C,pttFloat,Holding Registers,False,False,True,False,0,A
+3005,Current N,pttFloat,Holding Registers,False,False,True,False,0,A
+3007,Current G,pttFloat,Holding Registers,False,False,True,False,0,A
+3009,Current Avg,pttFloat,Holding Registers,False,False,True,False,0,A
+3025,Voltage L-L Avg,pttFloat,Holding Registers,False,False,True,False,0,V
+3035,Voltage L-N Avg,pttFloat,Holding Registers,False,False,True,False,0,V
+3059,Active Power Total,pttFloat,Holding Registers,False,False,True,False,0,kW
+3201,Active Energy Delivered (Into Load),pttInt64,Holding Registers,False,True,True,False,0,Wh
+[DriverInfo]
+Device_Name=PowerMeter
+Device_MFG=PowerLogic Schneider
+Device_Model=PM5300 series
+Device_SN=
+Device_Ver=
+Drv_Name=PM5300
+Drv_SN=U7GQSWFN1W
+Drv_Ver=0.1
+Drv_Other_Information=PM51xx, PM53xx
+Drv_CreatDate=14/08/2026 16:57:03

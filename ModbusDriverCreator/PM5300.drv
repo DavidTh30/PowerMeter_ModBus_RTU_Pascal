@@ -5,11 +5,14 @@ Address,Symbol,Type,RegisterType,SwapBytes,SwapDwords,SwapWords,UseBit,BitNumber
 3075,Apparent Power Total,pttFloat,Holding Registers,False,False,True,False,0,kVA
 3235,Apparent Energy Delivered,pttInt64,Holding Registers,False,True,True,False,0,VAh
 3067,Reactive Power Total,pttFloat,Holding Registers,False,False,True,False,0,kVAR
-2707,Reactive Energy Delivered,pttFloat,Holding Registers,False,False,True,False,,kVARh
+2707,Reactive Energy Delivered,pttFloat,Holding Registers,False,False,True,False,0,kVARh
 3219,Reactive Energy Delivered,pttInt64,Holding Registers,False,True,True,False,0,VARh
 3027,Voltage A-N,pttFloat,Holding Registers,False,False,True,False,0,V
 3029,Voltage B-N,pttFloat,Holding Registers,False,False,True,False,0,V
 3031,Voltage C-N,pttFloat,Holding Registers,False,False,True,False,0,V
+3019,Voltage A-B,pttFloat,Holding Registers,False,False,True,False,0,V
+3021,Voltage B-C,pttFloat,Holding Registers,False,False,True,False,0,V
+3023,Voltage C-A,pttFloat,Holding Registers,False,False,True,False,0,V
 3025,Voltage L-L Avg,pttFloat,Holding Registers,False,False,True,False,0,V
 3035,Voltage L-N Avg,pttFloat,Holding Registers,False,False,True,False,0,V
 2999,Current A,pttFloat,Holding Registers,False,False,True,False,0,A

@@ -1,0 +1,33 @@
+Address,Symbol,Type,RegisterType,SwapBytes,SwapDwords,SwapWords,UseBit,BitNumber,Unit
+1005,Real Power Total,pttFloat,Holding Registers,False,False,True,False,0,kW
+999,Signed Real Energy Consumption,pttFloat,Holding Registers,False,False,True,False,0,kWh
+1007,Apparent Power Total,pttFloat,Holding Registers,False,False,True,False,0,kVA
+1001,Apparent Energy Consumption,pttFloat,Holding Registers,False,False,True,False,0,kVAh
+1009,Reactive Power Total,pttFloat,Holding Registers,False,False,True,False,0,kVAR
+1003,Signed Reactive Energy Consumption,pttFloat,Holding Registers,False,False,True,False,0,kVARh
+1059,Voltage A-N,pttFloat,Holding Registers,False,False,True,False,0,V
+1061,Voltage B-N,pttFloat,Holding Registers,False,False,True,False,0,V
+1063,Voltage C-N,pttFloat,Holding Registers,False,False,True,False,0,V
+1053,Voltage A-B,pttFloat,Holding Registers,False,False,True,False,0,V
+1055,Voltage B-C,pttFloat,Holding Registers,False,False,True,False,0,V
+1057,Voltage C-A,pttFloat,Holding Registers,False,False,True,False,0,V
+1013,Voltage L-L Avg,pttFloat,Holding Registers,False,False,True,False,0,V
+1015,Voltage L-N Avg,pttFloat,Holding Registers,False,False,True,False,0,V
+1033,Current A,pttFloat,Holding Registers,False,False,True,False,0,A
+1035,Current B,pttFloat,Holding Registers,False,False,True,False,0,A
+1037,Current C,pttFloat,Holding Registers,False,False,True,False,0,A
+1039,Current N,pttFloat,Holding Registers,False,False,True,False,0,A
+1017,Current Avg,pttFloat,Holding Registers,False,False,True,False,0,A
+1011,Power Factor Total,pttFloat,Holding Registers,False,False,True,False,0,
+1019,Frequency,pttFloat,Holding Registers,False,False,True,False,0,Hz
+[DriverInfo]
+Device_Name=PowerMeter
+Device_MFG=PowerLogic Schneider
+Device_Model=PM710 series
+Device_SN=
+Device_Ver=
+Drv_Name=PM710
+Drv_SN=O8LKYFU84V
+Drv_Ver=0.1
+Drv_Other_Information=
+Drv_CreatDate=15/08/2026 18:38:55

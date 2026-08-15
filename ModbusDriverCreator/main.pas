@@ -73,7 +73,6 @@ type
     Drv_SN: TEdit;
     Drv_Ver: TEdit;
     Datasource1: TDatasource;
-    EditAddress: TSpinEdit;
     EditSymbol: TEdit;
     EditType: TComboBox;
     EditRegisterType: TComboBox;
@@ -110,7 +109,8 @@ type
     PageControl1: TPageControl;
     SaveDialog1: TSaveDialog;
     SerialPortDriver1: TSerialPortDriver;
-    SpinEditEx3: TSpinEditEx;
+    SpinEditNode: TSpinEditEx;
+    EditAddress: TSpinEditEx;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
@@ -172,6 +172,7 @@ type
     procedure MenuNewClick(Sender: TObject);
     procedure MenuOpenClick(Sender: TObject);
     procedure MenuSaveAsClick(Sender: TObject);
+    procedure SpinEditNodeEditingDone(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure CmdInsertClick(Sender: TObject);
     procedure CmdDeleteClick(Sender: TObject);
@@ -731,20 +732,21 @@ begin
   begin
     DynamicTag := TPLCTagNumber.Create(Self);
 
-    addrStr:='H'+StringToHex(BufDataset1.FieldByName('Symbol').AsString);
+    addrStr:='H'+RightStr(StringToHex(BufDataset1.FieldByName('Symbol').AsString),10);
     CurrentObj := Self.FindComponent(addrStr);
     if (CurrentObj <> nil) then
     begin
-      addrStr:=BufDataset1.FieldByName('Symbol').AsString+RandomSerial()+i2.ToString;
+      addrStr:=addrStr+i2.ToString; //+RandomSerial()
       i2:=i2+1;
+      //showmessage({$I %LINE%}+chr(13)+addrStr);
     end;
-
+    //showmessage({$I %LINE%}+chr(13)+addrStr);
     DynamicTag.Name:=addrStr;
     DynamicTag.ProtocolDriver:=ModBusRTUDriver1;
     DynamicTag.UpdateTime:=500;
     DynamicTag.AutoRead:=false;
     DynamicTag.AutoWrite:=false;
-    DynamicTag.PLCStation:=SpinEditEx3.Value;
+    DynamicTag.PLCStation:=SpinEditNode.Value;
     DynamicTag.MemAddress:=BufDataset1.FieldByName('Address').AsInteger;
     DynamicTag.TagType:=TTagType(GetEnumValue(TypeInfo(TTagType), BufDataset1.FieldByName('Type').AsString));
     //if DynamicTag.TagType = pttfloat then showmessage('ok');
@@ -1288,6 +1290,22 @@ begin
     BufDataset1.First;
   end;
 
+end;
+
+procedure TForm1.SpinEditNodeEditingDone(Sender: TObject);
+var
+  i: integer;
+  CurrentObj: TComponent;
+begin
+  for i := 0 to ComponentCount - 1 do
+  begin
+    CurrentObj := Components[i];
+    if (CurrentObj is TPLCTagNumber)then
+    begin
+      log({$I %LINE%}+' Found TPLCTagNumber: '+TPLCTagNumber(CurrentObj).Name);
+      TPLCTagNumber(CurrentObj).PLCStation:=SpinEditNode.Value;
+    end;
+  end;
 end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);

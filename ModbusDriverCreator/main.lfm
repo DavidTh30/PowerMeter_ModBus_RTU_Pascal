@@ -1,17 +1,17 @@
 object Form1: TForm1
-  Left = 409
+  Left = 298
   Height = 450
-  Top = 137
+  Top = 163
   Width = 1033
   Caption = 'ModbusDriverCreator V0.1'
   ClientHeight = 450
   ClientWidth = 1033
   Menu = MainMenu1
-  OnClose = FormClose
-  OnCreate = FormCreate
   Position = poWorkAreaCenter
   ShowHint = True
-  LCLVersion = '3.4.0.0'
+  LCLVersion = '4.8.0.0'
+  OnClose = FormClose
+  OnCreate = FormCreate
   object PageControl1: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
@@ -22,9 +22,9 @@ object Form1: TForm1
     Height = 442
     Top = 8
     Width = 1033
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Info'
@@ -158,10 +158,10 @@ object Form1: TForm1
         AnchorSideTop.Control = Device_Ver
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = Device_Ver
-        Left = 6
+        Left = 5
         Height = 15
         Top = 108
-        Width = 82
+        Width = 83
         Anchors = [akTop, akRight]
         Caption = 'Device Version: '
       end
@@ -191,10 +191,10 @@ object Form1: TForm1
         AnchorSideTop.Control = Drv_Ver
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = Drv_Ver
-        Left = 298
+        Left = 297
         Height = 15
         Top = 60
-        Width = 78
+        Width = 79
         Anchors = [akTop, akRight]
         Caption = 'Driver Version: '
       end
@@ -254,15 +254,6 @@ object Form1: TForm1
         Anchors = [akTop, akRight]
         Caption = 'Address: '
       end
-      object EditAddress: TSpinEdit
-        Left = 56
-        Height = 23
-        Top = 8
-        Width = 130
-        Enabled = False
-        OnEditingDone = EditAddressEditingDone
-        TabOrder = 0
-      end
       object Label12: TLabel
         AnchorSideTop.Control = EditSymbol
         AnchorSideTop.Side = asrCenter
@@ -281,17 +272,17 @@ object Form1: TForm1
         Width = 208
         Enabled = False
         MaxLength = 255
-        TabOrder = 1
+        TabOrder = 0
         OnEditingDone = EditSymbolEditingDone
       end
       object Label13: TLabel
         AnchorSideTop.Control = EditType
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = EditType
-        Left = 26
+        Left = 24
         Height = 15
         Top = 63
-        Width = 30
+        Width = 32
         Anchors = [akTop, akRight]
         Caption = 'Type: '
       end
@@ -303,7 +294,7 @@ object Form1: TForm1
         Enabled = False
         ItemHeight = 15
         ReadOnly = True
-        TabOrder = 2
+        TabOrder = 1
         OnEditingDone = EditTypeEditingDone
       end
       object Label18: TLabel
@@ -324,7 +315,7 @@ object Form1: TForm1
         Width = 131
         Enabled = False
         MaxLength = 20
-        TabOrder = 3
+        TabOrder = 2
         OnEditingDone = EditUnitEditingDone
       end
       object CheckBoxSwapBytes: TCheckBox
@@ -334,7 +325,7 @@ object Form1: TForm1
         Width = 74
         Caption = 'SwapBytes'
         Enabled = False
-        TabOrder = 4
+        TabOrder = 3
         OnEditingDone = CheckBoxSwapBytesEditingDone
       end
       object CheckBoxSwapDwords: TCheckBox
@@ -344,7 +335,7 @@ object Form1: TForm1
         Width = 86
         Caption = 'SwapDwords'
         Enabled = False
-        TabOrder = 5
+        TabOrder = 4
         OnEditingDone = CheckBoxSwapDwordsEditingDone
       end
       object CheckBoxSwapWords: TCheckBox
@@ -354,7 +345,7 @@ object Form1: TForm1
         Width = 80
         Caption = 'SwapWords'
         Enabled = False
-        TabOrder = 6
+        TabOrder = 5
         OnEditingDone = CheckBoxSwapWordsEditingDone
       end
       object CheckBoxUseBit: TCheckBox
@@ -364,7 +355,7 @@ object Form1: TForm1
         Width = 51
         Caption = 'UseBit'
         Enabled = False
-        TabOrder = 7
+        TabOrder = 6
         OnEditingDone = CheckBoxUseBitEditingDone
       end
       object Label14: TLabel
@@ -671,7 +662,7 @@ object Form1: TForm1
         ClientWidth = 230
         DataSource = Datasource1
         Options = []
-        TabOrder = 8
+        TabOrder = 7
         VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbInsert, nbDelete, nbEdit, nbPost, nbCancel]
       end
       object DBGrid1: TDBGrid
@@ -691,7 +682,7 @@ object Form1: TForm1
         Columns = <>
         DataSource = Datasource1
         ReadOnly = True
-        TabOrder = 9
+        TabOrder = 8
       end
       object EditRegisterType: TComboBox
         Left = 264
@@ -708,7 +699,7 @@ object Form1: TForm1
           'Input Registers'
         )
         ReadOnly = True
-        TabOrder = 10
+        TabOrder = 9
         Text = 'Holding Registers'
         OnEditingDone = EditRegisterTypeEditingDone
       end
@@ -724,7 +715,7 @@ object Form1: TForm1
         Color = 15000804
         Images = ImageList1
         ParentColor = False
-        TabOrder = 11
+        TabOrder = 10
         object CmdMoveFirst: TToolButton
           Left = 1
           Top = 2
@@ -845,26 +836,43 @@ object Form1: TForm1
           OnClick = CmdCancelClick
         end
       end
+      object EditAddress: TSpinEditEx
+        Left = 56
+        Height = 23
+        Top = 8
+        Width = 131
+        Enabled = False
+        MaxLength = 0
+        SpinButtonWidth = 17
+        TabOrder = 11
+        OnEditingDone = EditAddressEditingDone
+        NullValue = 0
+        UpDownVisible = False
+        Value = 0
+      end
     end
     object TabSheet3: TTabSheet
       Caption = 'Online Tester'
       ClientHeight = 414
       ClientWidth = 1025
-      object SpinEditEx3: TSpinEditEx
+      object SpinEditNode: TSpinEditEx
         Left = 336
         Height = 23
         Top = 21
         Width = 80
         MaxLength = 0
+        SpinButtonWidth = 17
         TabOrder = 0
+        OnEditingDone = SpinEditNodeEditingDone
         MaxValue = 255
         NullValue = 0
+        UpDownVisible = False
         Value = 29
       end
       object Label19: TLabel
-        AnchorSideTop.Control = SpinEditEx3
+        AnchorSideTop.Control = SpinEditNode
         AnchorSideTop.Side = asrCenter
-        AnchorSideRight.Control = SpinEditEx3
+        AnchorSideRight.Control = SpinEditNode
         Left = 301
         Height = 15
         Top = 25
@@ -924,7 +932,7 @@ object Form1: TForm1
       object Button3: TButton
         Left = 428
         Height = 28
-        Top = 19
+        Top = 21
         Width = 86
         Caption = 'Init Driver'
         TabOrder = 4

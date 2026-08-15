@@ -1,14 +1,25 @@
 Address,Symbol,Type,RegisterType,SwapBytes,SwapDwords,SwapWords,UseBit,BitNumber,Unit
+3059,Active Power Total,pttFloat,Holding Registers,False,False,True,False,0,kW
+2703,Active Energy Delivered (Into Load),pttFloat,Holding Registers,False,False,True,False,0,kWH
+3203,Active Energy Delivered (Into Load),pttInt64,Holding Registers,False,True,True,False,0,Wh
+3075,Apparent Power Total,pttFloat,Holding Registers,False,False,True,False,0,kVA
+3235,Apparent Energy Delivered,pttInt64,Holding Registers,False,True,True,False,0,VAh
+3067,Reactive Power Total,pttFloat,Holding Registers,False,False,True,False,0,kVAR
+2707,Reactive Energy Delivered,pttFloat,Holding Registers,False,False,True,False,,kVARh
+3219,Reactive Energy Delivered,pttInt64,Holding Registers,False,True,True,False,0,VARh
+3027,Voltage A-N,pttFloat,Holding Registers,False,False,True,False,0,V
+3029,Voltage B-N,pttFloat,Holding Registers,False,False,True,False,0,V
+3031,Voltage C-N,pttFloat,Holding Registers,False,False,True,False,0,V
+3025,Voltage L-L Avg,pttFloat,Holding Registers,False,False,True,False,0,V
+3035,Voltage L-N Avg,pttFloat,Holding Registers,False,False,True,False,0,V
 2999,Current A,pttFloat,Holding Registers,False,False,True,False,0,A
 3001,Current B,pttFloat,Holding Registers,False,False,True,False,0,A
 3003,Current C,pttFloat,Holding Registers,False,False,True,False,0,A
 3005,Current N,pttFloat,Holding Registers,False,False,True,False,0,A
 3007,Current G,pttFloat,Holding Registers,False,False,True,False,0,A
 3009,Current Avg,pttFloat,Holding Registers,False,False,True,False,0,A
-3025,Voltage L-L Avg,pttFloat,Holding Registers,False,False,True,False,0,V
-3035,Voltage L-N Avg,pttFloat,Holding Registers,False,False,True,False,0,V
-3059,Active Power Total,pttFloat,Holding Registers,False,False,True,False,0,kW
-3201,Active Energy Delivered (Into Load),pttInt64,Holding Registers,False,True,True,False,0,Wh
+3083,Power Factor Total,pttFloat,Holding Registers,False,False,True,False,0,
+3109,Frequency,pttFloat,Holding Registers,False,False,True,False,0,Hz
 [DriverInfo]
 Device_Name=PowerMeter
 Device_MFG=PowerLogic Schneider

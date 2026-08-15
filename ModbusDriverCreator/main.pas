@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, db, BufDataset, FileUtil, SpinEx, Forms, Controls,
   Graphics, Dialogs, DbCtrls, DBGrids, StdCtrls, Menus, Spin, ExtCtrls,
   ComCtrls, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag, PLCTagNumber,
-  TypInfo, registry, Math, IniFiles;
+  TypInfo, registry, Math, IniFiles, strutils;
 
 type
 
@@ -191,6 +191,7 @@ var
   Form1: TForm1;
   OnBootFinish:boolean;
   BitNumber:int64;
+  Version_:string;
 
 implementation
 
@@ -348,7 +349,7 @@ var
   i: integer;
   s:TStringList;
 begin
-
+  Version_:=Form1.Caption;
   OnBootFinish:=false;
 
   GetSerialPortExt();
@@ -429,7 +430,7 @@ end;
 
 procedure TForm1.EditSymbolEditingDone(Sender: TObject);
 begin
-  log({$I %LINE%}+' EditSymboldEditingDone');
+  EditSymbol.Caption:=DelChars(EditSymbol.Caption, ',');
   if BufDataset1.State in [dsEdit, dsInsert] then
   BufDataset1.FieldByName('Symbol').AsString := EditSymbol.Caption;
 end;
@@ -442,6 +443,7 @@ end;
 
 procedure TForm1.EditUnitEditingDone(Sender: TObject);
 begin
+  EditUnit.Caption:=DelChars(EditUnit.Caption, ',');
   if BufDataset1.State in [dsEdit, dsInsert] then
   BufDataset1.FieldByName('Unit').AsString := EditUnit.Caption;
 end;
@@ -659,6 +661,18 @@ end;
 
 procedure TForm1.CmdPostClick(Sender: TObject);
 begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  begin
+    BufDataset1.FieldByName('Address').AsInteger := EditAddress.Value;
+    BufDataset1.FieldByName('Symbol').AsString := EditSymbol.Caption;
+    BufDataset1.FieldByName('Type').AsString := EditType.Items[EditType.ItemIndex];
+    BufDataset1.FieldByName('Unit').AsString := EditUnit.Caption;
+    BufDataset1.FieldByName('SwapBytes').AsBoolean := CheckBoxSwapBytes.Checked;
+    BufDataset1.FieldByName('SwapDwords').AsBoolean := CheckBoxSwapDwords.Checked;
+    BufDataset1.FieldByName('SwapWords').AsBoolean := CheckBoxSwapWords.Checked;
+    BufDataset1.FieldByName('UseBit').AsBoolean := CheckBoxUseBit.Checked;
+    BufDataset1.FieldByName('BitNumber').AsLargeInt := BitNumber;
+  end;
   BufDataset1.Post;
 end;
 
@@ -986,6 +1000,8 @@ begin
   for i:=0 to DBGrid1.Columns.Count-1  do
     DBGrid1.Columns.Delete(0);
 
+  form1.Caption:=Version_;
+
   Device_Name.Caption:='';
   Device_MFG.Caption:='';
   Device_Model.Caption:='';
@@ -1038,7 +1054,7 @@ end;
 procedure TForm1.MenuOpenClick(Sender: TObject);
 var
   i:integer;
-  S_Name, Directory_:string;
+  S_Name, Directory_, CurrentFile:string;
   CSV: TCSVDocument;
   Row, Col: Integer;
   Loop1:integer;
@@ -1070,6 +1086,8 @@ begin
       begin
         OnBootFinish:=false;
 
+        CurrentFile := ExtractFileName(S_Name);
+        form1.Caption:=Version_+' ['+CurrentFile+']';
         BufDataset1.Clear;
         BufDataset1.Fields.Clear;
         BufDataset1.FieldDefs.Clear;
@@ -1168,7 +1186,7 @@ procedure TForm1.MenuSaveAsClick(Sender: TObject);
 var
   i:integer;
   fileout : TextFile;
-  S_Name, Directory_:string;
+  S_Name, Directory_, CurrentFile:string;
   Txt:String;
   FileName_:string;
   s:string;
@@ -1240,6 +1258,9 @@ begin
 
     OnBootFinish:=false;
     BufDataset1.First;
+    CurrentFile := ExtractFileName(S_Name);
+    form1.Caption:=Version_+' ['+CurrentFile+']';
+
     while not BufDataset1.EOF do
     begin
       Txt:='';
@@ -1331,6 +1352,7 @@ end;
 
 procedure TForm1.CmdInsertClick(Sender: TObject);
 begin
+  DBGrid1.Enabled:=false;
   BufDataset1.Insert;
 end;
 
@@ -1346,6 +1368,7 @@ end;
 
 procedure TForm1.CmdEditClick(Sender: TObject);
 begin
+  DBGrid1.Enabled:=false;
   BufDataset1.Edit;
 end;
 

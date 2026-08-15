@@ -6,3 +6,5 @@ Power Meter Modbus RTU for Lazarus IDE
 <img src="ModbusDriverCreator/SS01.png" width="400" height="400">
 
 <img src="ModbusDriverCreator/SS02.png" width="400" height="400">
+
+<img src="ModbusDriverCreator/Test.mp4" width="400" height="400">

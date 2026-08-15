@@ -9,4 +9,4 @@ Power Meter Modbus RTU for Lazarus IDE
 
 <img src="ModbusDriverCreator/SS02.png" width="400" height="400">
 
-<video src="[ModbusDriverCreator/Test.mp4](https://github.com/DavidTh30/PowerMeter_ModBus_RTU_Pascal/blob/main/ModbusDriverCreator/Test.mp4)" width="80%" controls></video>
+<video src="https://github.com/DavidTh30/PowerMeter_ModBus_RTU_Pascal/blob/main/ModbusDriverCreator/Test.mp4" width="80%" controls></video>

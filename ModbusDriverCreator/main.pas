@@ -423,7 +423,46 @@ begin
 
   BufDataset1.First;
 
+  CmdPost.Enabled:=false;
+  CmdCancel.Enabled:=false;
+  if BufDataset1.RecordCount = 0 then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdDelete.Enabled:=false;
+  end
+  else
+  begin
+    CmdMoveFirst.Enabled:=true;
+    CmdPrior.Enabled:=true;
+    CmdMoveNext.Enabled:=true;
+    CmdMoveLast.Enabled:=true;
+    CmdDelete.Enabled:=true;
+  end;
 
+  if BufDataset1.BOF then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+  end;
+  if BufDataset1.EOF then
+  begin
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+  end;
+
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  begin
+    CmdPost.Enabled:=true;
+    CmdCancel.Enabled:=true;
+  end
+  else
+  begin
+    CmdPost.Enabled:=false;
+    CmdCancel.Enabled:=false;
+  end;
 
   OnBootFinish:=true;
 end;
@@ -484,7 +523,6 @@ end;
 
 procedure TForm1.EditAddressEditingDone(Sender: TObject);
 begin
-  log({$I %LINE%}+' EditAddressEditingDone');
   if BufDataset1.State in [dsEdit, dsInsert] then
   BufDataset1.FieldByName('Address').AsInteger := EditAddress.Value;
 end;
@@ -504,6 +542,37 @@ procedure TForm1.BufDataset1AfterCancel(DataSet: TDataSet);
 begin
   log({$I %LINE%}+' AfterCancel');
   BufDataset1AfterScroll(DataSet);
+
+  CmdPost.Enabled:=false;
+  CmdCancel.Enabled:=false;
+  CmdEdit.Enabled:=true;
+
+  if BufDataset1.RecordCount = 0 then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdDelete.Enabled:=false;
+  end
+  else
+  begin
+    CmdMoveFirst.Enabled:=true;
+    CmdPrior.Enabled:=true;
+    CmdMoveNext.Enabled:=true;
+    CmdMoveLast.Enabled:=true;
+    CmdDelete.Enabled:=true;
+  end;
+  if BufDataset1.BOF then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+  end;
+  if BufDataset1.EOF then
+  begin
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+  end;
 end;
 
 procedure TForm1.B0MouseUp(Sender: TObject; Button: TMouseButton;
@@ -540,21 +609,95 @@ end;
 procedure TForm1.BufDataset1AfterDelete(DataSet: TDataSet);
 begin
   log({$I %LINE%}+' AfterDelete');
+  BufDataset1AfterScroll(DataSet);
+
+  CmdPost.Enabled:=false;
+  CmdCancel.Enabled:=false;
+  CmdEdit.Enabled:=true;
+
+  if BufDataset1.RecordCount = 0 then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdDelete.Enabled:=false;
+  end
+  else
+  begin
+    CmdMoveFirst.Enabled:=true;
+    CmdPrior.Enabled:=true;
+    CmdMoveNext.Enabled:=true;
+    CmdMoveLast.Enabled:=true;
+    CmdDelete.Enabled:=true;
+  end;
+  if BufDataset1.BOF then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+  end;
+  if BufDataset1.EOF then
+  begin
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+  end;
 end;
 
 procedure TForm1.BufDataset1AfterEdit(DataSet: TDataSet);
 begin
   log({$I %LINE%}+' AfterEdit');
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
 end;
 
 procedure TForm1.BufDataset1AfterInsert(DataSet: TDataSet);
 begin
   log({$I %LINE%}+' AfterInsert');
+
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+
+    CmdEdit.Enabled:=false;
 end;
 
 procedure TForm1.BufDataset1AfterPost(DataSet: TDataSet);
 begin
   log({$I %LINE%}+' AfterPost');
+
+  CmdPost.Enabled:=false;
+  CmdCancel.Enabled:=false;
+  CmdEdit.Enabled:=true;
+
+  if BufDataset1.RecordCount = 0 then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdDelete.Enabled:=false;
+  end
+  else
+  begin
+    CmdMoveFirst.Enabled:=true;
+    CmdPrior.Enabled:=true;
+    CmdMoveNext.Enabled:=true;
+    CmdMoveLast.Enabled:=true;
+    CmdDelete.Enabled:=true;
+  end;
+  if BufDataset1.BOF then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+  end;
+  if BufDataset1.EOF then
+  begin
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+  end;
 end;
 
 procedure TForm1.BufDataset1AfterScroll(DataSet: TDataSet);
@@ -566,6 +709,7 @@ begin
   if not OnBootFinish then exit;
   if BufDataset1.State in [dsEdit, dsInsert] then exit;
 
+  log({$I %LINE%}+' Update');
   EditAddress.Value:= BufDataset1.FieldByName('Address').AsInteger;
   EditSymbol.Caption:= BufDataset1.FieldByName('Symbol').AsString;
   EditUnit.Caption:= BufDataset1.FieldByName('Unit').AsString;
@@ -657,15 +801,47 @@ end;
 procedure TForm1.CmdMoveNextClick(Sender: TObject);
 begin
   BufDataset1.Next;
+  CmdPost.Enabled:=false;
+  CmdCancel.Enabled:=false;
+  if BufDataset1.RecordCount = 0 then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdDelete.Enabled:=false;
+  end
+  else
+  begin
+    CmdMoveFirst.Enabled:=true;
+    CmdPrior.Enabled:=true;
+    CmdMoveNext.Enabled:=true;
+    CmdMoveLast.Enabled:=true;
+    CmdDelete.Enabled:=true;
+  end;
+
+  if BufDataset1.BOF then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+  end;
+  if BufDataset1.EOF then
+  begin
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+  end;
 end;
 
 procedure TForm1.CmdPostClick(Sender: TObject);
 begin
   if BufDataset1.State in [dsEdit, dsInsert] then
   begin
+    EditSymbol.Caption:=DelChars(EditSymbol.Caption, ',');
+    EditUnit.Caption:=DelChars(EditUnit.Caption, ',');
     BufDataset1.FieldByName('Address').AsInteger := EditAddress.Value;
     BufDataset1.FieldByName('Symbol').AsString := EditSymbol.Caption;
     BufDataset1.FieldByName('Type').AsString := EditType.Items[EditType.ItemIndex];
+    BufDataset1.FieldByName('RegisterType').AsString := EditRegisterType.Items[EditRegisterType.ItemIndex];
     BufDataset1.FieldByName('Unit').AsString := EditUnit.Caption;
     BufDataset1.FieldByName('SwapBytes').AsBoolean := CheckBoxSwapBytes.Checked;
     BufDataset1.FieldByName('SwapDwords').AsBoolean := CheckBoxSwapDwords.Checked;
@@ -674,6 +850,9 @@ begin
     BufDataset1.FieldByName('BitNumber').AsLargeInt := BitNumber;
   end;
   BufDataset1.Post;
+
+  CmdPost.Enabled:=false;
+  CmdCancel.Enabled:=false;
 end;
 
 procedure TForm1.CmdRandomSerialClick(Sender: TObject);
@@ -853,6 +1032,7 @@ procedure TForm1.Datasource1StateChange(Sender: TObject);
 begin
   log({$I %LINE%}+' Datasource1StateChange');
 
+
   if BufDataset1.State = dsInactive then log({$I %LINE%}+' dsInactive');
   if BufDataset1.State = dsBrowse then log({$I %LINE%}+' dsBrowse');
   if BufDataset1.State = dsEdit then log({$I %LINE%}+' dsEdit');
@@ -868,9 +1048,14 @@ begin
   if BufDataset1.State = dsOpening then log({$I %LINE%}+' dsOpening');
   if BufDataset1.State = dsRefreshFields then log({$I %LINE%}+' dsRefreshFields');
 
+  if not OnBootFinish then exit;
 
   if BufDataset1.State in [dsEdit, dsInsert] then
   begin
+    CmdPost.Enabled:=true;
+    CmdCancel.Enabled:=true;
+    CmdEdit.Enabled:=false;
+
     DBGrid1.Enabled:=false;
     DBNavigator1.VisibleButtons := DBNavigator1.VisibleButtons - [nbFirst, nbPrior, nbNext, nbLast, nbInsert,nbDelete];
     EditAddress.Enabled:=true;
@@ -921,6 +1106,10 @@ begin
   end
   else
   begin
+    CmdPost.Enabled:=false;
+    CmdCancel.Enabled:=false;
+    CmdEdit.Enabled:=true;
+
     DBGrid1.Enabled:=true;
     DBNavigator1.VisibleButtons := [nbFirst,nbPrior,nbNext,nbLast,nbInsert,nbDelete,nbEdit,nbPost,nbCancel];
     EditAddress.Enabled:=false;
@@ -1048,6 +1237,17 @@ begin
   end;
   BufDataset1.CreateDataset;
 
+  CmdPost.Enabled:=false;
+  CmdCancel.Enabled:=false;
+  if BufDataset1.RecordCount = 0 then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdDelete.Enabled:=false;
+  end;
+
   OnBootFinish:=true;
 end;
 
@@ -1159,6 +1359,33 @@ begin
       CSV.Free;
       OnBootFinish:=true;
       BufDataset1.First;
+    end;
+
+    if BufDataset1.RecordCount = 0 then
+    begin
+      CmdMoveFirst.Enabled:=false;
+      CmdPrior.Enabled:=false;
+      CmdMoveNext.Enabled:=false;
+      CmdMoveLast.Enabled:=false;
+      CmdDelete.Enabled:=false;
+    end
+    else
+    begin
+      CmdMoveFirst.Enabled:=true;
+      CmdPrior.Enabled:=true;
+      CmdMoveNext.Enabled:=true;
+      CmdMoveLast.Enabled:=true;
+      CmdDelete.Enabled:=true;
+    end;
+    if BufDataset1.BOF then
+    begin
+      CmdMoveFirst.Enabled:=false;
+      CmdPrior.Enabled:=false;
+    end;
+    if BufDataset1.EOF then
+    begin
+      CmdMoveNext.Enabled:=false;
+      CmdMoveLast.Enabled:=false;
     end;
 
     MyIni := TIniFile.Create(S_Name);
@@ -1358,6 +1585,7 @@ end;
 
 procedure TForm1.CmdDeleteClick(Sender: TObject);
 begin
+  if BufDataset1.RecordCount = 0 then exit;
   if MessageDlg('Confirmation', 'Do you want to delete?', mtConfirmation, [mbYes, mbNo], 0) = 7 then
   begin
     //showmessage('exit');
@@ -1375,16 +1603,104 @@ end;
 procedure TForm1.CmdMoveFirstClick(Sender: TObject);
 begin
   BufDataset1.First;
+
+  CmdPost.Enabled:=false;
+  CmdCancel.Enabled:=false;
+  if BufDataset1.RecordCount = 0 then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdDelete.Enabled:=false;
+  end
+  else
+  begin
+    CmdMoveFirst.Enabled:=true;
+    CmdPrior.Enabled:=true;
+    CmdMoveNext.Enabled:=true;
+    CmdMoveLast.Enabled:=true;
+    CmdDelete.Enabled:=true;
+  end;
+
+  if BufDataset1.BOF then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+  end;
+  if BufDataset1.EOF then
+  begin
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+  end;
 end;
 
 procedure TForm1.CmdMoveLastClick(Sender: TObject);
 begin
   BufDataset1.Last;
+  CmdPost.Enabled:=false;
+  CmdCancel.Enabled:=false;
+  if BufDataset1.RecordCount = 0 then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdDelete.Enabled:=false;
+  end
+  else
+  begin
+    CmdMoveFirst.Enabled:=true;
+    CmdPrior.Enabled:=true;
+    CmdMoveNext.Enabled:=true;
+    CmdMoveLast.Enabled:=true;
+    CmdDelete.Enabled:=true;
+  end;
+
+  if BufDataset1.BOF then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+  end;
+  if BufDataset1.EOF then
+  begin
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+  end;
 end;
 
 procedure TForm1.CmdPriorClick(Sender: TObject);
 begin
   BufDataset1.Prior;
+  CmdPost.Enabled:=false;
+  CmdCancel.Enabled:=false;
+  if BufDataset1.RecordCount = 0 then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdDelete.Enabled:=false;
+  end
+  else
+  begin
+    CmdMoveFirst.Enabled:=true;
+    CmdPrior.Enabled:=true;
+    CmdMoveNext.Enabled:=true;
+    CmdMoveLast.Enabled:=true;
+    CmdDelete.Enabled:=true;
+  end;
+
+  if BufDataset1.BOF then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+  end;
+  if BufDataset1.EOF then
+  begin
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+  end;
 end;
 
 end.

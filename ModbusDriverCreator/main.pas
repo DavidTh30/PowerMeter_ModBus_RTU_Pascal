@@ -49,9 +49,10 @@ type
     B9: TShape;
     BufDataset1: TBufDataset;
     BufDataset2: TBufDataset;
+    CmdClearList: TButton;
     CmdRandomSerial: TButton;
     Button2: TButton;
-    Button3: TButton;
+    CmdInitDriver: TButton;
     CheckBoxSwapBytes: TCheckBox;
     CheckBoxSwapDwords: TCheckBox;
     CheckBoxSwapWords: TCheckBox;
@@ -114,6 +115,7 @@ type
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
+    Tag1: TPLCTagNumber;
     Timer1: TTimer;
     ToolBar1: TToolBar;
     CmdMoveFirst: TToolButton;
@@ -148,11 +150,12 @@ type
     procedure BufDataset1CalcFields(DataSet: TDataSet);
     procedure BufDataset1NewRecord(DataSet: TDataSet);
     procedure CmdCancelClick(Sender: TObject);
+    procedure CmdClearListClick(Sender: TObject);
     procedure CmdMoveNextClick(Sender: TObject);
     procedure CmdPostClick(Sender: TObject);
     procedure CmdRandomSerialClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
+    procedure CmdInitDriverClick(Sender: TObject);
     procedure CheckBoxSwapBytesEditingDone(Sender: TObject);
     procedure CheckBoxSwapDwordsEditingDone(Sender: TObject);
     procedure CheckBoxSwapWordsEditingDone(Sender: TObject);
@@ -391,6 +394,7 @@ begin
     Add('Result', ftString, 255);
     Add('Unit', ftString, 20);
     Add('Obj', ftString, 600);
+    Add('UseBit', ftLargeint, 0, false);
   end;
   BufDataset2.CreateDataset;
 
@@ -798,6 +802,53 @@ begin
   BufDataset1.Cancel;
 end;
 
+procedure TForm1.CmdClearListClick(Sender: TObject);
+var
+  i, i2: integer;
+  CurrentObj: TComponent;
+  DynamicTag: TPLCTagNumber;
+  addrStr:String;
+begin
+  timer1.Enabled:=false;
+
+  BufDataset2.Clear;
+  BufDataset2.Fields.Clear;
+  BufDataset2.FieldDefs.Clear;
+  for i:=0 to DBGrid2.Columns.Count-1  do
+    DBGrid2.Columns.Delete(0);
+
+  with BufDataset2.FieldDefs do
+  begin
+    Add('Symbol', ftString, 255);
+    Add('Result', ftString, 255);
+    Add('Unit', ftString, 20);
+    Add('Obj', ftString, 600);
+    Add('UseBit', ftLargeint, 0, false);
+  end;
+  BufDataset2.CreateDataset;
+
+  for i := 0 to ComponentCount - 1 do
+  begin
+    if i>(ComponentCount - 1) then i2:= (ComponentCount - 1);
+    if i<=(ComponentCount - 1) then i2:=i;
+    CurrentObj := Components[i2];
+    if (CurrentObj is TPLCTagNumber)then
+    begin
+      log({$I %LINE%}+' Found TPLCTagNumber: '+TPLCTagNumber(CurrentObj).Name);
+      TPLCTagNumber(CurrentObj).AutoRead:=false;
+      TPLCTagNumber(CurrentObj).DestroyComponents;
+      TPLCTagNumber(CurrentObj).Free;
+    end;
+  end;
+
+  SerialPortDriver1.Active:= false;
+  SerialPortDriver1.AcceptAnyPortName:=false;
+
+  if (not SerialPortDriver1.Active) then CmdConnect.Caption:='Connect';
+  if (SerialPortDriver1.Active) then CmdConnect.Caption:='Disconnect';
+
+end;
+
 procedure TForm1.CmdMoveNextClick(Sender: TObject);
 begin
   BufDataset1.Next;
@@ -865,14 +916,18 @@ begin
   Drv_CreatDate.Caption:= FormatDateTime('DD/MM/YYYY hh:nn:ss',Now);
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure TForm1.CmdInitDriverClick(Sender: TObject);
 var
   i, i2: integer;
   CurrentObj: TComponent;
   DynamicTag: TPLCTagNumber;
   addrStr:String;
 begin
-  log({$I %LINE%}+' Init Driver');
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  begin
+    showmessage('Under editing config driver');
+    exit;
+  end;
 
   timer1.Enabled:=false;
 
@@ -888,6 +943,7 @@ begin
     Add('Result', ftString, 255);
     Add('Unit', ftString, 20);
     Add('Obj', ftString, 600);
+    Add('UseBit', ftLargeint, 0, false);
   end;
   BufDataset2.CreateDataset;
 
@@ -954,10 +1010,17 @@ begin
     if not (BufDataset2.State in [dsEdit, dsInsert]) then
     BufDataset2.Edit;
     BufDataset2.Append;
+
     BufDataset2.FieldByName('Symbol').AsString := BufDataset1.FieldByName('Symbol').AsString;
     BufDataset2.FieldByName('Result').AsString := '';
     BufDataset2.FieldByName('Unit').AsString := BufDataset1.FieldByName('Unit').AsString;
     BufDataset2.FieldByName('Obj').AsString := DynamicTag.Name;
+
+    if (BufDataset1.FieldByName('UseBit').AsBoolean) and (BufDataset1.FieldByName('BitNumber').AsLargeInt>0) then
+    begin
+      BufDataset2.FieldByName('UseBit').AsLargeInt := BufDataset1.FieldByName('BitNumber').AsLargeInt;
+    end;
+
     BufDataset2.Post;
 
     BufDataset1.Next;
@@ -1560,6 +1623,7 @@ procedure TForm1.Timer1Timer(Sender: TObject);
 var
   i: integer;
   CurrentObj: TComponent;
+  i64_1,i64_2,i64_3: int64;
 begin
   BufDataset2.First;
   while not BufDataset2.EOF do
@@ -1569,7 +1633,29 @@ begin
     if (CurrentObj is TPLCTagNumber) then
     begin
       if not (BufDataset2.State in [dsEdit, dsInsert]) then BufDataset2.Edit;
-      BufDataset2.FieldByName('Result').AsString :=TPLCTagNumber(CurrentObj).Value.ToString;
+
+      if BufDataset2.FieldByName('UseBit').AsLargeInt = 0 then
+      begin
+        if IsNaN(TPLCTagNumber(CurrentObj).Value) then
+        begin
+        i64_1:=Round(TPLCTagNumber(CurrentObj).ValueRaw);
+        i64_2:=Round(TPLCTagNumber(CurrentObj).Value);
+
+        end;
+        BufDataset2.FieldByName('Result').AsString := TPLCTagNumber(CurrentObj).Value.ToString;
+      end;
+
+      if BufDataset2.FieldByName('UseBit').AsLargeInt <> 0 then
+      begin
+        i64_1:=BufDataset2.FieldByName('UseBit').AsLargeInt;
+        i64_2:=Round(TPLCTagNumber(CurrentObj).Value);
+        i64_3:=i64_1 and i64_2;
+        if BufDataset2.FieldByName('UseBit').AsLargeInt = i64_3 then
+          BufDataset2.FieldByName('Result').AsString := 'True'
+        else
+          BufDataset2.FieldByName('Result').AsString := 'false';
+      end;
+
       BufDataset2.Post;
     end;
 

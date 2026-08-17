@@ -163,6 +163,16 @@ type
     procedure CmdConnectClick(Sender: TObject);
     procedure Datasource1StateChange(Sender: TObject);
     procedure Datasource1UpdateData(Sender: TObject);
+    procedure Device_MFGEditingDone(Sender: TObject);
+    procedure Device_ModelEditingDone(Sender: TObject);
+    procedure Device_NameEditingDone(Sender: TObject);
+    procedure Device_SNEditingDone(Sender: TObject);
+    procedure Device_VerEditingDone(Sender: TObject);
+    procedure Drv_CreatDateEditingDone(Sender: TObject);
+    procedure Drv_NameEditingDone(Sender: TObject);
+    procedure Drv_Other_InformationEditingDone(Sender: TObject);
+    procedure Drv_SNEditingDone(Sender: TObject);
+    procedure Drv_VerEditingDone(Sender: TObject);
     procedure EditAddressEditingDone(Sender: TObject);
     procedure EditComEditingDone(Sender: TObject);
     procedure EditRegisterTypeEditingDone(Sender: TObject);
@@ -474,6 +484,8 @@ end;
 procedure TForm1.EditSymbolEditingDone(Sender: TObject);
 begin
   EditSymbol.Caption:=DelChars(EditSymbol.Caption, ',');
+  EditSymbol.Caption:=DelChars(EditSymbol.Caption, '[');
+  EditSymbol.Caption:=DelChars(EditSymbol.Caption, ']');
   if BufDataset1.State in [dsEdit, dsInsert] then
   BufDataset1.FieldByName('Symbol').AsString := EditSymbol.Caption;
 end;
@@ -487,6 +499,8 @@ end;
 procedure TForm1.EditUnitEditingDone(Sender: TObject);
 begin
   EditUnit.Caption:=DelChars(EditUnit.Caption, ',');
+  EditUnit.Caption:=DelChars(EditUnit.Caption, '[');
+  EditUnit.Caption:=DelChars(EditUnit.Caption, ']');
   if BufDataset1.State in [dsEdit, dsInsert] then
   BufDataset1.FieldByName('Unit').AsString := EditUnit.Caption;
 end;
@@ -806,8 +820,6 @@ procedure TForm1.CmdClearListClick(Sender: TObject);
 var
   i, i2: integer;
   CurrentObj: TComponent;
-  DynamicTag: TPLCTagNumber;
-  addrStr:String;
 begin
   timer1.Enabled:=false;
 
@@ -827,6 +839,7 @@ begin
   end;
   BufDataset2.CreateDataset;
 
+  i2:=0;
   for i := 0 to ComponentCount - 1 do
   begin
     if i>(ComponentCount - 1) then i2:= (ComponentCount - 1);
@@ -953,6 +966,7 @@ begin
     //exit;
   end;
 
+  i2:=0;
   for i := 0 to ComponentCount - 1 do
   begin
     if i>(ComponentCount - 1) then i2:= (ComponentCount - 1);
@@ -1235,6 +1249,56 @@ begin
   end;
 end;
 
+procedure TForm1.Device_MFGEditingDone(Sender: TObject);
+begin
+  Device_MFG.Caption:=DelChars(Device_MFG.Caption, '=');
+end;
+
+procedure TForm1.Device_ModelEditingDone(Sender: TObject);
+begin
+  Device_Model.Caption:=DelChars(Device_Model.Caption, '=');
+end;
+
+procedure TForm1.Device_NameEditingDone(Sender: TObject);
+begin
+  Device_Name.Caption:=DelChars(Device_Name.Caption, '=');
+end;
+
+procedure TForm1.Device_SNEditingDone(Sender: TObject);
+begin
+  Device_SN.Caption:=DelChars(Device_SN.Caption, '=');
+end;
+
+procedure TForm1.Device_VerEditingDone(Sender: TObject);
+begin
+  Device_Ver.Caption:=DelChars(Device_Ver.Caption, '=');
+end;
+
+procedure TForm1.Drv_CreatDateEditingDone(Sender: TObject);
+begin
+  Drv_CreatDate.Caption:=DelChars(Drv_CreatDate.Caption, '=');
+end;
+
+procedure TForm1.Drv_NameEditingDone(Sender: TObject);
+begin
+  Drv_Name.Caption:=DelChars(Drv_Name.Caption, '=');
+end;
+
+procedure TForm1.Drv_Other_InformationEditingDone(Sender: TObject);
+begin
+  Drv_Other_Information.Caption:=DelChars(Drv_Other_Information.Caption, '=');
+end;
+
+procedure TForm1.Drv_SNEditingDone(Sender: TObject);
+begin
+  Drv_SN.Caption:=DelChars(Drv_SN.Caption, '=');
+end;
+
+procedure TForm1.Drv_VerEditingDone(Sender: TObject);
+begin
+  Drv_Ver.Caption:=DelChars(Drv_Ver.Caption, '=');
+end;
+
 procedure TForm1.MenuExitClick(Sender: TObject);
 begin
   halt;
@@ -1320,7 +1384,6 @@ var
   S_Name, Directory_, CurrentFile:string;
   CSV: TCSVDocument;
   Row, Col: Integer;
-  Loop1:integer;
   MyIni: TIniFile;
 begin
   Directory_:=ExtractFilePath(ParamStr(0));
@@ -1621,7 +1684,6 @@ end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
 var
-  i: integer;
   CurrentObj: TComponent;
   i64_1,i64_2,i64_3: int64;
 begin

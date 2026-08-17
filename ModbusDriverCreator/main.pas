@@ -78,6 +78,9 @@ type
     EditType: TComboBox;
     EditRegisterType: TComboBox;
     EditUnit: TEdit;
+    FloatSpinEditEx1: TFloatSpinEditEx;
+    FloatSpinEditEx2: TFloatSpinEditEx;
+    FloatSpinEditEx3: TFloatSpinEditEx;
     ImageList1: TImageList;
     Label1: TLabel;
     Label10: TLabel;
@@ -92,6 +95,9 @@ type
     Label19: TLabel;
     Label2: TLabel;
     Label20: TLabel;
+    Label21: TLabel;
+    Label22: TLabel;
+    Label23: TLabel;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
@@ -115,7 +121,7 @@ type
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
-    Tag1: TPLCTagNumber;
+    TabSheet4: TTabSheet;
     Timer1: TTimer;
     ToolBar1: TToolBar;
     CmdMoveFirst: TToolButton;
@@ -179,6 +185,7 @@ type
     procedure EditSymbolEditingDone(Sender: TObject);
     procedure EditTypeEditingDone(Sender: TObject);
     procedure EditUnitEditingDone(Sender: TObject);
+    procedure FloatSpinEditEx2EditingDone(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MenuExitClick(Sender: TObject);
@@ -395,6 +402,9 @@ begin
     Add('UseBit', ftBoolean, 0,false);
     Add('BitNumber', ftLargeint, 0,false);
     Add('Unit', ftString, 20);
+    Add('Factor*', ftFloat, 0,false);
+    Add('Factor/', ftFloat, 0,false);
+    Add('Offset', ftFloat, 0,false);
   end;
   BufDataset1.CreateDataset;
 
@@ -405,6 +415,9 @@ begin
     Add('Unit', ftString, 20);
     Add('Obj', ftString, 600);
     Add('UseBit', ftLargeint, 0, false);
+    Add('Factor*', ftFloat, 0,false);
+    Add('Factor/', ftFloat, 0,false);
+    Add('Offset', ftFloat, 0,false);
   end;
   BufDataset2.CreateDataset;
 
@@ -503,6 +516,11 @@ begin
   EditUnit.Caption:=DelChars(EditUnit.Caption, ']');
   if BufDataset1.State in [dsEdit, dsInsert] then
   BufDataset1.FieldByName('Unit').AsString := EditUnit.Caption;
+end;
+
+procedure TForm1.FloatSpinEditEx2EditingDone(Sender: TObject);
+begin
+  if FloatSpinEditEx2.Value = 0 then FloatSpinEditEx2.Value:=1.00;
 end;
 
 procedure TForm1.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -736,6 +754,10 @@ begin
   CheckBoxSwapWords.Checked:=BufDataset1.FieldByName('SwapWords').AsBoolean;
   CheckBoxUseBit.Checked:=BufDataset1.FieldByName('UseBit').AsBoolean;
 
+  FloatSpinEditEx1.Value:= BufDataset1.FieldByName('Factor*').AsFloat;
+  FloatSpinEditEx2.Value:= BufDataset1.FieldByName('Factor/').AsFloat;
+  FloatSpinEditEx3.Value:= BufDataset1.FieldByName('Offset').AsFloat;
+
   if EditType.Items.Count > 0 then
   for i := 0 to EditType.Items.Count-1 do
   begin
@@ -836,6 +858,9 @@ begin
     Add('Unit', ftString, 20);
     Add('Obj', ftString, 600);
     Add('UseBit', ftLargeint, 0, false);
+    Add('Factor*', ftFloat, 0,false);
+    Add('Factor/', ftFloat, 0,false);
+    Add('Offset', ftFloat, 0,false);
   end;
   BufDataset2.CreateDataset;
 
@@ -911,7 +936,10 @@ begin
     BufDataset1.FieldByName('SwapDwords').AsBoolean := CheckBoxSwapDwords.Checked;
     BufDataset1.FieldByName('SwapWords').AsBoolean := CheckBoxSwapWords.Checked;
     BufDataset1.FieldByName('UseBit').AsBoolean := CheckBoxUseBit.Checked;
-    BufDataset1.FieldByName('BitNumber').AsLargeInt := BitNumber;
+    BufDataset1.FieldByName('Factor*').AsFloat := FloatSpinEditEx1.Value;
+    if FloatSpinEditEx2.Value = 0 then FloatSpinEditEx2.Value:=1.00;
+    BufDataset1.FieldByName('Factor/').AsFloat := FloatSpinEditEx2.Value;
+    BufDataset1.FieldByName('Offset').AsFloat := FloatSpinEditEx3.Value;
   end;
   BufDataset1.Post;
 
@@ -957,6 +985,9 @@ begin
     Add('Unit', ftString, 20);
     Add('Obj', ftString, 600);
     Add('UseBit', ftLargeint, 0, false);
+    Add('Factor*', ftFloat, 0,false);
+    Add('Factor/', ftFloat, 0,false);
+    Add('Offset', ftFloat, 0,false);
   end;
   BufDataset2.CreateDataset;
 
@@ -1029,6 +1060,9 @@ begin
     BufDataset2.FieldByName('Result').AsString := '';
     BufDataset2.FieldByName('Unit').AsString := BufDataset1.FieldByName('Unit').AsString;
     BufDataset2.FieldByName('Obj').AsString := DynamicTag.Name;
+    BufDataset2.FieldByName('Factor*').AsFloat := BufDataset1.FieldByName('Factor*').AsFloat;
+    BufDataset2.FieldByName('Factor/').AsFloat := BufDataset1.FieldByName('Factor/').AsFloat;
+    BufDataset2.FieldByName('Offset').AsFloat := BufDataset1.FieldByName('Offset').AsFloat;
 
     if (BufDataset1.FieldByName('UseBit').AsBoolean) and (BufDataset1.FieldByName('BitNumber').AsLargeInt>0) then
     begin
@@ -1180,6 +1214,15 @@ begin
     B29.Enabled:=true;
     B30.Enabled:=true;
     B31.Enabled:=true;
+    FloatSpinEditEx1.Enabled:=true;
+    FloatSpinEditEx2.Enabled:=true;
+    FloatSpinEditEx3.Enabled:=true;
+    if BufDataset1.State = dsInsert then
+    begin
+      FloatSpinEditEx1.Value:=1.00;
+      FloatSpinEditEx2.Value:=1.00;
+      FloatSpinEditEx3.Value:=0.00;
+    end;
   end
   else
   begin
@@ -1234,6 +1277,9 @@ begin
     B29.Enabled:=false;
     B30.Enabled:=false;
     B31.Enabled:=false;
+    FloatSpinEditEx1.Enabled:=false;
+    FloatSpinEditEx2.Enabled:=false;
+    FloatSpinEditEx3.Enabled:=false;
   end;
 end;
 
@@ -1361,6 +1407,9 @@ begin
     Add('UseBit', ftBoolean, 0,false);
     Add('BitNumber', ftLargeint, 0,false);
     Add('Unit', ftString, 20);
+    Add('Factor*', ftFloat, 0,false);
+    Add('Factor/', ftFloat, 0,false);
+    Add('Offset', ftFloat, 0,false);
   end;
   BufDataset1.CreateDataset;
 
@@ -1385,6 +1434,7 @@ var
   CSV: TCSVDocument;
   Row, Col: Integer;
   MyIni: TIniFile;
+  myFloat:float;
 begin
   Directory_:=ExtractFilePath(ParamStr(0));
   OpenDialog1.InitialDir:=ExtractFilePath(ParamStr(0));
@@ -1454,6 +1504,9 @@ begin
             Add('UseBit', ftBoolean, 0,false);
             Add('BitNumber', ftLargeint, 0,false);
             Add('Unit', ftString, 20);
+            Add('Factor*', ftFloat, 0,false);
+            Add('Factor/', ftFloat, 0,false);
+            Add('Offset', ftFloat, 0,false);
           end;
           BufDataset1.CreateDataset;
           //BufDataset1.First;
@@ -1476,6 +1529,34 @@ begin
           BufDataset1.FieldByName('UseBit').AsBoolean := StrToBoolV2(CSV.Cells[7, Row]);
           BufDataset1.FieldByName('BitNumber').AsLargeInt := StrToInt('0'+CSV.Cells[8, Row]);
           BufDataset1.FieldByName('Unit').AsString := CSV.Cells[9, Row];
+
+          BufDataset1.FieldByName('Factor*').AsFloat := 1.00;
+          BufDataset1.FieldByName('Factor/').AsFloat := 1.00;
+          BufDataset1.FieldByName('Offset').AsFloat := 0.00;
+
+          if (CSV.ColCount[Row]>10) then
+          begin
+            if TryStrToFloat(CSV.Cells[10, Row], myFloat) then
+              BufDataset1.FieldByName('Factor*').AsFloat := StrToFloat(FormatFloat('0.00', myFloat))
+            else
+              BufDataset1.FieldByName('Factor*').AsFloat := 1.00;
+          end;
+          if (CSV.ColCount[Row]>11) then
+          begin
+            if TryStrToFloat(CSV.Cells[11, Row], myFloat) then
+              BufDataset1.FieldByName('Factor/').AsFloat := StrToFloat(FormatFloat('0.00', myFloat))
+            else
+              BufDataset1.FieldByName('Factor/').AsFloat := 1.00;
+
+            if BufDataset1.FieldByName('Factor/').AsFloat = 0 then BufDataset1.FieldByName('Factor/').AsFloat:=1.00;
+          end;
+          if (CSV.ColCount[Row]>12) then
+          begin
+            if TryStrToFloat(CSV.Cells[12, Row], myFloat) then
+              BufDataset1.FieldByName('Offset').AsFloat := StrToFloat(FormatFloat('0.00', myFloat))
+            else
+              BufDataset1.FieldByName('Offset').AsFloat := 0.00;
+          end;
           BufDataset1.Post;
         end;
 

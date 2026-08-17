@@ -1,9 +1,9 @@
 object Form1: TForm1
-  Left = 275
+  Left = 342
   Height = 450
-  Top = 43
+  Top = 132
   Width = 1033
-  Caption = 'ModbusDriverCreator V0.2'
+  Caption = 'ModbusDriverCreator V0.3'
   ClientHeight = 450
   ClientWidth = 1033
   Menu = MainMenu1
@@ -861,6 +861,72 @@ object Form1: TForm1
         UpDownVisible = False
         Value = 0
       end
+      object FloatSpinEditEx1: TFloatSpinEditEx
+        Left = 712
+        Height = 23
+        Top = 8
+        Width = 109
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 12
+        UpDownVisible = False
+        Value = 1
+      end
+      object FloatSpinEditEx2: TFloatSpinEditEx
+        Left = 712
+        Height = 23
+        Top = 33
+        Width = 109
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 13
+        OnEditingDone = FloatSpinEditEx2EditingDone
+        UpDownVisible = False
+        Value = 1
+      end
+      object FloatSpinEditEx3: TFloatSpinEditEx
+        Left = 712
+        Height = 23
+        Top = 59
+        Width = 109
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 14
+        UpDownVisible = False
+      end
+      object Label21: TLabel
+        AnchorSideTop.Control = FloatSpinEditEx1
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = FloatSpinEditEx1
+        Left = 695
+        Height = 15
+        Top = 12
+        Width = 17
+        Anchors = [akTop, akRight]
+        Caption = 'F*: '
+      end
+      object Label22: TLabel
+        AnchorSideTop.Control = FloatSpinEditEx2
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = FloatSpinEditEx2
+        Left = 695
+        Height = 15
+        Top = 37
+        Width = 17
+        Anchors = [akTop, akRight]
+        Caption = 'F/: '
+      end
+      object Label23: TLabel
+        AnchorSideTop.Control = FloatSpinEditEx3
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = FloatSpinEditEx3
+        Left = 674
+        Height = 15
+        Top = 63
+        Width = 38
+        Anchors = [akTop, akRight]
+        Caption = 'Offset: '
+      end
     end
     object TabSheet3: TTabSheet
       Caption = 'Online Tester'
@@ -957,6 +1023,9 @@ object Form1: TForm1
         TabOrder = 5
         OnClick = CmdClearListClick
       end
+    end
+    object TabSheet4: TTabSheet
+      Caption = 'Topology'
     end
   end
   object Datasource1: TDataSource
@@ -1080,20 +1149,5 @@ object Form1: TForm1
       47ADC2423E8780B4B4F0F547D6F5F5BD5CC87524E6AE5D1CB57277DF437EBEF8
       3A93FFC9DCE90E5913A43D2DD52DC912D2D5E5097BAC58FB72CADF04FEFE63
     }
-  end
-  object Tag1: TPLCTagNumber
-    TagGUID = '{BF7CCF9F-8871-47D4-BDAF-AC45967B1E30}'
-    PLCRack = 0
-    PLCSlot = 0
-    PLCStation = 1
-    MemFile_DB = 0
-    MemAddress = 0
-    MemSubElement = 0
-    MemReadFunction = 3
-    MemWriteFunction = 16
-    ProtocolDriver = ModBusRTUDriver1
-    LongAddress = ''
-    EnableMaxValue = False
-    EnableMinValue = False
   end
 end

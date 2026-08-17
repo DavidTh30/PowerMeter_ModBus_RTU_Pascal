@@ -1,22 +1,22 @@
-Address,Symbol,Type,RegisterType,SwapBytes,SwapDwords,SwapWords,UseBit,BitNumber,Unit
-790,Active Power Total,pttDWord,Holding Registers,False,False,True,False,0,kW/100
-856,EA+: active energy in +,pttDWord,Holding Registers,False,False,True,False,0,kWh
-794,S AVG: total demand apparent power,pttDWord,Holding Registers,False,False,True,False,0,kVA/100
-860, ES: apparent energy,pttDWord,Holding Registers,False,False,True,False,0,kVAh
-792,Q: total reactive power,pttLongInt,Holding Registers,False,False,True,False,0,kvar/100
-858,ER+: reactive energy in +,pttDWord,Holding Registers,False,False,True,False,0,kvarh
-782,U1N: phase-to-neutral voltage phase 1,pttDWord,Holding Registers,False,False,True,False,0,V/100
-784,U2N: phase-to-neutral voltage phase 2,pttDWord,Holding Registers,False,False,True,False,0,V/100
-786,U3N: phase-to-neutral voltage phase 3,pttDWord,Holding Registers,False,False,True,False,0,V/100
-776,U12: phase-to-phase voltage phase 1 to 2,pttDWord,Holding Registers,False,False,True,False,0,V/100
-778,U23: phase-to-phase voltage phase 2 to 3,pttDWord,Holding Registers,False,False,True,False,0,V/100
-780,U31: phase-to-phase voltage phase 3 to 1,pttDWord,Holding Registers,False,False,True,False,0,V/100
-768,I1: instantaneous current phase 1,pttDWord,Holding Registers,False,False,True,False,0,mA
-770,I2: instantaneous current phase 2,pttDWord,Holding Registers,False,False,True,False,0,mA
-772,I3: instantaneous current phase 3,pttDWord,Holding Registers,False,False,True,False,0,mA
-774,IN: neutral current,pttDWord,Holding Registers,False,False,True,False,0,mA
-870,PF: total power factor,pttDWord,Holding Registers,False,False,True,False,0,0.001
-788,F: frequency,pttDWord,Holding Registers,False,False,True,False,0,Hz/100
+Address,Symbol,Type,RegisterType,SwapBytes,SwapDwords,SwapWords,UseBit,BitNumber,Unit,Factor*,Factor/,Offset
+790,Active Power Total,pttDWord,Holding Registers,False,False,True,False,0,kW/100,1,1,0
+856,EA+: active energy in +,pttDWord,Holding Registers,False,False,True,False,0,kWh,1,1,0
+794,S AVG: total demand apparent power,pttDWord,Holding Registers,False,False,True,False,0,kVA/100,1,1,0
+860, ES: apparent energy,pttDWord,Holding Registers,False,False,True,False,0,kVAh,1,1,0
+792,Q: total reactive power,pttLongInt,Holding Registers,False,False,True,False,0,kvar/100,1,1,0
+858,ER+: reactive energy in +,pttDWord,Holding Registers,False,False,True,False,0,kvarh,1,1,0
+782,U1N: phase-to-neutral voltage phase 1,pttDWord,Holding Registers,False,False,True,False,0,V/100,1,1,0
+784,U2N: phase-to-neutral voltage phase 2,pttDWord,Holding Registers,False,False,True,False,0,V/100,1,1,0
+786,U3N: phase-to-neutral voltage phase 3,pttDWord,Holding Registers,False,False,True,False,0,V/100,1,1,0
+776,U12: phase-to-phase voltage phase 1 to 2,pttDWord,Holding Registers,False,False,True,False,0,V/100,1,1,0
+778,U23: phase-to-phase voltage phase 2 to 3,pttDWord,Holding Registers,False,False,True,False,0,V/100,1,1,0
+780,U31: phase-to-phase voltage phase 3 to 1,pttDWord,Holding Registers,False,False,True,False,0,V/100,1,1,0
+768,I1: instantaneous current phase 1,pttDWord,Holding Registers,False,False,True,False,0,mA,1,1,0
+770,I2: instantaneous current phase 2,pttDWord,Holding Registers,False,False,True,False,0,mA,1,1,0
+772,I3: instantaneous current phase 3,pttDWord,Holding Registers,False,False,True,False,0,mA,1,1,0
+774,IN: neutral current,pttDWord,Holding Registers,False,False,True,False,0,mA,1,1,0
+870,PF: total power factor,pttDWord,Holding Registers,False,False,True,False,0,0.001,1,1,0
+788,F: frequency,pttDWord,Holding Registers,False,False,True,False,0,Hz/100,1,1,0
 [DriverInfo]
 Device_Name=PowerMeter
 Device_MFG=PowerLogic Schneider
@@ -24,7 +24,7 @@ Device_Model=PM500 series
 Device_SN=
 Device_Ver=
 Drv_Name=PM500
-Drv_SN=7ZOFFOOIT0
+Drv_SN=MFUOGJMD8C
 Drv_Ver=0.1
 Drv_Other_Information=
-Drv_CreatDate=14/08/2026 17:11:18
+Drv_CreatDate=18/08/2026 05:22:40

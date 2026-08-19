@@ -139,6 +139,7 @@ type
     Shape1: TShape;
     SpinEditNode: TSpinEditEx;
     EditAddress: TSpinEditEx;
+    StatusBar1: TStatusBar;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
@@ -1515,9 +1516,11 @@ procedure TForm1.SaveBMPClick(Sender: TObject);
 var
   FileName_:string;
 begin
+  StatusBar1.Panels.Items[0].Text:='';
   FileName_:=FormatDateTime('DD MM YYYY hh nn ss',Now);
   if Image1 = nil then exit;
   Image1.Picture.SaveToFile(FileName_+'.bmp');
+  StatusBar1.Panels.Items[0].Text:=FileName_+'.obj';
 end;
 
 procedure TForm1.MenuNewClick(Sender: TObject);
@@ -2034,11 +2037,11 @@ procedure TForm1.SaveOBJClick(Sender: TObject);
 var
   FileName_:string;
 begin
-
+  StatusBar1.Panels.Items[0].Text:='';
   FileName_:=FormatDateTime('DD MM YYYY hh nn ss',Now);
   if Image1 = nil then exit;
   WriteComponentResFile(FileName_+'.obj',Image1);
-
+  StatusBar1.Panels.Items[0].Text:=FileName_+'.obj';
 end;
 
 procedure TForm1.SpinEditNodeEditingDone(Sender: TObject);

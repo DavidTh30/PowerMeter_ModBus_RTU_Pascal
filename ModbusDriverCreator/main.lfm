@@ -3,7 +3,7 @@ object Form1: TForm1
   Height = 450
   Top = 139
   Width = 1033
-  Caption = 'ModbusDriverCreator V0.3'
+  Caption = 'ModbusDriverCreator V0.4'
   ClientHeight = 450
   ClientWidth = 1033
   Menu = MainMenu1
@@ -20,8 +20,8 @@ object Form1: TForm1
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 442
-    Top = 8
+    Height = 450
+    Top = 0
     Width = 1033
     ActivePage = TabSheet1
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -29,7 +29,7 @@ object Form1: TForm1
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Info'
-      ClientHeight = 414
+      ClientHeight = 422
       ClientWidth = 1025
       object Device_Name: TEdit
         Left = 88
@@ -285,7 +285,7 @@ object Form1: TForm1
     end
     object TabSheet2: TTabSheet
       Caption = 'Config'
-      ClientHeight = 414
+      ClientHeight = 422
       ClientWidth = 1025
       object Label11: TLabel
         AnchorSideTop.Control = EditAddress
@@ -717,7 +717,7 @@ object Form1: TForm1
         AnchorSideBottom.Control = TabSheet2
         AnchorSideBottom.Side = asrBottom
         Left = 0
-        Height = 262
+        Height = 270
         Top = 152
         Width = 1025
         AlternateColor = clMoneyGreen
@@ -963,7 +963,7 @@ object Form1: TForm1
     end
     object TabSheet3: TTabSheet
       Caption = 'Online Tester'
-      ClientHeight = 414
+      ClientHeight = 422
       ClientWidth = 1025
       object SpinEditNode: TSpinEditEx
         Left = 336
@@ -998,7 +998,7 @@ object Form1: TForm1
         TabOrder = 1
         OnClick = CmdConnectClick
       end
-      object EditCom: TComboBox
+      object ComportEdit: TComboBox
         Left = 144
         Height = 23
         Top = 21
@@ -1006,12 +1006,12 @@ object Form1: TForm1
         ItemHeight = 15
         ReadOnly = True
         TabOrder = 2
-        OnEditingDone = EditComEditingDone
+        OnEditingDone = ComportEditEditingDone
       end
       object Label20: TLabel
-        AnchorSideTop.Control = EditCom
+        AnchorSideTop.Control = ComportEdit
         AnchorSideTop.Side = asrCenter
-        AnchorSideRight.Control = EditCom
+        AnchorSideRight.Control = ComportEdit
         Left = 112
         Height = 15
         Top = 25
@@ -1026,7 +1026,7 @@ object Form1: TForm1
         AnchorSideBottom.Control = TabSheet3
         AnchorSideBottom.Side = asrBottom
         Left = 0
-        Height = 358
+        Height = 366
         Top = 56
         Width = 1025
         AlternateColor = clMoneyGreen
@@ -1059,6 +1059,77 @@ object Form1: TForm1
     end
     object TabSheet4: TTabSheet
       Caption = 'Topology'
+      ClientHeight = 422
+      ClientWidth = 1025
+      object Image2: TImage
+        Left = 216
+        Height = 128
+        Top = 72
+        Width = 128
+        Images = ImageList2
+      end
+      object Image3: TImage
+        Left = 520
+        Height = 96
+        Top = 88
+        Width = 128
+        ImageIndex = 1
+        Images = ImageList2
+        Stretch = True
+      end
+      object HMIBasicVectorControl1: THMIBasicVectorControl
+        Left = 384
+        Height = 82
+        Top = 96
+        Width = 82
+        SVGContents.Strings = (
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M566.6 342.6C579.1 330.1 579.1 309.8 566.6 297.3L406.6 137.3C394.1 124.8 373.8 124.8 361.3 137.3C348.8 149.8 348.8 170.1 361.3 182.6L466.7 288L96 288C78.3 288 64 302.3 64 320C64 337.7 78.3 352 96 352L466.7 352L361.3 457.4C348.8 469.9 348.8 490.2 361.3 502.7C373.8 515.2 394.1 515.2 406.6 502.7L566.6 342.7z"/></svg>'
+        )
+        Stretch = True
+        Proportional = True
+      end
+      object Label25: TLabel
+        Left = 216
+        Height = 15
+        Top = 192
+        Width = 54
+        Caption = 'Computer'
+      end
+      object Label26: TLabel
+        Left = 536
+        Height = 15
+        Top = 192
+        Width = 35
+        Caption = 'Device'
+      end
+      object Label27: TLabel
+        Left = 216
+        Height = 15
+        Top = 216
+        Width = 25
+        Caption = 'Port:'
+      end
+      object Label28: TLabel
+        Left = 536
+        Height = 15
+        Top = 216
+        Width = 32
+        Caption = 'Node:'
+      end
+      object Label29: TLabel
+        Left = 704
+        Height = 15
+        Top = 392
+        Width = 306
+        Caption = 'https://fontawesome.com/icons/classic/solid/arrow-right'
+      end
+      object Label30: TLabel
+        Left = 679
+        Height = 15
+        Top = 368
+        Width = 331
+        Caption = 'https://github.com/google/material-design-icons/tree/master'
+      end
     end
   end
   object Datasource1: TDataSource
@@ -1185,9 +1256,50 @@ object Form1: TForm1
   end
   object PopupMenu1: TPopupMenu
     Left = 744
-    object MenuItem2: TMenuItem
-      Caption = 'SaveAs'
-      OnClick = MenuItem2Click
+    object SaveBMP: TMenuItem
+      Caption = 'Save As BMP'
+      OnClick = SaveBMPClick
     end
+    object SaveOBJ: TMenuItem
+      Caption = 'SaveOBJ'
+      OnClick = SaveOBJClick
+    end
+  end
+  object ImageList2: TImageList
+    Height = 128
+    Width = 128
+    Left = 808
+    Bitmap = {
+      4C7A020000008000000080000000A50300000000000078DAEDDD3B4EE3601886
+      5142C2554ACD1EEC9A25B86031B608120DCBCA5E42C34E4CE1D1E7511AAACC88
+      FF62F93CD25B4FE63F883816E069922449922449922449922449922449D29A3A
+      9D4ED3E17098D734CDB4DFEFA7ABAB2B4BB038DB38E3F379C7D9F3E79FBB711C
+      E7F57D3F6DB75B368516671F06678F5CF65DD7CD6350C7CE1E39BE06866170E6
+      952E6CF8F34F79ADE7FDBEEEEB8194D78471CDE99CEB5E18A5AA6D5B675CF9C2
+      883FFF14B9B7B38C7B44A9BAF4351C8F474BB04BCF9F3F7FFEFCF9AFCF7FB3D9
+      F0E7CF9F3F7FFEFCF9F35F91FFF5F5357FFEFCF9F3E7CF9F3FFF15F9C7CF00F1
+      E7CF9F3F7FFEFCD7E5BFDBEDF8F3E7CF9F3F7FFEFCF9F3E7BF12FF9B9B1BFEFC
+      F9F3E7CF9F3F7FFE2BF2BFBDBDE5CF9F3F7FFEFCF9F3E7BF22FFBBBB3BFEFCF9
+      F3E7CF9F3F7FFEFCF9AFC4FFFEFE9E3F7FFEFCF9F3E7CF9FFF8AFC1F1E1EF8F3
+      E7CF9F3F7FFEFCF9AFC8FFF1F1913F7FFEFCF9F3FFD53CFFABFE3D3D3DF1E79F
+      24CF7FAC7FCFCFCFC9FC3DFFB7FE7D7C7C24F3F7FCEFBA17BFFBFBF5F5C59F7F
+      B2866170D695EEFDFD7D4ADD388E53D775F39C791D7B797999F7FDFD3DE528BE
+      06627DDF7B3F28B8F85B6FAFAFAFB37B2E7BFEFC7F5E13C6E7C258D334EE1125
+      5C9C6D9CF1DBDBDBBCCFCFCF6CF7F4CDCCCCCCCCCCCCCCCCCC6C599324499224
+      49922449922449922449922449922449922449922449D2B2F2FC87DF79A6432C
+      CE30CEB3F63CFF25DDE23CE35C6371C6FCF9D766EFF96F7916675CDBD780E73F
+      E65D9C774DD77ABEDFE77F3F8873AFE1BA90FFBAFD3DFFBDCCCE9FAF4BD7B62D
+      8F028B738F95CEBD9D72F78862FCF997ECD2D77B3C1EEDC22DE9590DFCF9F3E7
+      CF9F3F7FFEFCF9F3E7CF9F3F7FFEFCF9FFAB7FCEFBA8B9FEFDD2FF7FFEFCF9F3
+      E7CF9F3F7FFEFCF9F3E7CF9F3F7FFEFCF9F3E7BF2C7FF7FFF9F3E7CF9F3F7FFE
+      FCD3B9F8F90FFEFCF9F3E7CF9F3F7FFEFC7DFE73FF9F3F7FFEFCF9F3E7CF7FD9
+      BFFFC79F3F7FFEFCF9F3E7CFDFF5BF9FFFE0CF9F3F7FFEFCF9F3E7CF9F3F7FFE
+      FCF9F3E7CF9F3F7FFEEEFFF3E7CF9F3F7FFEFCF9F3E7CF9F3F7FFEFCF9F3E7CF
+      9FBFB9FF6FFC8DBFF137FEC69F3F7FFEFCF9F3E75FB3FF7EBFCF7ABFD6FE2ECE
+      3DC69F7FC9DAB6E5516071EEB1D21D0E071E0516E71E2BDDE9749AB6DB2D938C
+      8BF38E738FF1E75FBA6118B8645C9C774D8DE338755D378F4FDAC519C779D756
+      BCA658DFF7DE0F127CBF8F738DD568CF9FFFCF6BC2F3E793A669DC23FA8F7B3B
+      716EB138C35AAEF32449922449922449922449D272FA031CB730A5
+    }
   end
 end

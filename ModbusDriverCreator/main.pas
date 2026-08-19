@@ -7,8 +7,9 @@ interface
 uses
   Classes, SysUtils, db, BufDataset, FileUtil, SpinEx, Forms, Controls,
   Graphics, Dialogs, DbCtrls, DBGrids, StdCtrls, Menus, Spin, ExtCtrls,
-  ComCtrls, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag, PLCTagNumber,
-  TypInfo, registry, Math, IniFiles, strutils, LazFileUtils;
+  ComCtrls, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag,
+  PLCTagNumber, hmi_draw_basic_vector_control, TypInfo, registry, Math,
+  IniFiles, strutils, LazFileUtils;
 
 type
   A_Byte = array of Byte;
@@ -64,7 +65,11 @@ type
     CmdConnect: TButton;
     Datasource2: TDataSource;
     DBGrid2: TDBGrid;
-    EditCom: TComboBox;
+    HMIBasicVectorControl1: THMIBasicVectorControl;
+    Label25: TLabel;
+    Label26: TLabel;
+    Label27: TLabel;
+    ComportEdit: TComboBox;
     DBGrid1: TDBGrid;
     DBNavigator1: TDBNavigator;
     Device_MFG: TEdit;
@@ -86,7 +91,10 @@ type
     FloatSpinEditEx2: TFloatSpinEditEx;
     FloatSpinEditEx3: TFloatSpinEditEx;
     Image1: TImage;
+    Image2: TImage;
+    Image3: TImage;
     ImageList1: TImageList;
+    ImageList2: TImageList;
     Label1: TLabel;
     Label10: TLabel;
     Label11: TLabel;
@@ -104,7 +112,10 @@ type
     Label22: TLabel;
     Label23: TLabel;
     Label24: TLabel;
+    Label28: TLabel;
+    Label29: TLabel;
     Label3: TLabel;
+    Label30: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
@@ -113,7 +124,8 @@ type
     Label9: TLabel;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
-    MenuItem2: TMenuItem;
+    SaveOBJ: TMenuItem;
+    SaveBMP: TMenuItem;
     MenuNew: TMenuItem;
     MenuSaveAs: TMenuItem;
     MenuOpen: TMenuItem;
@@ -190,7 +202,7 @@ type
     procedure Drv_SNEditingDone(Sender: TObject);
     procedure Drv_VerEditingDone(Sender: TObject);
     procedure EditAddressEditingDone(Sender: TObject);
-    procedure EditComEditingDone(Sender: TObject);
+    procedure ComportEditEditingDone(Sender: TObject);
     procedure EditRegisterTypeEditingDone(Sender: TObject);
     procedure EditSymbolEditingDone(Sender: TObject);
     procedure EditTypeEditingDone(Sender: TObject);
@@ -199,10 +211,11 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MenuExitClick(Sender: TObject);
-    procedure MenuItem2Click(Sender: TObject);
+    procedure SaveBMPClick(Sender: TObject);
     procedure MenuNewClick(Sender: TObject);
     procedure MenuOpenClick(Sender: TObject);
     procedure MenuSaveAsClick(Sender: TObject);
+    procedure SaveOBJClick(Sender: TObject);
     procedure SpinEditNodeEditingDone(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure CmdInsertClick(Sender: TObject);
@@ -317,7 +330,7 @@ begin
   l      := TStringList.Create;
   reg    := TRegistry.Create;
   //Result_ := '';
-  EditCom.Clear;
+  ComportEdit.Clear;
 
   try
     reg.RootKey := HKEY_LOCAL_MACHINE;
@@ -329,7 +342,7 @@ begin
       begin
         pn := reg.ReadString(l[n]);
         //fn := findFriendlyName('\System\CurrentControlSet\Enum\', pn);
-        EditCom.Items.Append(pn);
+        ComportEdit.Items.Append(pn);
       end; // for n := 0 to l.Count - 1 ...
 
       //Result_ := v.CommaText;
@@ -394,6 +407,10 @@ var
   s:TStringList;
 begin
   Version_:=Form1.Caption;
+
+  Label27.Caption:='Port: '+ComportEdit.Text;
+  Label28.Caption:='Node: '+SpinEditNode.Value.ToString;
+
   OnBootFinish:=false;
 
   GetSerialPortExt();
@@ -589,9 +606,10 @@ begin
   BufDataset1.FieldByName('Address').AsInteger := EditAddress.Value;
 end;
 
-procedure TForm1.EditComEditingDone(Sender: TObject);
+procedure TForm1.ComportEditEditingDone(Sender: TObject);
 begin
-  SerialPortDriver1.COMPort:=EditCom.Text;
+  SerialPortDriver1.COMPort:=ComportEdit.Text;
+  Label27.Caption:='Port: '+ComportEdit.Text;
 end;
 
 procedure TForm1.EditRegisterTypeEditingDone(Sender: TObject);
@@ -1132,7 +1150,7 @@ begin
   end;
   BufDataset2.CreateDataset;
 
-  if (EditCom.Text='') and (not SerialPortDriver1.Active) then
+  if (ComportEdit.Text='') and (not SerialPortDriver1.Active) then
   begin
     showmessage('No comport found');
     //exit;
@@ -1250,7 +1268,7 @@ var
 begin
   timer1.Enabled:=false;
 
-  if (EditCom.Text='') and (not SerialPortDriver1.Active) then
+  if (ComportEdit.Text='') and (not SerialPortDriver1.Active) then
   begin
     showmessage('No comport found');
     exit;
@@ -1272,11 +1290,13 @@ begin
   begin
     CmdConnect.Caption:='Connect';
     timer1.Enabled:=false;
+    CmdConnect.Enabled:=true;
   end;
   if (SerialPortDriver1.Active) then
   begin
     CmdConnect.Caption:='Disconnect';
     timer1.Enabled:=true;
+    CmdConnect.Enabled:=false;
   end;
 end;
 
@@ -1491,9 +1511,13 @@ begin
   halt;
 end;
 
-procedure TForm1.MenuItem2Click(Sender: TObject);
+procedure TForm1.SaveBMPClick(Sender: TObject);
+var
+  FileName_:string;
 begin
-  Image1.Picture.SaveToFile('Temp.bmp');
+  FileName_:=FormatDateTime('DD MM YYYY hh nn ss',Now);
+  if Image1 = nil then exit;
+  Image1.Picture.SaveToFile(FileName_+'.bmp');
 end;
 
 procedure TForm1.MenuNewClick(Sender: TObject);
@@ -2006,6 +2030,17 @@ begin
 
 end;
 
+procedure TForm1.SaveOBJClick(Sender: TObject);
+var
+  FileName_:string;
+begin
+
+  FileName_:=FormatDateTime('DD MM YYYY hh nn ss',Now);
+  if Image1 = nil then exit;
+  WriteComponentResFile(FileName_+'.obj',Image1);
+
+end;
+
 procedure TForm1.SpinEditNodeEditingDone(Sender: TObject);
 var
   i: integer;
@@ -2018,6 +2053,7 @@ begin
     begin
       log({$I %LINE%}+' Found TPLCTagNumber: '+TPLCTagNumber(CurrentObj).Name);
       TPLCTagNumber(CurrentObj).PLCStation:=SpinEditNode.Value;
+      Label28.Caption:='Node: '+SpinEditNode.Value.ToString;
     end;
   end;
 end;

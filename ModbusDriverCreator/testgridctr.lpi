@@ -56,6 +56,9 @@
     </RunParams>
     <RequiredPackages>
       <Item>
+        <PackageName Value="pascalscada_hmi"/>
+      </Item>
+      <Item>
         <PackageName Value="pascalscada_dsng"/>
       </Item>
       <Item>

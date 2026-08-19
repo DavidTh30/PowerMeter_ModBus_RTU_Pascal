@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, db, BufDataset, FileUtil, SpinEx, Forms, Controls,
   Graphics, Dialogs, DbCtrls, DBGrids, StdCtrls, Menus, Spin, ExtCtrls,
   ComCtrls, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag, PLCTagNumber,
-  TypInfo, registry, Math, IniFiles, strutils;
+  TypInfo, registry, Math, IniFiles, strutils, LazFileUtils;
 
 type
 
@@ -49,6 +49,7 @@ type
     B9: TShape;
     BufDataset1: TBufDataset;
     BufDataset2: TBufDataset;
+    Button3: TButton;
     CmdClearList: TButton;
     CmdRandomSerial: TButton;
     Button2: TButton;
@@ -81,6 +82,7 @@ type
     FloatSpinEditEx1: TFloatSpinEditEx;
     FloatSpinEditEx2: TFloatSpinEditEx;
     FloatSpinEditEx3: TFloatSpinEditEx;
+    Image1: TImage;
     ImageList1: TImageList;
     Label1: TLabel;
     Label10: TLabel;
@@ -98,6 +100,7 @@ type
     Label21: TLabel;
     Label22: TLabel;
     Label23: TLabel;
+    Label24: TLabel;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
@@ -116,6 +119,7 @@ type
     PageControl1: TPageControl;
     SaveDialog1: TSaveDialog;
     SerialPortDriver1: TSerialPortDriver;
+    Shape1: TShape;
     SpinEditNode: TSpinEditEx;
     EditAddress: TSpinEditEx;
     TabSheet1: TTabSheet;
@@ -155,6 +159,7 @@ type
     procedure BufDataset1BeforeScroll(DataSet: TDataSet);
     procedure BufDataset1CalcFields(DataSet: TDataSet);
     procedure BufDataset1NewRecord(DataSet: TDataSet);
+    procedure Button3Click(Sender: TObject);
     procedure CmdCancelClick(Sender: TObject);
     procedure CmdClearListClick(Sender: TObject);
     procedure CmdMoveNextClick(Sender: TObject);
@@ -831,6 +836,121 @@ end;
 procedure TForm1.BufDataset1NewRecord(DataSet: TDataSet);
 begin
   log({$I %LINE%}+' NewRecord');
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+var
+  i:integer;
+  S_Name, Directory_, CurrentFile:string;
+  CSV: TCSVDocument;
+  Row, Col: Integer;
+  MyIni: TIniFile;
+  myFloat:float;
+  FileName:string;
+  BaseName:string;
+  FileType_:string;
+
+  SrcBmp, DestBmp: TBitmap; //BMP
+  PNG: TPortableNetworkGraphic; //Png
+  Jpg: TJPEGImage; //Jpg
+  Pic: TPicture; //Gif
+  DestRect: TRect;
+begin
+  Directory_:=ExtractFilePath(ParamStr(0));
+  OpenDialog1.InitialDir:=ExtractFilePath(ParamStr(0));
+  OpenDialog1.FileName:='*.png';
+  OpenDialog1.Filter:='PNG';
+  OpenDialog1.Filter := 'PNG files (*.png)|*.png|BMP files (*.bmp)|*.bmp|JPG files (*.jpg)|*.jpg|GIF files (*.gif)|*.gif|All files (*.*)|*.*';
+  OpenDialog1.DefaultExt := 'PNG';
+  OpenDialog1.FilterIndex := 1;
+  if OpenDialog1.Execute then
+  begin
+
+    S_Name:= OpenDialog1.FileName;  //Full path + PathDelim + Filename + file type
+    if not FileExists(S_Name) then
+    begin
+      showmessage('File not Exists');
+      exit;
+    end;
+
+    FileName := ExtractFileName(S_Name);     //Extract the Filename With Extension
+    BaseName := ExtractFileNameOnly(S_Name); //Extract the Filename Without Extension
+    Directory_:=ExtractFilePath(S_Name);     //Extract the File path
+    FileType_ := ExtractFileExt(S_Name);   // Extract the File type  '.xxx'
+    //PathDelim
+
+    if (not (lowerCase(FileType_) = '.png')) and (not (lowerCase(FileType_) = '.bmp'))
+    and (not (lowerCase(FileType_) = '.jpg')) and (not (lowerCase(FileType_) = '.gif')) then
+    begin
+      showmessage('Unknow file type');
+      exit;
+    end;
+
+    if (lowerCase(FileType_)='.bmp') then
+    try
+      SrcBmp := TBitmap.Create;
+      DestBmp := TBitmap.Create;
+
+      SrcBmp.LoadFromFile(S_Name);
+
+      DestBmp.SetSize(128, 128);
+      DestRect := Rect(0, 0, DestBmp.Width, DestBmp.Height);
+      DestBmp.Canvas.StretchDraw(DestRect, SrcBmp);
+      Image1.Picture.Assign(DestBmp);
+    finally
+      SrcBmp.Free;
+      DestBmp.Free;
+    end;
+
+    if (lowerCase(FileType_)='.png') then
+    try
+      DestBmp := TBitmap.Create;
+      PNG:= TPortableNetworkGraphic.Create;
+      PNG.LoadFromFile(S_Name);
+
+      DestBmp.SetSize(128, 128);
+      DestRect := Rect(0, 0, DestBmp.Width, DestBmp.Height);
+      DestBmp.Canvas.StretchDraw(DestRect, PNG);
+      Image1.Picture.Assign(DestBmp);
+    finally
+      DestBmp.Free;
+      PNG.Free;
+    end;
+
+    if (lowerCase(FileType_)='.jpg') then
+    try
+      DestBmp := TBitmap.Create;
+      Jpg := TJPEGImage.Create;
+      Jpg.LoadFromFile(S_Name);
+
+      DestBmp.SetSize(128, 128);
+      DestRect := Rect(0, 0, DestBmp.Width, DestBmp.Height);
+      DestBmp.Canvas.StretchDraw(DestRect, Jpg);
+      Image1.Picture.Assign(DestBmp);
+    finally
+      DestBmp.Free;
+      Jpg.Free;
+    end;
+
+    if (lowerCase(FileType_)='.gif') then
+    try
+      DestBmp := TBitmap.Create;
+      Pic := TPicture.Create;
+      Pic.LoadFromFile(S_Name);
+
+      DestBmp.SetSize(128, 128);
+      DestRect := Rect(0, 0, DestBmp.Width, DestBmp.Height);
+      DestBmp.Canvas.StretchDraw(DestRect, Pic.Graphic);
+      Image1.Picture.Assign(DestBmp);
+    finally
+      DestBmp.Free;
+      Pic.Free;
+    end;
+
+    //Image1.Picture.LoadFromFile(S_Name);
+    //showmessage(Directory_+PathDelim+'123'+FileName);
+    Image1.Picture.SaveToFile(Directory_+PathDelim+'123'+FileName);
+  end;
 end;
 
 procedure TForm1.CmdCancelClick(Sender: TObject);

@@ -1,18 +1,18 @@
 object Form1: TForm1
-  Left = 342
+  Left = 363
   Height = 450
-  Top = 132
+  Top = 139
   Width = 1033
   Caption = 'ModbusDriverCreator V0.3'
   ClientHeight = 450
   ClientWidth = 1033
   Menu = MainMenu1
-  OnClose = FormClose
-  OnCreate = FormCreate
   Position = poWorkAreaCenter
   ShowHint = True
-  LCLVersion = '3.4.0.0'
+  LCLVersion = '4.4.0.0'
   Scaled = False
+  OnClose = FormClose
+  OnCreate = FormCreate
   object PageControl1: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
@@ -248,6 +248,38 @@ object Form1: TForm1
         Caption = '...'
         TabOrder = 11
         OnClick = Button2Click
+      end
+      object Button3: TButton
+        Left = 520
+        Height = 23
+        Top = 234
+        Width = 26
+        Caption = '...'
+        TabOrder = 12
+        OnClick = Button3Click
+      end
+      object Shape1: TShape
+        Left = 387
+        Height = 130
+        Top = 128
+        Width = 130
+      end
+      object Image1: TImage
+        Left = 388
+        Height = 128
+        Top = 129
+        Width = 128
+        Stretch = True
+        Transparent = True
+      end
+      object Label24: TLabel
+        AnchorSideTop.Control = Shape1
+        AnchorSideTop.Side = asrCenter
+        Left = 275
+        Height = 15
+        Top = 186
+        Width = 29
+        Caption = 'Icon: '
       end
     end
     object TabSheet2: TTabSheet
@@ -855,6 +887,7 @@ object Form1: TForm1
         Width = 131
         Enabled = False
         MaxLength = 0
+        SpinButtonWidth = 17
         TabOrder = 11
         OnEditingDone = EditAddressEditingDone
         NullValue = 0
@@ -868,6 +901,7 @@ object Form1: TForm1
         Width = 109
         Enabled = False
         MaxLength = 0
+        SpinButtonWidth = 17
         TabOrder = 12
         UpDownVisible = False
         Value = 1
@@ -879,6 +913,7 @@ object Form1: TForm1
         Width = 109
         Enabled = False
         MaxLength = 0
+        SpinButtonWidth = 17
         TabOrder = 13
         OnEditingDone = FloatSpinEditEx2EditingDone
         UpDownVisible = False
@@ -891,6 +926,7 @@ object Form1: TForm1
         Width = 109
         Enabled = False
         MaxLength = 0
+        SpinButtonWidth = 17
         TabOrder = 14
         UpDownVisible = False
       end
@@ -938,6 +974,7 @@ object Form1: TForm1
         Top = 21
         Width = 80
         MaxLength = 0
+        SpinButtonWidth = 17
         TabOrder = 0
         OnEditingDone = SpinEditNodeEditingDone
         MaxValue = 255

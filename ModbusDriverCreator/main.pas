@@ -113,6 +113,7 @@ type
     Label9: TLabel;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
     MenuNew: TMenuItem;
     MenuSaveAs: TMenuItem;
     MenuOpen: TMenuItem;
@@ -120,6 +121,7 @@ type
     ModBusRTUDriver1: TModBusRTUDriver;
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
+    PopupMenu1: TPopupMenu;
     SaveDialog1: TSaveDialog;
     SerialPortDriver1: TSerialPortDriver;
     Shape1: TShape;
@@ -197,6 +199,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MenuExitClick(Sender: TObject);
+    procedure MenuItem2Click(Sender: TObject);
     procedure MenuNewClick(Sender: TObject);
     procedure MenuOpenClick(Sender: TObject);
     procedure MenuSaveAsClick(Sender: TObject);
@@ -226,6 +229,19 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+procedure BufferToFile(Buffer_: A_Byte; File_ : string);
+var
+  FileStream: TFileStream;
+begin
+  FileStream := TFileStream.Create(File_, fmCreate);
+  try
+    FileStream.WriteBuffer(Buffer_[0], length(Buffer_)); //Save both stucture and value
+    //showmessage(length(Buffer_).Tostring);
+  finally
+    FileStream.Free;
+  end;
+
+end;
 
 Function StrToBoolV2(BoolS_:string):boolean;
 begin
@@ -537,6 +553,8 @@ var
   CurrentObj: TComponent;
 begin
   timer1.Enabled:=false;
+
+  if Image1 <> nil then FreeAndNil(Image1);
 
   OnBootFinish:=false;
   BufDataset1.Clear;
@@ -1473,6 +1491,11 @@ begin
   halt;
 end;
 
+procedure TForm1.MenuItem2Click(Sender: TObject);
+begin
+  Image1.Picture.SaveToFile('Temp.bmp');
+end;
+
 procedure TForm1.MenuNewClick(Sender: TObject);
 var
   i:integer;
@@ -1548,6 +1571,7 @@ begin
   end;
 
   OnBootFinish:=true;
+  Image1.Canvas.Clear;
 end;
 
 procedure TForm1.MenuOpenClick(Sender: TObject);
@@ -1558,6 +1582,13 @@ var
   Row, Col: Integer;
   MyIni: TIniFile;
   myFloat:float;
+  Buffer:A_Byte;
+  Buffer_:A_Byte;
+  Arr1:A_Byte;
+  s2:string;
+  ObjectSize:integer;
+  FileStream : TFileStream;
+  continue_:integer;
 begin
   Directory_:=ExtractFilePath(ParamStr(0));
   OpenDialog1.InitialDir:=ExtractFilePath(ParamStr(0));
@@ -1576,6 +1607,7 @@ begin
       exit;
     end;
 
+    Image1.Canvas.Clear;
     CSV := TCSVDocument.Create;
     try
       CSV.Delimiter := ',';
@@ -1736,6 +1768,63 @@ begin
       MyIni.Free;
     end;
 
+    if FileExists('Image.obj') then
+    begin
+      DeleteFile('Image.obj');
+    end;
+
+    ObjectSize := Default(Integer);
+    Arr1:=BytesOf('[Object1]');
+
+    FileStream := TFileStream.Create(S_Name, fmOpenRead);
+    try
+      if FileStream.Size > 0 then
+      begin
+        Buffer := Default(A_Byte);
+        SetLength(Buffer, FileStream.Size);
+        FileStream.ReadBuffer(Buffer[0], FileStream.Size);
+
+        continue_:=0;//IndexByte(Buffer, Length(Buffer), BytesOf(']')[0]);
+        log({$I %LINE%}+' continue_: '+continue_.ToString);
+        log({$I %LINE%}+' length(Buffer): '+length(Buffer).ToString);
+        log({$I %LINE%}+' length(Arr1): '+length(Arr1).ToString);
+        for i := continue_ to length(Buffer)-1-Length(Arr1) do
+        begin
+          Move(Buffer[i], Arr1[0], Length(Arr1)); //Transfer array of byte to array of byte
+          SetString(s2, PAnsiChar(@Arr1[0]), Length(Arr1)); //Array of byte to string
+          //log({$I %LINE%}+' s2: '+s2);
+          if '[Object1]'=s2 then
+          begin
+            log({$I %LINE%}+': Found');
+            Move(Buffer[i+Length(Arr1)], ObjectSize, SizeOf(ObjectSize)); //Array of byte to integer
+            log({$I %LINE%}+' ObjectSize: '+ObjectSize.ToString);
+            Buffer_ := Default(A_Byte);
+            SetLength(Buffer_, ObjectSize);
+            Move(Buffer[i+Length(Arr1)+4], Buffer_[0], ObjectSize);
+            BufferToFile(Buffer_, 'Image.obj');
+            continue_:=i+Length(Arr1)+4;
+            log({$I %LINE%}+': Finish');
+            break;
+          end;
+        end;
+      end;
+    finally
+      FileStream.Free;
+    end;
+
+    if (not FileExists('Image.obj')) then
+    begin
+      showmessage({$INCLUDE %LINE%}+': Image.obj not exists');
+      Image1.Canvas.Clear;
+      exit;
+    end;
+
+    if Image1 <> nil then FreeAndNil(Image1);
+    Image1:= ReadComponentResFile('Image.obj',nil) as TImage;
+    Image1.Parent := TabSheet1;
+    Image1.PopupMenu:=PopupMenu1;
+
+    DeleteFile('Image.obj');
   end;
 end;
 
@@ -1778,6 +1867,10 @@ begin
     if Image1 = nil then exit;
     WriteComponentResFile('Image.obj',Image1);
     if not FileExists('Image.obj') then
+    begin
+      showmessage('Can not create Image.obj');
+      exit;
+    end;
 
     try
       AssignFile(fileout, S_Name);
@@ -1873,39 +1966,42 @@ begin
 
     CloseFile(fileout);
     BufDataset1.First;
-  end;
 
-  if not FileExists('Image.obj') then
-  begin
-    showmessage('Image.obj not exists');
-    Exit;
-  end;
-
-  FileStream := TFileStream.Create('Image.obj', fmOpenRead);
-  try
-    if FileStream.Size > 0 then
+    if not FileExists('Image.obj') then
     begin
-      Buffer1 := Default(A_Byte);
-      SetLength(Buffer1, FileStream.Size);
-      FileStream.ReadBuffer(Buffer1[0], FileStream.Size);
+      showmessage('Image.obj not exists');
+      Exit;
     end;
-  finally
-    FileStream.Free;
+
+    FileStream := TFileStream.Create('Image.obj', fmOpenRead);
+    try
+      if FileStream.Size > 0 then
+      begin
+        Buffer1 := Default(A_Byte);
+        SetLength(Buffer1, FileStream.Size);
+        FileStream.ReadBuffer(Buffer1[0], FileStream.Size);
+      end;
+    finally
+      FileStream.Free;
+    end;
+
+    FileStream := TFileStream.Create(S_Name, fmOpenReadWrite);
+    try
+      FileStream.Seek(10, soEnd);
+      Txt:='[Object1]';
+      ObjectSize:=length(Buffer1);
+      FileStream.WriteBuffer(Pointer(Txt)^, length(Txt)); //Save only string no stucture
+      FileStream.WriteBuffer(ObjectSize, SizeOf(ObjectSize)); //Save both stucture and value
+      FileStream.WriteBuffer(Buffer1[0], length(Buffer1)); //Save both stucture and value
+      //showmessage(length(Buffer1).ToString);
+    finally
+      FileStream.Free;
+    end;
   end;
 
-  FileStream := TFileStream.Create(S_Name, fmCreate);
-  try
-    FileStream.Seek(10, soEnd);
-    Txt:='[Object1]';
-    ObjectSize:=length(Buffer1);
-    FileStream.WriteBuffer(Pointer(Txt)^, length(Txt)); //Save only string no stucture
-    FileStream.WriteBuffer(ObjectSize, SizeOf(ObjectSize)); //Save both stucture and value
-    FileStream.WriteBuffer(Buffer1[0], length(Buffer1)); //Save both stucture and value
-    //showmessage(length(Buffer1).ToString);
-  finally
-    FileStream.Free;
-  end;
-
+  //if Image1 <> nil then FreeAndNil(Image1);
+  //Image1:= ReadComponentResFile('Image.obj',nil) as TImage;
+  //Image1.Parent := TabSheet1;
   DeleteFile('Image.obj');
 
 end;

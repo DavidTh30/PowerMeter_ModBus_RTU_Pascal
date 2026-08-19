@@ -7,12 +7,12 @@ object Form1: TForm1
   ClientHeight = 450
   ClientWidth = 1033
   Menu = MainMenu1
-  Position = poWorkAreaCenter
-  ShowHint = True
-  LCLVersion = '4.4.0.0'
-  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
+  Position = poWorkAreaCenter
+  ShowHint = True
+  LCLVersion = '3.4.0.0'
+  Scaled = False
   object PageControl1: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
@@ -259,16 +259,17 @@ object Form1: TForm1
         OnClick = Button3Click
       end
       object Shape1: TShape
-        Left = 387
+        Left = 386
         Height = 130
-        Top = 128
+        Top = 129
         Width = 130
       end
       object Image1: TImage
-        Left = 388
+        Left = 387
         Height = 128
-        Top = 129
+        Top = 130
         Width = 128
+        PopupMenu = PopupMenu1
         Stretch = True
         Transparent = True
       end
@@ -277,7 +278,7 @@ object Form1: TForm1
         AnchorSideTop.Side = asrCenter
         Left = 347
         Height = 15
-        Top = 186
+        Top = 187
         Width = 29
         Caption = 'Icon: '
       end
@@ -887,7 +888,6 @@ object Form1: TForm1
         Width = 131
         Enabled = False
         MaxLength = 0
-        SpinButtonWidth = 17
         TabOrder = 11
         OnEditingDone = EditAddressEditingDone
         NullValue = 0
@@ -901,7 +901,6 @@ object Form1: TForm1
         Width = 109
         Enabled = False
         MaxLength = 0
-        SpinButtonWidth = 17
         TabOrder = 12
         UpDownVisible = False
         Value = 1
@@ -913,7 +912,6 @@ object Form1: TForm1
         Width = 109
         Enabled = False
         MaxLength = 0
-        SpinButtonWidth = 17
         TabOrder = 13
         OnEditingDone = FloatSpinEditEx2EditingDone
         UpDownVisible = False
@@ -926,7 +924,6 @@ object Form1: TForm1
         Width = 109
         Enabled = False
         MaxLength = 0
-        SpinButtonWidth = 17
         TabOrder = 14
         UpDownVisible = False
       end
@@ -974,7 +971,6 @@ object Form1: TForm1
         Top = 21
         Width = 80
         MaxLength = 0
-        SpinButtonWidth = 17
         TabOrder = 0
         OnEditingDone = SpinEditNodeEditingDone
         MaxValue = 255
@@ -1143,7 +1139,7 @@ object Form1: TForm1
   object ImageList1: TImageList
     Height = 20
     Width = 20
-    Left = 696
+    Left = 672
     Bitmap = {
       4C7A090000001400000014000000E90400000000000078DAEDD87B4C5B551C07
       7046F68F3A261A4DF6F011C35FDBB23F808D0D228309A5CE814EB6E15C320111
@@ -1186,5 +1182,12 @@ object Form1: TForm1
       47ADC2423E8780B4B4F0F547D6F5F5BD5CC87524E6AE5D1CB57277DF437EBEF8
       3A93FFC9DCE90E5913A43D2DD52DC912D2D5E5097BAC58FB72CADF04FEFE63
     }
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 744
+    object MenuItem2: TMenuItem
+      Caption = 'SaveAs'
+      OnClick = MenuItem2Click
+    end
   end
 end

@@ -1290,13 +1290,13 @@ begin
   begin
     CmdConnect.Caption:='Connect';
     timer1.Enabled:=false;
-    CmdConnect.Enabled:=true;
+    ComportEdit.Enabled:=true;
   end;
   if (SerialPortDriver1.Active) then
   begin
     CmdConnect.Caption:='Disconnect';
     timer1.Enabled:=true;
-    CmdConnect.Enabled:=false;
+    ComportEdit.Enabled:=false;
   end;
 end;
 

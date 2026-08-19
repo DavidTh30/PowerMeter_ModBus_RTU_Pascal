@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 363
+  Left = 469
   Height = 450
-  Top = 139
+  Top = 236
   Width = 1033
   Caption = 'ModbusDriverCreator V0.4'
   ClientHeight = 450
@@ -1117,17 +1117,30 @@ object Form1: TForm1
         Caption = 'Node:'
       end
       object Label29: TLabel
-        Left = 704
+        AnchorSideRight.Control = TabSheet4
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = TabSheet4
+        AnchorSideBottom.Side = asrBottom
+        Left = 715
         Height = 15
-        Top = 392
+        Top = 403
         Width = 306
+        Anchors = [akRight, akBottom]
+        BorderSpacing.Right = 4
+        BorderSpacing.Bottom = 4
         Caption = 'https://fontawesome.com/icons/classic/solid/arrow-right'
       end
       object Label30: TLabel
-        Left = 679
+        AnchorSideRight.Control = TabSheet4
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = Label29
+        Left = 690
         Height = 15
-        Top = 368
+        Top = 384
         Width = 331
+        Anchors = [akRight, akBottom]
+        BorderSpacing.Right = 4
+        BorderSpacing.Bottom = 4
         Caption = 'https://github.com/google/material-design-icons/tree/master'
       end
     end

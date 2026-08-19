@@ -275,7 +275,7 @@ object Form1: TForm1
       object Label24: TLabel
         AnchorSideTop.Control = Shape1
         AnchorSideTop.Side = asrCenter
-        Left = 275
+        Left = 347
         Height = 15
         Top = 186
         Width = 29

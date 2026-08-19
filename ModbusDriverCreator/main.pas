@@ -11,6 +11,9 @@ uses
   TypInfo, registry, Math, IniFiles, strutils, LazFileUtils;
 
 type
+  A_Byte = array of Byte;
+
+type
 
   { TForm1 }
 
@@ -949,7 +952,7 @@ begin
 
     //Image1.Picture.LoadFromFile(S_Name);
     //showmessage(Directory_+PathDelim+'123'+FileName);
-    Image1.Picture.SaveToFile(Directory_+PathDelim+'123'+FileName);
+    //Image1.Picture.SaveToFile(Directory_+PathDelim+'123'+FileName);
   end;
 end;
 
@@ -1744,6 +1747,9 @@ var
   Txt:String;
   FileName_:string;
   s:string;
+  FileStream :TFileStream;
+  Buffer1:A_Byte;
+  ObjectSize:integer;
 begin
 
   FileName_:=FormatDateTime('DD MM YYYY hh nn ss',Now);
@@ -1768,6 +1774,10 @@ begin
       end;
     end;
     //showmessage('Save');
+
+    if Image1 = nil then exit;
+    WriteComponentResFile('Image.obj',Image1);
+    if not FileExists('Image.obj') then
 
     try
       AssignFile(fileout, S_Name);
@@ -1864,6 +1874,39 @@ begin
     CloseFile(fileout);
     BufDataset1.First;
   end;
+
+  if not FileExists('Image.obj') then
+  begin
+    showmessage('Image.obj not exists');
+    Exit;
+  end;
+
+  FileStream := TFileStream.Create('Image.obj', fmOpenRead);
+  try
+    if FileStream.Size > 0 then
+    begin
+      Buffer1 := Default(A_Byte);
+      SetLength(Buffer1, FileStream.Size);
+      FileStream.ReadBuffer(Buffer1[0], FileStream.Size);
+    end;
+  finally
+    FileStream.Free;
+  end;
+
+  FileStream := TFileStream.Create(S_Name, fmCreate);
+  try
+    FileStream.Seek(10, soEnd);
+    Txt:='[Object1]';
+    ObjectSize:=length(Buffer1);
+    FileStream.WriteBuffer(Pointer(Txt)^, length(Txt)); //Save only string no stucture
+    FileStream.WriteBuffer(ObjectSize, SizeOf(ObjectSize)); //Save both stucture and value
+    FileStream.WriteBuffer(Buffer1[0], length(Buffer1)); //Save both stucture and value
+    //showmessage(length(Buffer1).ToString);
+  finally
+    FileStream.Free;
+  end;
+
+  DeleteFile('Image.obj');
 
 end;
 
@@ -2051,6 +2094,9 @@ begin
     CmdMoveLast.Enabled:=false;
   end;
 end;
+
+initialization
+  RegisterClasses([TForm1,TImage]);
 
 end.
 

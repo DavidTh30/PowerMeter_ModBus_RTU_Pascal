@@ -1080,12 +1080,13 @@ object Form1: TForm1
         Images = ImageList2
       end
       object Image3: TImage
-        Left = 520
-        Height = 96
-        Top = 88
-        Width = 128
+        Left = 499
+        Height = 64
+        Top = 104
+        Width = 64
         ImageIndex = 1
         Images = ImageList2
+        Proportional = True
         Stretch = True
       end
       object HMIBasicVectorControl1: THMIBasicVectorControl
@@ -1107,7 +1108,7 @@ object Form1: TForm1
         Caption = 'Computer'
       end
       object Label26: TLabel
-        Left = 536
+        Left = 504
         Height = 15
         Top = 192
         Width = 35
@@ -1121,7 +1122,7 @@ object Form1: TForm1
         Caption = 'Port:'
       end
       object Label28: TLabel
-        Left = 536
+        Left = 504
         Height = 15
         Top = 216
         Width = 32
@@ -1280,13 +1281,21 @@ object Form1: TForm1
   end
   object PopupMenu1: TPopupMenu
     Left = 744
-    object SaveBMP: TMenuItem
-      Caption = 'Save As BMP'
-      OnClick = SaveBMPClick
+    object Menu2Open: TMenuItem
+      Caption = 'Open'
+      OnClick = Button3Click
     end
-    object SaveOBJ: TMenuItem
+    object Menu2SaveBMP: TMenuItem
+      Caption = 'Save As BMP'
+      OnClick = Menu2SaveBMPClick
+    end
+    object Menu2SaveOBJ: TMenuItem
       Caption = 'Save As OBJ'
-      OnClick = SaveOBJClick
+      OnClick = Menu2SaveOBJClick
+    end
+    object Menu2Clear: TMenuItem
+      Caption = 'Clear'
+      OnClick = Menu2ClearClick
     end
   end
   object ImageList2: TImageList

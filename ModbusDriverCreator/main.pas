@@ -124,8 +124,10 @@ type
     Label9: TLabel;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
-    SaveOBJ: TMenuItem;
-    SaveBMP: TMenuItem;
+    Menu2Open: TMenuItem;
+    Menu2SaveOBJ: TMenuItem;
+    Menu2SaveBMP: TMenuItem;
+    Menu2Clear: TMenuItem;
     MenuNew: TMenuItem;
     MenuSaveAs: TMenuItem;
     MenuOpen: TMenuItem;
@@ -211,12 +213,13 @@ type
     procedure FloatSpinEditEx2EditingDone(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure Menu2ClearClick(Sender: TObject);
     procedure MenuExitClick(Sender: TObject);
-    procedure SaveBMPClick(Sender: TObject);
+    procedure Menu2SaveBMPClick(Sender: TObject);
     procedure MenuNewClick(Sender: TObject);
     procedure MenuOpenClick(Sender: TObject);
     procedure MenuSaveAsClick(Sender: TObject);
-    procedure SaveOBJClick(Sender: TObject);
+    procedure Menu2SaveOBJClick(Sender: TObject);
     procedure SpinEditNodeEditingDone(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure CmdInsertClick(Sender: TObject);
@@ -534,6 +537,23 @@ begin
   end;
 
   OnBootFinish:=true;
+end;
+
+procedure TForm1.Menu2ClearClick(Sender: TObject);
+begin
+  if Image1 <> nil then freeandnil(Image1);
+  Image1:=TImage.Create(self);
+  Image1.Parent:=TabSheet1;
+  Image1.AutoSize:=false;
+  Image1.Height:=128;
+  Image1.Width:=128;
+  Image1.Left:=387;
+  Image1.Top:=130;
+  Image1.PopupMenu:=PopupMenu1;
+  Image1.Stretch:=true;
+  //Image1.Canvas.Clear;
+  //Image1.Canvas.Brush.Style := bsSolid;
+  //Image1.Canvas.Brush.Color := clWhite; // Target fill color
 end;
 
 procedure TForm1.EditSymbolEditingDone(Sender: TObject);
@@ -896,6 +916,8 @@ var
   Pic: TPicture; //Gif
   DestRect: TRect;
 begin
+  if Image1 = nil then exit;
+
   Directory_:=ExtractFilePath(ParamStr(0));
   OpenDialog1.InitialDir:=ExtractFilePath(ParamStr(0));
   OpenDialog1.FileName:='*.png';
@@ -1235,7 +1257,8 @@ begin
   end;
   OnBootFinish:=true;
 
-
+  if (image3<> nil) and (image1<> nil) then
+  image3.Picture:=image1.Picture;
 end;
 
 procedure TForm1.CheckBoxSwapBytesEditingDone(Sender: TObject);
@@ -1512,15 +1535,40 @@ begin
   halt;
 end;
 
-procedure TForm1.SaveBMPClick(Sender: TObject);
+procedure TForm1.Menu2SaveBMPClick(Sender: TObject);
 var
-  FileName_:string;
+  S_Name:string;
+  FileName_,Directory_:string;
 begin
+  if Image1 = nil then exit;
+
   StatusBar1.Panels.Items[0].Text:='';
   FileName_:=FormatDateTime('DD MM YYYY hh nn ss',Now);
   if Image1 = nil then exit;
-  Image1.Picture.SaveToFile(FileName_+'.bmp');
-  StatusBar1.Panels.Items[0].Text:=FileName_+'.obj';
+
+  Directory_:=ExtractFilePath(ParamStr(0));
+  SaveDialog1.InitialDir:=ExtractFilePath(ParamStr(0));
+  SaveDialog1.FileName:=FileName_+'.bmp';
+  SaveDialog1.Filter:='bmp';
+  SaveDialog1.Filter := 'BMP files (*.bmp)|*.bmp|All files (*.*)|*.*';
+  SaveDialog1.DefaultExt := 'bmp';
+  SaveDialog1.FilterIndex := 1;
+  if SaveDialog1.Execute then
+  begin
+    S_Name:= SaveDialog1.FileName;
+    if FileExists(S_Name) then
+    begin
+      if MessageDlg('Confirmation', 'Do you want to proceed?', mtConfirmation, [mbYes, mbNo], 0) = 7 then
+      begin
+
+        exit;
+      end;
+    end;
+    //log({$I %LINE%}+' Save;);
+    Image1.Picture.SaveToFile(S_Name);
+    StatusBar1.Panels.Items[0].Text:=S_Name;
+  end;
+
 end;
 
 procedure TForm1.MenuNewClick(Sender: TObject);
@@ -1536,6 +1584,8 @@ begin
     DBGrid1.Columns.Delete(0);
 
   form1.Caption:=Version_;
+
+  StatusBar1.Panels.Items[0].Text:='';
 
   Device_Name.Caption:='';
   Device_MFG.Caption:='';
@@ -1634,6 +1684,7 @@ begin
       exit;
     end;
 
+    StatusBar1.Panels.Items[0].Text:='';
     Image1.Canvas.Clear;
     CSV := TCSVDocument.Create;
     try
@@ -1852,6 +1903,7 @@ begin
     Image1.PopupMenu:=PopupMenu1;
 
     DeleteFile('Image.obj');
+    StatusBar1.Panels.Items[0].Text:=S_Name;
   end;
 end;
 
@@ -1891,13 +1943,7 @@ begin
     end;
     //showmessage('Save');
 
-    if Image1 = nil then exit;
-    WriteComponentResFile('Image.obj',Image1);
-    if not FileExists('Image.obj') then
-    begin
-      showmessage('Can not create Image.obj');
-      exit;
-    end;
+    StatusBar1.Panels.Items[0].Text:='';
 
     try
       AssignFile(fileout, S_Name);
@@ -1994,6 +2040,16 @@ begin
     CloseFile(fileout);
     BufDataset1.First;
 
+    StatusBar1.Panels.Items[0].Text:=S_Name;
+
+    if Image1 = nil then exit;
+    WriteComponentResFile('Image.obj',Image1);
+    if not FileExists('Image.obj') then
+    begin
+      showmessage('Can not create Image.obj');
+      exit;
+    end;
+
     if not FileExists('Image.obj') then
     begin
       showmessage('Image.obj not exists');
@@ -2033,15 +2089,38 @@ begin
 
 end;
 
-procedure TForm1.SaveOBJClick(Sender: TObject);
+procedure TForm1.Menu2SaveOBJClick(Sender: TObject);
 var
-  FileName_:string;
+  S_Name:string;
+  FileName_,Directory_:string;
 begin
+  if Image1 = nil then exit;
+
   StatusBar1.Panels.Items[0].Text:='';
   FileName_:=FormatDateTime('DD MM YYYY hh nn ss',Now);
   if Image1 = nil then exit;
-  WriteComponentResFile(FileName_+'.obj',Image1);
-  StatusBar1.Panels.Items[0].Text:=FileName_+'.obj';
+
+  Directory_:=ExtractFilePath(ParamStr(0));
+  SaveDialog1.InitialDir:=ExtractFilePath(ParamStr(0));
+  SaveDialog1.FileName:=FileName_+'.obj';
+  SaveDialog1.Filter:='obj';
+  SaveDialog1.Filter := 'OBJ files (*.obj)|*.obj|All files (*.*)|*.*';
+  SaveDialog1.DefaultExt := 'obj';
+  SaveDialog1.FilterIndex := 1;
+  if SaveDialog1.Execute then
+  begin
+    S_Name:= SaveDialog1.FileName;
+    if FileExists(S_Name) then
+    begin
+      if MessageDlg('Confirmation', 'Do you want to proceed?', mtConfirmation, [mbYes, mbNo], 0) = 7 then
+      begin
+        exit;
+      end;
+    end;
+    //log({$I %LINE%}+' Save;);
+    WriteComponentResFile(FileName_+'.obj',Image1);
+    StatusBar1.Panels.Items[0].Text:=FileName_+'.obj';
+  end;
 end;
 
 procedure TForm1.SpinEditNodeEditingDone(Sender: TObject);

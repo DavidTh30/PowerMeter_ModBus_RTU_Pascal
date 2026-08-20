@@ -1029,6 +1029,8 @@ var
 begin
   timer1.Enabled:=false;
 
+  label26.Caption:= 'Device: ';
+
   BufDataset2.Clear;
   BufDataset2.Fields.Clear;
   BufDataset2.FieldDefs.Clear;
@@ -1181,6 +1183,8 @@ begin
     //exit;
   end;
 
+  label26.Caption:= 'Device: ';
+
   i2:=0;
   for i := 0 to ComponentCount - 1 do
   begin
@@ -1261,6 +1265,7 @@ begin
 
   if (image3<> nil) and (image1<> nil) then
   image3.Picture:=image1.Picture;
+  label26.Caption:= 'Device: '+Drv_Name.Caption;
 end;
 
 procedure TForm1.CheckBoxSwapBytesEditingDone(Sender: TObject);

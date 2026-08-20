@@ -23,9 +23,9 @@ object Form1: TForm1
     Height = 450
     Top = 0
     Width = 974
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Info'
@@ -482,9 +482,9 @@ object Form1: TForm1
         Caption = 'FloatMin: '
       end
       object Label33: TLabel
-        AnchorSideTop.Control = FloaMax
+        AnchorSideTop.Control = FloatMax
         AnchorSideTop.Side = asrCenter
-        AnchorSideRight.Control = FloaMax
+        AnchorSideRight.Control = FloatMax
         Left = 342
         Height = 15
         Top = 38
@@ -503,7 +503,7 @@ object Form1: TForm1
         OnEditingDone = FloatMinEditingDone
         UpDownVisible = False
       end
-      object FloaMax: TFloatSpinEditEx
+      object FloatMax: TFloatSpinEditEx
         Left = 397
         Height = 23
         Top = 34
@@ -511,7 +511,7 @@ object Form1: TForm1
         Enabled = False
         MaxLength = 0
         TabOrder = 8
-        OnEditingDone = FloaMaxEditingDone
+        OnEditingDone = FloatMaxEditingDone
         UpDownVisible = False
         Value = 100
       end

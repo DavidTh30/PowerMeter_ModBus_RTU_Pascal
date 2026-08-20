@@ -34,7 +34,7 @@ type
     Int64Startup: TSpinEditEx;
     RandomPerMin: TSpinEditEx;
     FloatMin: TFloatSpinEditEx;
-    FloaMax: TFloatSpinEditEx;
+    FloatMax: TFloatSpinEditEx;
     HMIBasicVectorControl1: THMIBasicVectorControl;
     Label1: TLabel;
     Label25: TLabel;
@@ -148,7 +148,7 @@ type
     procedure Drv_VerEditingDone(Sender: TObject);
     procedure Int64StartupEditingDone(Sender: TObject);
     procedure FloatMinEditingDone(Sender: TObject);
-    procedure FloaMaxEditingDone(Sender: TObject);
+    procedure FloatMaxEditingDone(Sender: TObject);
     procedure IntMaxEditingDone(Sender: TObject);
     procedure IntMinEditingDone(Sender: TObject);
     procedure EditSymbolEditingDone(Sender: TObject);
@@ -611,7 +611,6 @@ begin
   if BufDataset1.State in [dsEdit, dsInsert] then exit;
 
   log({$I %LINE%}+' Update');
-  IntMin.Value:= BufDataset1.FieldByName('Address').AsInteger;
   EditSymbol.Caption:= BufDataset1.FieldByName('Symbol').AsString;
   EditUnit.Caption:= BufDataset1.FieldByName('Unit').AsString;
 
@@ -625,27 +624,12 @@ begin
     end;
   end;
 
-  for i := 0 to ComponentCount - 1 do
-  begin
-    CurrentObj := Components[i];
-    if (CurrentObj is TShape) and (LeftStr(CurrentObj.Name,1)='B') then TShape(CurrentObj).Brush.Color := clWhite;
-  end;
+  IntMin.Value:= BufDataset1.FieldByName('IntMin').AsInteger;
+  IntMax.Value:= BufDataset1.FieldByName('IntMax').AsInteger;
+  FloatMin.Value:= BufDataset1.FieldByName('FloatMin').AsFloat;
+  FloatMax.Value:= BufDataset1.FieldByName('FloatMax').AsFloat;
 
-  if (BufDataset1.FieldByName('BitNumber').AsLargeInt>0) then
-  if (BufDataset1.FieldByName('BitNumber').AsLargeInt<=2147483648) then
-  if ((BufDataset1.FieldByName('BitNumber').AsLargeInt mod 2) = 0)then
-  begin
-    for i := 0 to 31 do
-    begin
-      BitNumber:= round(Power(2,i));
-      if BitNumber = BufDataset1.FieldByName('BitNumber').AsLargeInt then
-      begin
-        CurrentObj := Self.FindComponent('B'+i.ToString);
-        if (CurrentObj <> nil) then TShape(CurrentObj).Brush.Color := clgreen;
-        break;
-      end;
-    end;
-  end;
+
 end;
 
 procedure TForm1.BufDataset1BeforeEdit(DataSet: TDataSet);
@@ -894,10 +878,16 @@ begin
   begin
     EditSymbol.Caption:=DelChars(EditSymbol.Caption, ',');
     EditUnit.Caption:=DelChars(EditUnit.Caption, ',');
-    BufDataset1.FieldByName('Address').AsInteger := IntMin.Value;
     BufDataset1.FieldByName('Symbol').AsString := EditSymbol.Caption;
     BufDataset1.FieldByName('Type').AsString := EditType.Items[EditType.ItemIndex];
     BufDataset1.FieldByName('Unit').AsString := EditUnit.Caption;
+    BufDataset1.FieldByName('RandomTimePerMin').AsInteger := RandomPerMin.Value;
+    BufDataset1.FieldByName('I_Min').AsInteger := IntMin.Value;
+    BufDataset1.FieldByName('I_Max').AsInteger := IntMax.Value;
+    BufDataset1.FieldByName('F_Min').AsFloat := FloatMin.Value;
+    BufDataset1.FieldByName('F_Max').AsFloat := FloatMax.Value;
+    BufDataset1.FieldByName('I64_Start').AsLargeInt := Int64Startup.Value;
+    BufDataset1.FieldByName('StartupReset').AsBoolean := CheckBoxStartupReset.Checked;
   end;
   BufDataset1.Post;
 
@@ -1091,7 +1081,7 @@ begin
     IntMin.Enabled:=true;
     IntMax.Enabled:=true;
     FloatMin.Enabled:=true;
-    FloaMax.Enabled:=true;
+    FloatMax.Enabled:=true;
     Int64Startup.Enabled:=true;
     CheckBoxStartupReset.Enabled:=true;
     RandomPerMin.Enabled:=true;
@@ -1109,7 +1099,7 @@ begin
     IntMin.Enabled:=false;
     IntMax.Enabled:=false;
     FloatMin.Enabled:=false;
-    FloaMax.Enabled:=false;
+    FloatMax.Enabled:=false;
     Int64Startup.Enabled:=false;
     CheckBoxStartupReset.Enabled:=false;
     RandomPerMin.Enabled:=false;
@@ -1168,10 +1158,10 @@ begin
   BufDataset1.FieldByName('F_Min').AsFloat := FloatMin.Value;
 end;
 
-procedure TForm1.FloaMaxEditingDone(Sender: TObject);
+procedure TForm1.FloatMaxEditingDone(Sender: TObject);
 begin
   if BufDataset1.State in [dsEdit, dsInsert] then
-  BufDataset1.FieldByName('F_Max').AsFloat := FloaMax.Value;
+  BufDataset1.FieldByName('F_Max').AsFloat := FloatMax.Value;
 end;
 
 procedure TForm1.IntMaxEditingDone(Sender: TObject);
@@ -1511,15 +1501,25 @@ begin
           if not (BufDataset1.State in [dsEdit, dsInsert]) then
             BufDataset1.Edit;
           BufDataset1.Append;
-          BufDataset1.FieldByName('Address').AsInteger := StrToInt(CSV.Cells[0, Row]);
-          BufDataset1.FieldByName('Symbol').AsString := CSV.Cells[1, Row];
-          BufDataset1.FieldByName('Type').AsString := CSV.Cells[2, Row];
-          BufDataset1.FieldByName('RegisterType').AsString := CSV.Cells[3, Row];
-          BufDataset1.FieldByName('SwapBytes').AsBoolean := StrToBoolV2(CSV.Cells[4, Row]);
-          BufDataset1.FieldByName('SwapDwords').AsBoolean := StrToBoolV2(CSV.Cells[5, Row]);
-          BufDataset1.FieldByName('SwapWords').AsBoolean := StrToBoolV2(CSV.Cells[6, Row]);
-          BufDataset1.FieldByName('Unit').AsString := CSV.Cells[9, Row];
+          BufDataset1.FieldByName('Symbol').AsInteger := StrToInt(CSV.Cells[0, Row]);
+          BufDataset1.FieldByName('Type').AsString := CSV.Cells[1, Row];
+          BufDataset1.FieldByName('Unit').AsString := CSV.Cells[2, Row];
+          BufDataset1.FieldByName('RandomTimePerMin').AsInteger := StrToInt(CSV.Cells[3, Row]);
+          BufDataset1.FieldByName('I_Min').AsInteger := StrToInt(CSV.Cells[4, Row]);
+          BufDataset1.FieldByName('I_Max').AsInteger := StrToInt(CSV.Cells[5, Row]);
 
+          if TryStrToFloat(CSV.Cells[6, Row], myFloat) then
+              BufDataset1.FieldByName('F_Min').AsFloat := StrToFloat(FormatFloat('0.00', myFloat))
+            else
+              BufDataset1.FieldByName('F_Min').AsFloat := 1.00;
+
+          if TryStrToFloat(CSV.Cells[7, Row], myFloat) then
+              BufDataset1.FieldByName('F_Max').AsFloat := StrToFloat(FormatFloat('0.00', myFloat))
+            else
+              BufDataset1.FieldByName('F_Max').AsFloat := 100.00;
+
+          BufDataset1.FieldByName('I64_Start').AsLargeInt := StrToInt64(CSV.Cells[8, Row]);
+          BufDataset1.FieldByName('StartupReset').AsBoolean := StrToBoolV2(CSV.Cells[9, Row]);
           BufDataset1.Post;
         end;
 

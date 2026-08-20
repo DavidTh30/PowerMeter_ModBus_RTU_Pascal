@@ -19,62 +19,28 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
-    B0: TShape;
-    B1: TShape;
-    B10: TShape;
-    B11: TShape;
-    B12: TShape;
-    B13: TShape;
-    B14: TShape;
-    B15: TShape;
-    B16: TShape;
-    B17: TShape;
-    B18: TShape;
-    B19: TShape;
-    B2: TShape;
-    B20: TShape;
-    B21: TShape;
-    B22: TShape;
-    B23: TShape;
-    B24: TShape;
-    B25: TShape;
-    B26: TShape;
-    B27: TShape;
-    B28: TShape;
-    B29: TShape;
-    B3: TShape;
-    B30: TShape;
-    B31: TShape;
-    B4: TShape;
-    B5: TShape;
-    B6: TShape;
-    B7: TShape;
-    B8: TShape;
-    B9: TShape;
     BufDataset1: TBufDataset;
     BufDataset2: TBufDataset;
     Button3: TButton;
-    CheckBoxUseBit1: TCheckBox;
+    CheckBoxStartupReset: TCheckBox;
     CmdClearList: TButton;
     CmdRandomSerial: TButton;
     Button2: TButton;
     CmdInitDriver: TButton;
-    CheckBoxUseBit: TCheckBox;
     CmdConnect: TButton;
     Datasource2: TDataSource;
     DBGrid2: TDBGrid;
-    EditAddress1: TSpinEditEx;
-    EditAddress2: TSpinEditEx;
-    EditAddress3: TSpinEditEx;
-    FloatSpinEditEx4: TFloatSpinEditEx;
-    FloatSpinEditEx5: TFloatSpinEditEx;
+    IntMax: TSpinEditEx;
+    Int64Startup: TSpinEditEx;
+    RandomPerMin: TSpinEditEx;
+    FloatMin: TFloatSpinEditEx;
+    FloaMax: TFloatSpinEditEx;
     HMIBasicVectorControl1: THMIBasicVectorControl;
     Label1: TLabel;
     Label25: TLabel;
     Label26: TLabel;
     Label27: TLabel;
     DBGrid1: TDBGrid;
-    DBNavigator1: TDBNavigator;
     Drv_CreatDate: TEdit;
     Drv_Name: TEdit;
     Drv_Other_Information: TEdit;
@@ -93,10 +59,6 @@ type
     Label11: TLabel;
     Label12: TLabel;
     Label13: TLabel;
-    Label14: TLabel;
-    Label15: TLabel;
-    Label16: TLabel;
-    Label17: TLabel;
     Label18: TLabel;
     Label19: TLabel;
     Label24: TLabel;
@@ -130,7 +92,7 @@ type
     SerialPortDriver1: TSerialPortDriver;
     Shape1: TShape;
     SpinEditNode: TSpinEditEx;
-    EditAddress: TSpinEditEx;
+    IntMin: TSpinEditEx;
     StatusBar1: TStatusBar;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
@@ -155,8 +117,6 @@ type
     CmdMoveLast: TToolButton;
     ToolButton8: TToolButton;
     CmdInsert: TToolButton;
-    procedure B0MouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure BufDataset1AfterCancel(DataSet: TDataSet);
     procedure BufDataset1AfterDelete(DataSet: TDataSet);
     procedure BufDataset1AfterEdit(DataSet: TDataSet);
@@ -170,6 +130,7 @@ type
     procedure BufDataset1CalcFields(DataSet: TDataSet);
     procedure BufDataset1NewRecord(DataSet: TDataSet);
     procedure Button3Click(Sender: TObject);
+    procedure CheckBoxStartupResetEditingDone(Sender: TObject);
     procedure CmdCancelClick(Sender: TObject);
     procedure CmdClearListClick(Sender: TObject);
     procedure CmdMoveNextClick(Sender: TObject);
@@ -177,7 +138,6 @@ type
     procedure CmdRandomSerialClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure CmdInitDriverClick(Sender: TObject);
-    procedure CheckBoxUseBitEditingDone(Sender: TObject);
     procedure CmdConnectClick(Sender: TObject);
     procedure Datasource1StateChange(Sender: TObject);
     procedure Datasource1UpdateData(Sender: TObject);
@@ -186,7 +146,11 @@ type
     procedure Drv_Other_InformationEditingDone(Sender: TObject);
     procedure Drv_SNEditingDone(Sender: TObject);
     procedure Drv_VerEditingDone(Sender: TObject);
-    procedure EditAddressEditingDone(Sender: TObject);
+    procedure Int64StartupEditingDone(Sender: TObject);
+    procedure FloatMinEditingDone(Sender: TObject);
+    procedure FloaMaxEditingDone(Sender: TObject);
+    procedure IntMaxEditingDone(Sender: TObject);
+    procedure IntMinEditingDone(Sender: TObject);
     procedure EditSymbolEditingDone(Sender: TObject);
     procedure EditTypeEditingDone(Sender: TObject);
     procedure EditUnitEditingDone(Sender: TObject);
@@ -200,6 +164,7 @@ type
     procedure MenuOpenClick(Sender: TObject);
     procedure MenuSaveAsClick(Sender: TObject);
     procedure Menu2SaveOBJClick(Sender: TObject);
+    procedure RandomPerMinEditingDone(Sender: TObject);
     procedure SpinEditNodeEditingDone(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure CmdInsertClick(Sender: TObject);
@@ -329,18 +294,13 @@ begin
     Add('Symbol', ftWideString, 255);
     Add('Type', ftWideString, 255);
     Add('Unit', ftWideString, 20);
-    Add('RandomTimePerMin', ftInteger, 7,false);
+    Add('RandomTimePerMin', ftInteger, 0,false);
     Add('I_Min', ftInteger, 0,false);
     Add('I_Max', ftInteger, 0,false);
     Add('F_Min', ftFloat, 0,false);
     Add('F_Max', ftFloat, 0,false);
     Add('I64_Start', ftLargeint, 0,false);
     Add('StartupReset', ftBoolean, 0,false);
-    Add('UseBit', ftBoolean, 0,false);
-    Add('BitNumber', ftInteger, 0,false);
-    Add('I_Result', ftInteger,  0,false);
-    Add('F_Result', ftFloat,  0,false);
-    Add('I64_Result', ftLargeint,  0,false);
   end;
   BufDataset1.CreateDataset;
 
@@ -504,10 +464,10 @@ begin
   SerialPortDriver1.AcceptAnyPortName:=false;
 end;
 
-procedure TForm1.EditAddressEditingDone(Sender: TObject);
+procedure TForm1.IntMinEditingDone(Sender: TObject);
 begin
   if BufDataset1.State in [dsEdit, dsInsert] then
-  BufDataset1.FieldByName('Address').AsInteger := EditAddress.Value;
+  BufDataset1.FieldByName('I_Min').AsInteger := IntMin.Value;
 end;
 
 procedure TForm1.BufDataset1AfterCancel(DataSet: TDataSet);
@@ -544,37 +504,6 @@ begin
   begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
-  end;
-end;
-
-procedure TForm1.B0MouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-var
-  i: integer;
-  CurrentObj: TComponent;
-begin
-  log({$I %LINE%}+' MouseUp');
-  if BufDataset1.State in [dsEdit, dsInsert] then
-  begin
-    if (sender is TShape) and (TShape(sender).Brush.Color = clGreen) and (LeftStr(TShape(sender).Name,1)='B') then
-    begin
-      TShape(sender).Brush.Color := clWhite;
-      BufDataset1.FieldByName('BitNumber').AsLargeInt := 0;
-      exit;
-    end;
-    if sender is TShape then TShape(sender).Brush.Color := clGreen;
-
-    for i := 0 to ComponentCount - 1 do
-    begin
-      CurrentObj := Components[i];
-      if (CurrentObj is TShape) and (CurrentObj.Name <> TShape(sender).Name) and
-      (LeftStr(CurrentObj.Name,1)='B') then TShape(CurrentObj).Brush.Color := clWhite;
-    end;
-
-    i:=StrToInt(RightStr(TShape(sender).Name,Length(TShape(sender).Name)-1));
-    BitNumber:= round(Power(2,i));
-    BufDataset1.FieldByName('BitNumber').AsLargeInt := BitNumber;
-    //showmessage(BitNumber.ToString);
   end;
 end;
 
@@ -682,10 +611,9 @@ begin
   if BufDataset1.State in [dsEdit, dsInsert] then exit;
 
   log({$I %LINE%}+' Update');
-  EditAddress.Value:= BufDataset1.FieldByName('Address').AsInteger;
+  IntMin.Value:= BufDataset1.FieldByName('Address').AsInteger;
   EditSymbol.Caption:= BufDataset1.FieldByName('Symbol').AsString;
   EditUnit.Caption:= BufDataset1.FieldByName('Unit').AsString;
-  CheckBoxUseBit.Checked:=BufDataset1.FieldByName('UseBit').AsBoolean;
 
   if EditType.Items.Count > 0 then
   for i := 0 to EditType.Items.Count-1 do
@@ -702,8 +630,6 @@ begin
     CurrentObj := Components[i];
     if (CurrentObj is TShape) and (LeftStr(CurrentObj.Name,1)='B') then TShape(CurrentObj).Brush.Color := clWhite;
   end;
-
-  if (BufDataset1.FieldByName('BitNumber').AsLargeInt = 1) then B0.Brush.Color := clgreen;
 
   if (BufDataset1.FieldByName('BitNumber').AsLargeInt>0) then
   if (BufDataset1.FieldByName('BitNumber').AsLargeInt<=2147483648) then
@@ -869,6 +795,12 @@ begin
   end;
 end;
 
+procedure TForm1.CheckBoxStartupResetEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('StartupReset').AsBoolean := CheckBoxStartupReset.Checked;
+end;
+
 procedure TForm1.CmdCancelClick(Sender: TObject);
 begin
   BufDataset1.Cancel;
@@ -962,11 +894,10 @@ begin
   begin
     EditSymbol.Caption:=DelChars(EditSymbol.Caption, ',');
     EditUnit.Caption:=DelChars(EditUnit.Caption, ',');
-    BufDataset1.FieldByName('Address').AsInteger := EditAddress.Value;
+    BufDataset1.FieldByName('Address').AsInteger := IntMin.Value;
     BufDataset1.FieldByName('Symbol').AsString := EditSymbol.Caption;
     BufDataset1.FieldByName('Type').AsString := EditType.Items[EditType.ItemIndex];
     BufDataset1.FieldByName('Unit').AsString := EditUnit.Caption;
-    BufDataset1.FieldByName('UseBit').AsBoolean := CheckBoxUseBit.Checked;
   end;
   BufDataset1.Post;
 
@@ -1079,9 +1010,6 @@ begin
     BufDataset2.FieldByName('Result').AsString := '';
     BufDataset2.FieldByName('Unit').AsString := BufDataset1.FieldByName('Unit').AsString;
     BufDataset2.FieldByName('Obj').AsString := DynamicTag.Name;
-    BufDataset2.FieldByName('Factor*').AsFloat := BufDataset1.FieldByName('Factor*').AsFloat;
-    BufDataset2.FieldByName('Factor/').AsFloat := BufDataset1.FieldByName('Factor/').AsFloat;
-    BufDataset2.FieldByName('Offset').AsFloat := BufDataset1.FieldByName('Offset').AsFloat;
 
     if (BufDataset1.FieldByName('UseBit').AsBoolean) and (BufDataset1.FieldByName('BitNumber').AsLargeInt>0) then
     begin
@@ -1098,12 +1026,6 @@ begin
   image3.Picture:=image1.Picture;
 
   label26.Caption:= 'Device: '+Drv_Name.Caption;
-end;
-
-procedure TForm1.CheckBoxUseBitEditingDone(Sender: TObject);
-begin
-  if BufDataset1.State in [dsEdit, dsInsert] then
-  BufDataset1.FieldByName('UseBit').AsBoolean := CheckBoxUseBit.Checked;
 end;
 
 procedure TForm1.CmdConnectClick(Sender: TObject);
@@ -1166,48 +1088,16 @@ begin
     CmdEdit.Enabled:=false;
 
     DBGrid1.Enabled:=false;
-    DBNavigator1.VisibleButtons := DBNavigator1.VisibleButtons - [nbFirst, nbPrior, nbNext, nbLast, nbInsert,nbDelete];
-    EditAddress.Enabled:=true;
+    IntMin.Enabled:=true;
+    IntMax.Enabled:=true;
+    FloatMin.Enabled:=true;
+    FloaMax.Enabled:=true;
+    Int64Startup.Enabled:=true;
+    CheckBoxStartupReset.Enabled:=true;
+    RandomPerMin.Enabled:=true;
     EditSymbol.Enabled:=true;
     EditType.Enabled:=true;
     EditUnit.Enabled:=true;
-    CheckBoxUseBit.Enabled:=true;
-    Label14.Enabled:=true;
-    Label15.Enabled:=true;
-    Label16.Enabled:=true;
-    Label17.Enabled:=true;
-    B0.Enabled:=true;
-    B1.Enabled:=true;
-    B2.Enabled:=true;
-    B3.Enabled:=true;
-    B4.Enabled:=true;
-    B5.Enabled:=true;
-    B6.Enabled:=true;
-    B7.Enabled:=true;
-    B8.Enabled:=true;
-    B9.Enabled:=true;
-    B10.Enabled:=true;
-    B11.Enabled:=true;
-    B12.Enabled:=true;
-    B13.Enabled:=true;
-    B14.Enabled:=true;
-    B15.Enabled:=true;
-    B16.Enabled:=true;
-    B17.Enabled:=true;
-    B18.Enabled:=true;
-    B19.Enabled:=true;
-    B20.Enabled:=true;
-    B21.Enabled:=true;
-    B22.Enabled:=true;
-    B23.Enabled:=true;
-    B24.Enabled:=true;
-    B25.Enabled:=true;
-    B26.Enabled:=true;
-    B27.Enabled:=true;
-    B28.Enabled:=true;
-    B29.Enabled:=true;
-    B30.Enabled:=true;
-    B31.Enabled:=true;
   end
   else
   begin
@@ -1216,48 +1106,16 @@ begin
     CmdEdit.Enabled:=true;
 
     DBGrid1.Enabled:=true;
-    DBNavigator1.VisibleButtons := [nbFirst,nbPrior,nbNext,nbLast,nbInsert,nbDelete,nbEdit,nbPost,nbCancel];
-    EditAddress.Enabled:=false;
+    IntMin.Enabled:=false;
+    IntMax.Enabled:=false;
+    FloatMin.Enabled:=false;
+    FloaMax.Enabled:=false;
+    Int64Startup.Enabled:=false;
+    CheckBoxStartupReset.Enabled:=false;
+    RandomPerMin.Enabled:=false;
     EditSymbol.Enabled:=false;
     EditType.Enabled:=false;
     EditUnit.Enabled:=false;
-    CheckBoxUseBit.Enabled:=false;
-    Label14.Enabled:=false;
-    Label15.Enabled:=false;
-    Label16.Enabled:=false;
-    Label17.Enabled:=false;
-    B0.Enabled:=false;
-    B1.Enabled:=false;
-    B2.Enabled:=false;
-    B3.Enabled:=false;
-    B4.Enabled:=false;
-    B5.Enabled:=false;
-    B6.Enabled:=false;
-    B7.Enabled:=false;
-    B8.Enabled:=false;
-    B9.Enabled:=false;
-    B10.Enabled:=false;
-    B11.Enabled:=false;
-    B12.Enabled:=false;
-    B13.Enabled:=false;
-    B14.Enabled:=false;
-    B15.Enabled:=false;
-    B16.Enabled:=false;
-    B17.Enabled:=false;
-    B18.Enabled:=false;
-    B19.Enabled:=false;
-    B20.Enabled:=false;
-    B21.Enabled:=false;
-    B22.Enabled:=false;
-    B23.Enabled:=false;
-    B24.Enabled:=false;
-    B25.Enabled:=false;
-    B26.Enabled:=false;
-    B27.Enabled:=false;
-    B28.Enabled:=false;
-    B29.Enabled:=false;
-    B30.Enabled:=false;
-    B31.Enabled:=false;
   end;
 end;
 
@@ -1296,6 +1154,30 @@ end;
 procedure TForm1.Drv_VerEditingDone(Sender: TObject);
 begin
   Drv_Ver.Caption:=DelChars(Drv_Ver.Caption, '=');
+end;
+
+procedure TForm1.Int64StartupEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('StartupReset').AsLargeInt := Int64Startup.Value;
+end;
+
+procedure TForm1.FloatMinEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('F_Min').AsFloat := FloatMin.Value;
+end;
+
+procedure TForm1.FloaMaxEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('F_Max').AsFloat := FloaMax.Value;
+end;
+
+procedure TForm1.IntMaxEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('I_Max').AsInteger := IntMax.Value;
 end;
 
 procedure TForm1.MenuExitClick(Sender: TObject);
@@ -1488,11 +1370,10 @@ begin
   Drv_Other_Information.Caption:='';
   Drv_CreatDate.Caption:=FormatDateTime('DD/MM/YYYY hh:nn:ss',Now);
 
-  EditAddress.Value:=0;
+  IntMin.Value:=0;
   EditSymbol.Caption:='';
   EditType.ItemIndex:=0;
   EditUnit.Caption:='';
-  CheckBoxUseBit.Checked:=false;
 
   for i := 0 to 31 do
   begin
@@ -1507,18 +1388,13 @@ begin
     Add('Symbol', ftWideString, 255);
     Add('Type', ftWideString, 255);
     Add('Unit', ftWideString, 20);
-    Add('RandomTimePerMin', ftInteger, 7,false);
+    Add('RandomTimePerMin', ftInteger, 0,false);
     Add('I_Min', ftInteger, 0,false);
     Add('I_Max', ftInteger, 0,false);
     Add('F_Min', ftFloat, 0,false);
     Add('F_Max', ftFloat, 0,false);
     Add('I64_Start', ftLargeint, 0,false);
     Add('StartupReset', ftBoolean, 0,false);
-    Add('UseBit', ftBoolean, 0,false);
-    Add('BitNumber', ftInteger, 0,false);
-    Add('I_Result', ftInteger,  0,false);
-    Add('F_Result', ftFloat,  0,false);
-    Add('I64_Result', ftLargeint,  0,false);
   end;
   BufDataset1.CreateDataset;
 
@@ -1597,35 +1473,32 @@ begin
         begin
           with BufDataset1.FieldDefs do
           begin
-            if (CSV.Cells[0, Row] <> 'Address') or
-               (CSV.Cells[1, Row] <> 'Symbol') or
-               (CSV.Cells[2, Row] <> 'Type') or
-               (CSV.Cells[3, Row] <> 'RegisterType') or
-               (CSV.Cells[4, Row] <> 'SwapBytes') or
-               (CSV.Cells[5, Row] <> 'SwapDwords') or
-               (CSV.Cells[6, Row] <> 'SwapWords') or
-               (CSV.Cells[7, Row] <> 'UseBit') or
-               (CSV.Cells[8, Row] <> 'BitNumber') or
-               (CSV.Cells[9, Row] <> 'Unit') then
+            if (CSV.Cells[0, Row] <> 'Symbol') or
+               (CSV.Cells[1, Row] <> 'Type') or
+               (CSV.Cells[2, Row] <> 'Unit') or
+               (CSV.Cells[3, Row] <> 'RandomTimePerMin') or
+               (CSV.Cells[4, Row] <> 'I_Min') or
+               (CSV.Cells[5, Row] <> 'I_Max') or
+               (CSV.Cells[6, Row] <> 'F_Min') or
+               (CSV.Cells[7, Row] <> 'F_Max') or
+               (CSV.Cells[8, Row] <> 'I64_Start') or
+               (CSV.Cells[9, Row] <> 'StartupReset') then
             begin
               showmessage('File Error');
               MenuNewClick(Sender);
               exit;
             end;
 
-            Add('Address', ftInteger, 0,false);
-            Add('Symbol', ftString, 255);
-            Add('Type', ftString, 255);
-            Add('RegisterType', ftString, 255);
-            Add('SwapBytes', ftBoolean, 0,false);
-            Add('SwapDwords', ftBoolean, 0,false);
-            Add('SwapWords', ftBoolean, 0,false);
-            Add('UseBit', ftBoolean, 0,false);
-            Add('BitNumber', ftLargeint, 0,false);
-            Add('Unit', ftString, 20);
-            Add('Factor*', ftFloat, 0,false);
-            Add('Factor/', ftFloat, 0,false);
-            Add('Offset', ftFloat, 0,false);
+            Add('Symbol', ftWideString, 255);
+            Add('Type', ftWideString, 255);
+            Add('Unit', ftWideString, 20);
+            Add('RandomTimePerMin', ftInteger, 0,false);
+            Add('I_Min', ftInteger, 0,false);
+            Add('I_Max', ftInteger, 0,false);
+            Add('F_Min', ftFloat, 0,false);
+            Add('F_Max', ftFloat, 0,false);
+            Add('I64_Start', ftLargeint, 0,false);
+            Add('StartupReset', ftBoolean, 0,false);
           end;
           BufDataset1.CreateDataset;
           //BufDataset1.First;
@@ -1645,37 +1518,8 @@ begin
           BufDataset1.FieldByName('SwapBytes').AsBoolean := StrToBoolV2(CSV.Cells[4, Row]);
           BufDataset1.FieldByName('SwapDwords').AsBoolean := StrToBoolV2(CSV.Cells[5, Row]);
           BufDataset1.FieldByName('SwapWords').AsBoolean := StrToBoolV2(CSV.Cells[6, Row]);
-          BufDataset1.FieldByName('UseBit').AsBoolean := StrToBoolV2(CSV.Cells[7, Row]);
-          BufDataset1.FieldByName('BitNumber').AsLargeInt := StrToInt('0'+CSV.Cells[8, Row]);
           BufDataset1.FieldByName('Unit').AsString := CSV.Cells[9, Row];
 
-          BufDataset1.FieldByName('Factor*').AsFloat := 1.00;
-          BufDataset1.FieldByName('Factor/').AsFloat := 1.00;
-          BufDataset1.FieldByName('Offset').AsFloat := 0.00;
-
-          if (CSV.ColCount[Row]>10) then
-          begin
-            if TryStrToFloat(CSV.Cells[10, Row], myFloat) then
-              BufDataset1.FieldByName('Factor*').AsFloat := StrToFloat(FormatFloat('0.00', myFloat))
-            else
-              BufDataset1.FieldByName('Factor*').AsFloat := 1.00;
-          end;
-          if (CSV.ColCount[Row]>11) then
-          begin
-            if TryStrToFloat(CSV.Cells[11, Row], myFloat) then
-              BufDataset1.FieldByName('Factor/').AsFloat := StrToFloat(FormatFloat('0.00', myFloat))
-            else
-              BufDataset1.FieldByName('Factor/').AsFloat := 1.00;
-
-            if BufDataset1.FieldByName('Factor/').AsFloat = 0 then BufDataset1.FieldByName('Factor/').AsFloat:=1.00;
-          end;
-          if (CSV.ColCount[Row]>12) then
-          begin
-            if TryStrToFloat(CSV.Cells[12, Row], myFloat) then
-              BufDataset1.FieldByName('Offset').AsFloat := StrToFloat(FormatFloat('0.00', myFloat))
-            else
-              BufDataset1.FieldByName('Offset').AsFloat := 0.00;
-          end;
           BufDataset1.Post;
         end;
 
@@ -1990,6 +1834,12 @@ begin
     WriteComponentResFile(FileName_+'.obj',Image1);
     StatusBar1.Panels.Items[0].Text:=FileName_+'.obj';
   end;
+end;
+
+procedure TForm1.RandomPerMinEditingDone(Sender: TObject);
+begin
+  if BufDataset1.State in [dsEdit, dsInsert] then
+  BufDataset1.FieldByName('RandomTimePerMin').AsInteger := RandomPerMin.Value;
 end;
 
 procedure TForm1.SpinEditNodeEditingDone(Sender: TObject);

@@ -1,11 +1,11 @@
 object Form1: TForm1
-  Left = 469
+  Left = 293
   Height = 450
-  Top = 236
-  Width = 1033
+  Top = 198
+  Width = 974
   Caption = 'VirtualDriverCreator V0.1'
   ClientHeight = 450
-  ClientWidth = 1033
+  ClientWidth = 974
   Menu = MainMenu1
   OnClose = FormClose
   OnCreate = FormCreate
@@ -22,7 +22,7 @@ object Form1: TForm1
     Left = 0
     Height = 450
     Top = 0
-    Width = 1033
+    Width = 974
     ActivePage = TabSheet1
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabIndex = 0
@@ -30,7 +30,7 @@ object Form1: TForm1
     object TabSheet1: TTabSheet
       Caption = 'Info'
       ClientHeight = 422
-      ClientWidth = 1025
+      ClientWidth = 966
       object Drv_Other_Information: TEdit
         Left = 109
         Height = 23
@@ -186,7 +186,7 @@ object Form1: TForm1
         Left = 0
         Height = 23
         Top = 399
-        Width = 1025
+        Width = 966
         Panels = <        
           item
             Width = 50
@@ -197,11 +197,11 @@ object Form1: TForm1
     object TabSheet2: TTabSheet
       Caption = 'Config'
       ClientHeight = 422
-      ClientWidth = 1025
+      ClientWidth = 966
       object Label11: TLabel
-        AnchorSideTop.Control = EditAddress
+        AnchorSideTop.Control = IntMin
         AnchorSideTop.Side = asrCenter
-        AnchorSideRight.Control = EditAddress
+        AnchorSideRight.Control = IntMin
         Left = 229
         Height = 15
         Top = 12
@@ -281,361 +281,6 @@ object Form1: TForm1
         TabOrder = 2
         OnEditingDone = EditUnitEditingDone
       end
-      object CheckBoxUseBit: TCheckBox
-        Left = 616
-        Height = 19
-        Top = 8
-        Width = 51
-        Caption = 'UseBit'
-        Enabled = False
-        TabOrder = 3
-        Visible = False
-        OnEditingDone = CheckBoxUseBitEditingDone
-      end
-      object Label14: TLabel
-        Left = 680
-        Height = 15
-        Top = 8
-        Width = 18
-        Caption = '7..0'
-        Enabled = False
-        Visible = False
-      end
-      object B7: TShape
-        Left = 704
-        Height = 18
-        Top = 8
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B6: TShape
-        Left = 720
-        Height = 18
-        Top = 8
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B5: TShape
-        Left = 736
-        Height = 18
-        Top = 8
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B4: TShape
-        Left = 752
-        Height = 18
-        Top = 8
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B3: TShape
-        Left = 768
-        Height = 18
-        Top = 8
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B2: TShape
-        Left = 784
-        Height = 18
-        Top = 8
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B1: TShape
-        Left = 800
-        Height = 18
-        Top = 8
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B0: TShape
-        Left = 816
-        Height = 18
-        Top = 8
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object Label15: TLabel
-        Left = 674
-        Height = 15
-        Top = 28
-        Width = 24
-        Caption = '15..8'
-        Enabled = False
-        Visible = False
-      end
-      object B8: TShape
-        Left = 816
-        Height = 18
-        Top = 28
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B9: TShape
-        Left = 800
-        Height = 18
-        Top = 28
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B10: TShape
-        Left = 784
-        Height = 18
-        Top = 28
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B11: TShape
-        Left = 768
-        Height = 18
-        Top = 28
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B12: TShape
-        Left = 752
-        Height = 18
-        Top = 28
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B13: TShape
-        Left = 736
-        Height = 18
-        Top = 28
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B14: TShape
-        Left = 720
-        Height = 18
-        Top = 28
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B15: TShape
-        Left = 704
-        Height = 18
-        Top = 28
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object Label16: TLabel
-        Left = 668
-        Height = 15
-        Top = 47
-        Width = 30
-        Caption = '23..16'
-        Enabled = False
-        Visible = False
-      end
-      object B16: TShape
-        Left = 816
-        Height = 18
-        Top = 47
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B17: TShape
-        Left = 800
-        Height = 18
-        Top = 47
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B18: TShape
-        Left = 784
-        Height = 18
-        Top = 47
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B19: TShape
-        Left = 768
-        Height = 18
-        Top = 47
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B20: TShape
-        Left = 752
-        Height = 18
-        Top = 47
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B21: TShape
-        Left = 736
-        Height = 18
-        Top = 47
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B22: TShape
-        Left = 720
-        Height = 18
-        Top = 47
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B23: TShape
-        Left = 704
-        Height = 18
-        Top = 47
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object Label17: TLabel
-        Left = 668
-        Height = 15
-        Top = 68
-        Width = 30
-        Caption = '31..24'
-        Enabled = False
-        Visible = False
-      end
-      object B24: TShape
-        Left = 816
-        Height = 18
-        Top = 68
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B25: TShape
-        Left = 800
-        Height = 18
-        Top = 68
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B26: TShape
-        Left = 784
-        Height = 18
-        Top = 68
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B27: TShape
-        Left = 768
-        Height = 18
-        Top = 68
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B28: TShape
-        Left = 752
-        Height = 18
-        Top = 68
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B29: TShape
-        Left = 736
-        Height = 18
-        Top = 68
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B30: TShape
-        Left = 720
-        Height = 18
-        Top = 68
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object B31: TShape
-        Left = 704
-        Height = 18
-        Top = 68
-        Width = 16
-        Enabled = False
-        OnMouseUp = B0MouseUp
-        Visible = False
-      end
-      object DBNavigator1: TDBNavigator
-        Left = 384
-        Height = 30
-        Top = 118
-        Width = 230
-        BevelOuter = bvNone
-        ChildSizing.EnlargeHorizontal = crsScaleChilds
-        ChildSizing.EnlargeVertical = crsScaleChilds
-        ChildSizing.ShrinkHorizontal = crsScaleChilds
-        ChildSizing.ShrinkVertical = crsScaleChilds
-        ChildSizing.Layout = cclLeftToRightThenTopToBottom
-        ChildSizing.ControlsPerLine = 100
-        ClientHeight = 30
-        ClientWidth = 230
-        DataSource = Datasource1
-        Options = []
-        TabOrder = 4
-        Visible = False
-        VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbInsert, nbDelete, nbEdit, nbPost, nbCancel]
-      end
       object DBGrid1: TDBGrid
         AnchorSideLeft.Control = TabSheet2
         AnchorSideRight.Control = TabSheet2
@@ -645,7 +290,7 @@ object Form1: TForm1
         Left = 0
         Height = 270
         Top = 152
-        Width = 1025
+        Width = 966
         AlternateColor = clMoneyGreen
         Anchors = [akTop, akLeft, akRight, akBottom]
         AutoFillColumns = True
@@ -653,7 +298,7 @@ object Form1: TForm1
         Columns = <>
         DataSource = Datasource1
         ReadOnly = True
-        TabOrder = 5
+        TabOrder = 3
       end
       object ToolBar1: TToolBar
         Left = 0
@@ -667,7 +312,7 @@ object Form1: TForm1
         Color = 15000804
         Images = ImageList1
         ParentColor = False
-        TabOrder = 6
+        TabOrder = 4
         object CmdMoveFirst: TToolButton
           Left = 1
           Top = 2
@@ -788,36 +433,36 @@ object Form1: TForm1
           OnClick = CmdCancelClick
         end
       end
-      object EditAddress: TSpinEditEx
+      object IntMin: TSpinEditEx
         Left = 270
         Height = 23
         Top = 8
         Width = 51
         Enabled = False
         MaxLength = 0
-        TabOrder = 7
-        OnEditingDone = EditAddressEditingDone
+        TabOrder = 5
+        OnEditingDone = IntMinEditingDone
         NullValue = 0
         UpDownVisible = False
         Value = 0
       end
-      object EditAddress1: TSpinEditEx
+      object IntMax: TSpinEditEx
         Left = 397
         Height = 23
         Top = 8
         Width = 51
         Enabled = False
         MaxLength = 0
-        TabOrder = 8
-        OnEditingDone = EditAddressEditingDone
+        TabOrder = 6
+        OnEditingDone = IntMaxEditingDone
         NullValue = 0
         UpDownVisible = False
         Value = 100
       end
       object Label31: TLabel
-        AnchorSideTop.Control = EditAddress1
+        AnchorSideTop.Control = IntMax
         AnchorSideTop.Side = asrCenter
-        AnchorSideRight.Control = EditAddress1
+        AnchorSideRight.Control = IntMax
         Left = 354
         Height = 15
         Top = 12
@@ -826,9 +471,9 @@ object Form1: TForm1
         Caption = 'IntMax: '
       end
       object Label32: TLabel
-        AnchorSideTop.Control = FloatSpinEditEx4
+        AnchorSideTop.Control = FloatMin
         AnchorSideTop.Side = asrCenter
-        AnchorSideRight.Control = FloatSpinEditEx4
+        AnchorSideRight.Control = FloatMin
         Left = 217
         Height = 15
         Top = 38
@@ -837,9 +482,9 @@ object Form1: TForm1
         Caption = 'FloatMin: '
       end
       object Label33: TLabel
-        AnchorSideTop.Control = FloatSpinEditEx5
+        AnchorSideTop.Control = FloaMax
         AnchorSideTop.Side = asrCenter
-        AnchorSideRight.Control = FloatSpinEditEx5
+        AnchorSideRight.Control = FloaMax
         Left = 342
         Height = 15
         Top = 38
@@ -847,53 +492,56 @@ object Form1: TForm1
         Anchors = [akTop, akRight]
         Caption = 'FloatMax: '
       end
-      object FloatSpinEditEx4: TFloatSpinEditEx
+      object FloatMin: TFloatSpinEditEx
         Left = 270
         Height = 23
         Top = 34
         Width = 51
         Enabled = False
         MaxLength = 0
-        TabOrder = 9
+        TabOrder = 7
+        OnEditingDone = FloatMinEditingDone
         UpDownVisible = False
       end
-      object FloatSpinEditEx5: TFloatSpinEditEx
+      object FloaMax: TFloatSpinEditEx
         Left = 397
         Height = 23
         Top = 34
         Width = 51
         Enabled = False
         MaxLength = 0
-        TabOrder = 10
+        TabOrder = 8
+        OnEditingDone = FloaMaxEditingDone
         UpDownVisible = False
         Value = 100
       end
-      object CheckBoxUseBit1: TCheckBox
+      object CheckBoxStartupReset: TCheckBox
         Left = 357
         Height = 19
         Top = 65
         Width = 84
         Caption = 'StartupReset'
         Enabled = False
-        TabOrder = 11
+        TabOrder = 9
+        OnEditingDone = CheckBoxStartupResetEditingDone
       end
-      object EditAddress2: TSpinEditEx
+      object Int64Startup: TSpinEditEx
         Left = 270
         Height = 23
         Top = 61
         Width = 79
         Enabled = False
         MaxLength = 0
-        TabOrder = 12
-        OnEditingDone = EditAddressEditingDone
+        TabOrder = 10
+        OnEditingDone = Int64StartupEditingDone
         NullValue = 0
         UpDownVisible = False
         Value = 0
       end
       object Label1: TLabel
-        AnchorSideTop.Control = EditAddress2
+        AnchorSideTop.Control = Int64Startup
         AnchorSideTop.Side = asrCenter
-        AnchorSideRight.Control = EditAddress2
+        AnchorSideRight.Control = Int64Startup
         Left = 200
         Height = 15
         Top = 65
@@ -901,23 +549,25 @@ object Form1: TForm1
         Anchors = [akTop, akRight]
         Caption = 'Int64Startup: '
       end
-      object EditAddress3: TSpinEditEx
+      object RandomPerMin: TSpinEditEx
         Left = 544
         Height = 23
         Top = 8
         Width = 51
         Enabled = False
         MaxLength = 0
-        TabOrder = 13
-        OnEditingDone = EditAddressEditingDone
+        TabOrder = 11
+        OnEditingDone = RandomPerMinEditingDone
+        MaxValue = 10
+        MinValue = 1
         NullValue = 0
         UpDownVisible = False
         Value = 7
       end
       object Label34: TLabel
-        AnchorSideTop.Control = EditAddress3
+        AnchorSideTop.Control = RandomPerMin
         AnchorSideTop.Side = asrCenter
-        AnchorSideRight.Control = EditAddress3
+        AnchorSideRight.Control = RandomPerMin
         Left = 467
         Height = 15
         Top = 12
@@ -929,7 +579,7 @@ object Form1: TForm1
     object TabSheet3: TTabSheet
       Caption = 'Online Tester'
       ClientHeight = 422
-      ClientWidth = 1025
+      ClientWidth = 966
       object SpinEditNode: TSpinEditEx
         Left = 336
         Height = 23
@@ -972,7 +622,7 @@ object Form1: TForm1
         Left = 0
         Height = 366
         Top = 56
-        Width = 1025
+        Width = 966
         AlternateColor = clMoneyGreen
         Anchors = [akTop, akLeft, akRight, akBottom]
         AutoFillColumns = True
@@ -1004,7 +654,7 @@ object Form1: TForm1
     object TabSheet4: TTabSheet
       Caption = 'Topology'
       ClientHeight = 422
-      ClientWidth = 1025
+      ClientWidth = 966
       object Image2: TImage
         Left = 216
         Height = 128
@@ -1066,7 +716,7 @@ object Form1: TForm1
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = TabSheet4
         AnchorSideBottom.Side = asrBottom
-        Left = 715
+        Left = 656
         Height = 15
         Top = 403
         Width = 306
@@ -1079,7 +729,7 @@ object Form1: TForm1
         AnchorSideRight.Control = TabSheet4
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = Label29
-        Left = 690
+        Left = 631
         Height = 15
         Top = 384
         Width = 331

@@ -1,0 +1,1274 @@
+object Form1: TForm1
+  Left = 469
+  Height = 450
+  Top = 236
+  Width = 1033
+  Caption = 'VirtualDriverCreator V0.1'
+  ClientHeight = 450
+  ClientWidth = 1033
+  Menu = MainMenu1
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poWorkAreaCenter
+  ShowHint = True
+  LCLVersion = '3.4.0.0'
+  Scaled = False
+  object PageControl1: TPageControl
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 450
+    Top = 0
+    Width = 1033
+    ActivePage = TabSheet1
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabIndex = 0
+    TabOrder = 0
+    object TabSheet1: TTabSheet
+      Caption = 'Info'
+      ClientHeight = 422
+      ClientWidth = 1025
+      object Drv_Other_Information: TEdit
+        Left = 109
+        Height = 23
+        Top = 80
+        Width = 140
+        MaxLength = 255
+        TabOrder = 0
+        OnEditingDone = Drv_Other_InformationEditingDone
+      end
+      object Drv_CreatDate: TEdit
+        Left = 109
+        Height = 23
+        Top = 104
+        Width = 140
+        MaxLength = 255
+        TabOrder = 1
+        OnEditingDone = Drv_CreatDateEditingDone
+      end
+      object Drv_Name: TEdit
+        Left = 109
+        Height = 23
+        Top = 8
+        Width = 140
+        MaxLength = 255
+        TabOrder = 2
+        OnEditingDone = Drv_NameEditingDone
+      end
+      object Drv_SN: TEdit
+        Left = 109
+        Height = 23
+        Top = 32
+        Width = 140
+        MaxLength = 255
+        TabOrder = 3
+        OnEditingDone = Drv_SNEditingDone
+      end
+      object Drv_Ver: TEdit
+        Left = 109
+        Height = 23
+        Top = 56
+        Width = 140
+        MaxLength = 20
+        TabOrder = 4
+        OnEditingDone = Drv_VerEditingDone
+      end
+      object Label6: TLabel
+        AnchorSideTop.Control = Drv_Name
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = Drv_Name
+        Left = 37
+        Height = 15
+        Top = 12
+        Width = 72
+        Anchors = [akTop, akRight]
+        Caption = 'Driver Name: '
+      end
+      object Label7: TLabel
+        AnchorSideTop.Control = Drv_SN
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = Drv_SN
+        Left = 49
+        Height = 15
+        Top = 36
+        Width = 60
+        Anchors = [akTop, akRight]
+        Caption = 'Driver S/N: '
+      end
+      object Label8: TLabel
+        AnchorSideTop.Control = Drv_Ver
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = Drv_Ver
+        Left = 31
+        Height = 15
+        Top = 60
+        Width = 78
+        Anchors = [akTop, akRight]
+        Caption = 'Driver Version: '
+      end
+      object Label9: TLabel
+        AnchorSideTop.Control = Drv_Other_Information
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = Drv_Other_Information
+        Left = 48
+        Height = 15
+        Top = 84
+        Width = 61
+        Anchors = [akTop, akRight]
+        Caption = 'Driver Info: '
+      end
+      object Label10: TLabel
+        AnchorSideTop.Control = Drv_CreatDate
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = Drv_CreatDate
+        Left = 8
+        Height = 15
+        Top = 108
+        Width = 101
+        Anchors = [akTop, akRight]
+        Caption = 'Driver Create Date: '
+      end
+      object CmdRandomSerial: TButton
+        Left = 253
+        Height = 23
+        Top = 32
+        Width = 26
+        Caption = '...'
+        TabOrder = 5
+        OnClick = CmdRandomSerialClick
+      end
+      object Button2: TButton
+        Left = 253
+        Height = 23
+        Top = 104
+        Width = 26
+        Caption = '...'
+        TabOrder = 6
+        OnClick = Button2Click
+      end
+      object Button3: TButton
+        Left = 253
+        Height = 23
+        Top = 234
+        Width = 26
+        Caption = '...'
+        TabOrder = 7
+        OnClick = Button3Click
+      end
+      object Shape1: TShape
+        Left = 119
+        Height = 130
+        Top = 129
+        Width = 130
+      end
+      object Image1: TImage
+        Left = 120
+        Height = 128
+        Top = 130
+        Width = 128
+        PopupMenu = PopupMenu1
+        Stretch = True
+        Transparent = True
+      end
+      object Label24: TLabel
+        AnchorSideTop.Control = Shape1
+        AnchorSideTop.Side = asrCenter
+        Left = 80
+        Height = 15
+        Top = 187
+        Width = 29
+        Caption = 'Icon: '
+      end
+      object StatusBar1: TStatusBar
+        Left = 0
+        Height = 23
+        Top = 399
+        Width = 1025
+        Panels = <        
+          item
+            Width = 50
+          end>
+        SimplePanel = False
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Config'
+      ClientHeight = 422
+      ClientWidth = 1025
+      object Label11: TLabel
+        AnchorSideTop.Control = EditAddress
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EditAddress
+        Left = 229
+        Height = 15
+        Top = 12
+        Width = 41
+        Anchors = [akTop, akRight]
+        Caption = 'IntMin: '
+      end
+      object Label12: TLabel
+        AnchorSideTop.Control = EditSymbol
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EditSymbol
+        Left = 0
+        Height = 15
+        Top = 12
+        Width = 46
+        Anchors = [akTop, akRight]
+        Caption = 'Symbol: '
+      end
+      object EditSymbol: TEdit
+        Left = 46
+        Height = 23
+        Top = 8
+        Width = 129
+        Enabled = False
+        MaxLength = 255
+        TabOrder = 0
+        OnEditingDone = EditSymbolEditingDone
+      end
+      object Label13: TLabel
+        AnchorSideTop.Control = EditType
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EditType
+        Left = 16
+        Height = 15
+        Top = 38
+        Width = 30
+        Anchors = [akTop, akRight]
+        Caption = 'Type: '
+      end
+      object EditType: TComboBox
+        Left = 46
+        Height = 23
+        Top = 34
+        Width = 131
+        Enabled = False
+        ItemHeight = 15
+        ItemIndex = 1
+        Items.Strings = (
+          'Bit'
+          'Integer'
+          'Float'
+          'Integer64'
+        )
+        ReadOnly = True
+        TabOrder = 1
+        Text = 'Integer'
+        OnEditingDone = EditTypeEditingDone
+      end
+      object Label18: TLabel
+        AnchorSideTop.Control = EditUnit
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EditUnit
+        Left = 18
+        Height = 15
+        Top = 65
+        Width = 28
+        Anchors = [akTop, akRight]
+        Caption = 'Unit: '
+      end
+      object EditUnit: TEdit
+        Left = 46
+        Height = 23
+        Top = 61
+        Width = 131
+        Enabled = False
+        MaxLength = 20
+        TabOrder = 2
+        OnEditingDone = EditUnitEditingDone
+      end
+      object CheckBoxUseBit: TCheckBox
+        Left = 616
+        Height = 19
+        Top = 8
+        Width = 51
+        Caption = 'UseBit'
+        Enabled = False
+        TabOrder = 3
+        Visible = False
+        OnEditingDone = CheckBoxUseBitEditingDone
+      end
+      object Label14: TLabel
+        Left = 680
+        Height = 15
+        Top = 8
+        Width = 18
+        Caption = '7..0'
+        Enabled = False
+        Visible = False
+      end
+      object B7: TShape
+        Left = 704
+        Height = 18
+        Top = 8
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B6: TShape
+        Left = 720
+        Height = 18
+        Top = 8
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B5: TShape
+        Left = 736
+        Height = 18
+        Top = 8
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B4: TShape
+        Left = 752
+        Height = 18
+        Top = 8
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B3: TShape
+        Left = 768
+        Height = 18
+        Top = 8
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B2: TShape
+        Left = 784
+        Height = 18
+        Top = 8
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B1: TShape
+        Left = 800
+        Height = 18
+        Top = 8
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B0: TShape
+        Left = 816
+        Height = 18
+        Top = 8
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object Label15: TLabel
+        Left = 674
+        Height = 15
+        Top = 28
+        Width = 24
+        Caption = '15..8'
+        Enabled = False
+        Visible = False
+      end
+      object B8: TShape
+        Left = 816
+        Height = 18
+        Top = 28
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B9: TShape
+        Left = 800
+        Height = 18
+        Top = 28
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B10: TShape
+        Left = 784
+        Height = 18
+        Top = 28
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B11: TShape
+        Left = 768
+        Height = 18
+        Top = 28
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B12: TShape
+        Left = 752
+        Height = 18
+        Top = 28
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B13: TShape
+        Left = 736
+        Height = 18
+        Top = 28
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B14: TShape
+        Left = 720
+        Height = 18
+        Top = 28
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B15: TShape
+        Left = 704
+        Height = 18
+        Top = 28
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object Label16: TLabel
+        Left = 668
+        Height = 15
+        Top = 47
+        Width = 30
+        Caption = '23..16'
+        Enabled = False
+        Visible = False
+      end
+      object B16: TShape
+        Left = 816
+        Height = 18
+        Top = 47
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B17: TShape
+        Left = 800
+        Height = 18
+        Top = 47
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B18: TShape
+        Left = 784
+        Height = 18
+        Top = 47
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B19: TShape
+        Left = 768
+        Height = 18
+        Top = 47
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B20: TShape
+        Left = 752
+        Height = 18
+        Top = 47
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B21: TShape
+        Left = 736
+        Height = 18
+        Top = 47
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B22: TShape
+        Left = 720
+        Height = 18
+        Top = 47
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B23: TShape
+        Left = 704
+        Height = 18
+        Top = 47
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object Label17: TLabel
+        Left = 668
+        Height = 15
+        Top = 68
+        Width = 30
+        Caption = '31..24'
+        Enabled = False
+        Visible = False
+      end
+      object B24: TShape
+        Left = 816
+        Height = 18
+        Top = 68
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B25: TShape
+        Left = 800
+        Height = 18
+        Top = 68
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B26: TShape
+        Left = 784
+        Height = 18
+        Top = 68
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B27: TShape
+        Left = 768
+        Height = 18
+        Top = 68
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B28: TShape
+        Left = 752
+        Height = 18
+        Top = 68
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B29: TShape
+        Left = 736
+        Height = 18
+        Top = 68
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B30: TShape
+        Left = 720
+        Height = 18
+        Top = 68
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object B31: TShape
+        Left = 704
+        Height = 18
+        Top = 68
+        Width = 16
+        Enabled = False
+        OnMouseUp = B0MouseUp
+        Visible = False
+      end
+      object DBNavigator1: TDBNavigator
+        Left = 384
+        Height = 30
+        Top = 118
+        Width = 230
+        BevelOuter = bvNone
+        ChildSizing.EnlargeHorizontal = crsScaleChilds
+        ChildSizing.EnlargeVertical = crsScaleChilds
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 100
+        ClientHeight = 30
+        ClientWidth = 230
+        DataSource = Datasource1
+        Options = []
+        TabOrder = 4
+        Visible = False
+        VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbInsert, nbDelete, nbEdit, nbPost, nbCancel]
+      end
+      object DBGrid1: TDBGrid
+        AnchorSideLeft.Control = TabSheet2
+        AnchorSideRight.Control = TabSheet2
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = TabSheet2
+        AnchorSideBottom.Side = asrBottom
+        Left = 0
+        Height = 270
+        Top = 152
+        Width = 1025
+        AlternateColor = clMoneyGreen
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        AutoFillColumns = True
+        Color = clWindow
+        Columns = <>
+        DataSource = Datasource1
+        ReadOnly = True
+        TabOrder = 5
+      end
+      object ToolBar1: TToolBar
+        Left = 0
+        Height = 30
+        Top = 118
+        Width = 344
+        Align = alCustom
+        ButtonHeight = 30
+        ButtonWidth = 30
+        Caption = 'ToolBar1'
+        Color = 15000804
+        Images = ImageList1
+        ParentColor = False
+        TabOrder = 6
+        object CmdMoveFirst: TToolButton
+          Left = 1
+          Top = 2
+          Caption = 'MoveFirst'
+          ImageIndex = 0
+          OnClick = CmdMoveFirstClick
+        end
+        object ToolButton2: TToolButton
+          Left = 31
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton2'
+          Style = tbsSeparator
+        end
+        object CmdPrior: TToolButton
+          Left = 39
+          Top = 2
+          Caption = 'MovePrior'
+          ImageIndex = 1
+          OnClick = CmdPriorClick
+        end
+        object ToolButton4: TToolButton
+          Left = 69
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton4'
+          Style = tbsSeparator
+        end
+        object CmdMoveNext: TToolButton
+          Left = 77
+          Top = 2
+          Caption = 'MoveNext'
+          ImageIndex = 2
+          OnClick = CmdMoveNextClick
+        end
+        object ToolButton6: TToolButton
+          Left = 107
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton6'
+          Style = tbsSeparator
+        end
+        object CmdMoveLast: TToolButton
+          Left = 115
+          Top = 2
+          Caption = 'MoveLast'
+          ImageIndex = 3
+          OnClick = CmdMoveLastClick
+        end
+        object ToolButton8: TToolButton
+          Left = 145
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton8'
+          Style = tbsSeparator
+        end
+        object CmdInsert: TToolButton
+          Left = 153
+          Top = 2
+          Caption = 'Insert'
+          ImageIndex = 4
+          OnClick = CmdInsertClick
+        end
+        object ToolButton10: TToolButton
+          Left = 183
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton10'
+          Style = tbsSeparator
+        end
+        object CmdDelete: TToolButton
+          Left = 191
+          Top = 2
+          Caption = 'Delete'
+          ImageIndex = 5
+          OnClick = CmdDeleteClick
+        end
+        object ToolButton12: TToolButton
+          Left = 221
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton12'
+          Style = tbsSeparator
+        end
+        object CmdEdit: TToolButton
+          Left = 229
+          Top = 2
+          Caption = 'Edit'
+          ImageIndex = 6
+          OnClick = CmdEditClick
+        end
+        object ToolButton14: TToolButton
+          Left = 259
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton14'
+          Style = tbsSeparator
+        end
+        object CmdPost: TToolButton
+          Left = 267
+          Top = 2
+          Caption = 'Post'
+          ImageIndex = 7
+          OnClick = CmdPostClick
+        end
+        object ToolButton16: TToolButton
+          Left = 297
+          Height = 30
+          Top = 2
+          Caption = 'ToolButton16'
+          Style = tbsSeparator
+        end
+        object CmdCancel: TToolButton
+          Left = 305
+          Top = 2
+          Caption = 'Cancel'
+          ImageIndex = 8
+          OnClick = CmdCancelClick
+        end
+      end
+      object EditAddress: TSpinEditEx
+        Left = 270
+        Height = 23
+        Top = 8
+        Width = 51
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 7
+        OnEditingDone = EditAddressEditingDone
+        NullValue = 0
+        UpDownVisible = False
+        Value = 0
+      end
+      object EditAddress1: TSpinEditEx
+        Left = 397
+        Height = 23
+        Top = 8
+        Width = 51
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 8
+        OnEditingDone = EditAddressEditingDone
+        NullValue = 0
+        UpDownVisible = False
+        Value = 100
+      end
+      object Label31: TLabel
+        AnchorSideTop.Control = EditAddress1
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EditAddress1
+        Left = 354
+        Height = 15
+        Top = 12
+        Width = 43
+        Anchors = [akTop, akRight]
+        Caption = 'IntMax: '
+      end
+      object Label32: TLabel
+        AnchorSideTop.Control = FloatSpinEditEx4
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = FloatSpinEditEx4
+        Left = 217
+        Height = 15
+        Top = 38
+        Width = 53
+        Anchors = [akTop, akRight]
+        Caption = 'FloatMin: '
+      end
+      object Label33: TLabel
+        AnchorSideTop.Control = FloatSpinEditEx5
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = FloatSpinEditEx5
+        Left = 342
+        Height = 15
+        Top = 38
+        Width = 55
+        Anchors = [akTop, akRight]
+        Caption = 'FloatMax: '
+      end
+      object FloatSpinEditEx4: TFloatSpinEditEx
+        Left = 270
+        Height = 23
+        Top = 34
+        Width = 51
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 9
+        UpDownVisible = False
+      end
+      object FloatSpinEditEx5: TFloatSpinEditEx
+        Left = 397
+        Height = 23
+        Top = 34
+        Width = 51
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 10
+        UpDownVisible = False
+        Value = 100
+      end
+      object CheckBoxUseBit1: TCheckBox
+        Left = 357
+        Height = 19
+        Top = 65
+        Width = 84
+        Caption = 'StartupReset'
+        Enabled = False
+        TabOrder = 11
+      end
+      object EditAddress2: TSpinEditEx
+        Left = 270
+        Height = 23
+        Top = 61
+        Width = 79
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 12
+        OnEditingDone = EditAddressEditingDone
+        NullValue = 0
+        UpDownVisible = False
+        Value = 0
+      end
+      object Label1: TLabel
+        AnchorSideTop.Control = EditAddress2
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EditAddress2
+        Left = 200
+        Height = 15
+        Top = 65
+        Width = 70
+        Anchors = [akTop, akRight]
+        Caption = 'Int64Startup: '
+      end
+      object EditAddress3: TSpinEditEx
+        Left = 544
+        Height = 23
+        Top = 8
+        Width = 51
+        Enabled = False
+        MaxLength = 0
+        TabOrder = 13
+        OnEditingDone = EditAddressEditingDone
+        NullValue = 0
+        UpDownVisible = False
+        Value = 7
+      end
+      object Label34: TLabel
+        AnchorSideTop.Control = EditAddress3
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EditAddress3
+        Left = 467
+        Height = 15
+        Top = 12
+        Width = 77
+        Anchors = [akTop, akRight]
+        Caption = 'Random/Min: '
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Online Tester'
+      ClientHeight = 422
+      ClientWidth = 1025
+      object SpinEditNode: TSpinEditEx
+        Left = 336
+        Height = 23
+        Top = 21
+        Width = 80
+        MaxLength = 0
+        TabOrder = 0
+        OnEditingDone = SpinEditNodeEditingDone
+        MaxValue = 255
+        NullValue = 0
+        UpDownVisible = False
+        Value = 29
+      end
+      object Label19: TLabel
+        AnchorSideTop.Control = SpinEditNode
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = SpinEditNode
+        Left = 301
+        Height = 15
+        Top = 25
+        Width = 35
+        Anchors = [akTop, akRight]
+        Caption = 'Node: '
+      end
+      object CmdConnect: TButton
+        Left = 8
+        Height = 28
+        Top = 16
+        Width = 81
+        Caption = 'Connect'
+        TabOrder = 1
+        OnClick = CmdConnectClick
+      end
+      object DBGrid2: TDBGrid
+        AnchorSideLeft.Control = TabSheet3
+        AnchorSideRight.Control = TabSheet3
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = TabSheet3
+        AnchorSideBottom.Side = asrBottom
+        Left = 0
+        Height = 366
+        Top = 56
+        Width = 1025
+        AlternateColor = clMoneyGreen
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        AutoFillColumns = True
+        Color = clWindow
+        Columns = <>
+        DataSource = Datasource2
+        ReadOnly = True
+        TabOrder = 2
+      end
+      object CmdInitDriver: TButton
+        Left = 428
+        Height = 28
+        Top = 16
+        Width = 86
+        Caption = 'Init Driver'
+        TabOrder = 3
+        OnClick = CmdInitDriverClick
+      end
+      object CmdClearList: TButton
+        Left = 528
+        Height = 28
+        Top = 16
+        Width = 86
+        Caption = 'Clear List'
+        TabOrder = 4
+        OnClick = CmdClearListClick
+      end
+    end
+    object TabSheet4: TTabSheet
+      Caption = 'Topology'
+      ClientHeight = 422
+      ClientWidth = 1025
+      object Image2: TImage
+        Left = 216
+        Height = 128
+        Top = 72
+        Width = 128
+        Images = ImageList2
+      end
+      object Image3: TImage
+        Left = 499
+        Height = 64
+        Top = 104
+        Width = 64
+        ImageIndex = 1
+        Images = ImageList2
+        Proportional = True
+        Stretch = True
+      end
+      object HMIBasicVectorControl1: THMIBasicVectorControl
+        Left = 384
+        Height = 82
+        Top = 96
+        Width = 82
+        SVGContents.Strings = (
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M566.6 342.6C579.1 330.1 579.1 309.8 566.6 297.3L406.6 137.3C394.1 124.8 373.8 124.8 361.3 137.3C348.8 149.8 348.8 170.1 361.3 182.6L466.7 288L96 288C78.3 288 64 302.3 64 320C64 337.7 78.3 352 96 352L466.7 352L361.3 457.4C348.8 469.9 348.8 490.2 361.3 502.7C373.8 515.2 394.1 515.2 406.6 502.7L566.6 342.7z"/></svg>'
+        )
+        Stretch = True
+        Proportional = True
+      end
+      object Label25: TLabel
+        Left = 216
+        Height = 15
+        Top = 192
+        Width = 54
+        Caption = 'Computer'
+      end
+      object Label26: TLabel
+        Left = 504
+        Height = 15
+        Top = 192
+        Width = 35
+        Caption = 'Device'
+      end
+      object Label27: TLabel
+        Left = 216
+        Height = 15
+        Top = 216
+        Width = 25
+        Caption = 'Port:'
+      end
+      object Label28: TLabel
+        Left = 504
+        Height = 15
+        Top = 216
+        Width = 32
+        Caption = 'Node:'
+      end
+      object Label29: TLabel
+        AnchorSideRight.Control = TabSheet4
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = TabSheet4
+        AnchorSideBottom.Side = asrBottom
+        Left = 715
+        Height = 15
+        Top = 403
+        Width = 306
+        Anchors = [akRight, akBottom]
+        BorderSpacing.Right = 4
+        BorderSpacing.Bottom = 4
+        Caption = 'https://fontawesome.com/icons/classic/solid/arrow-right'
+      end
+      object Label30: TLabel
+        AnchorSideRight.Control = TabSheet4
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = Label29
+        Left = 690
+        Height = 15
+        Top = 384
+        Width = 331
+        Anchors = [akRight, akBottom]
+        BorderSpacing.Right = 4
+        BorderSpacing.Bottom = 4
+        Caption = 'https://github.com/google/material-design-icons/tree/master'
+      end
+    end
+  end
+  object Datasource1: TDataSource
+    DataSet = BufDataset1
+    OnStateChange = Datasource1StateChange
+    OnUpdateData = Datasource1UpdateData
+    Left = 904
+  end
+  object BufDataset1: TBufDataset
+    FieldDefs = <>
+    AfterCancel = BufDataset1AfterCancel
+    AfterDelete = BufDataset1AfterDelete
+    AfterEdit = BufDataset1AfterEdit
+    AfterInsert = BufDataset1AfterInsert
+    AfterPost = BufDataset1AfterPost
+    AfterScroll = BufDataset1AfterScroll
+    BeforeEdit = BufDataset1BeforeEdit
+    BeforeInsert = BufDataset1BeforeInsert
+    BeforePost = BufDataset1BeforePost
+    BeforeScroll = BufDataset1BeforeScroll
+    OnCalcFields = BufDataset1CalcFields
+    OnNewRecord = BufDataset1NewRecord
+    Left = 904
+  end
+  object MainMenu1: TMainMenu
+    Left = 904
+    object MenuItem1: TMenuItem
+      Caption = 'File'
+      object MenuNew: TMenuItem
+        Caption = 'New'
+        OnClick = MenuNewClick
+      end
+      object MenuSaveAs: TMenuItem
+        Caption = 'SaveAs'
+        OnClick = MenuSaveAsClick
+      end
+      object MenuOpen: TMenuItem
+        Caption = 'Open'
+        OnClick = MenuOpenClick
+      end
+      object MenuExportCSV: TMenuItem
+        Caption = 'Export To CSV'
+        OnClick = MenuExportCSVClick
+      end
+      object MenuExit: TMenuItem
+        Caption = 'Exit'
+        OnClick = MenuExitClick
+      end
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 904
+  end
+  object SaveDialog1: TSaveDialog
+    Left = 904
+  end
+  object SerialPortDriver1: TSerialPortDriver
+    Timeout = 300
+    BackupPortSettings = True
+    Left = 904
+  end
+  object ModBusRTUDriver1: TModBusRTUDriver
+    CommunicationPort = SerialPortDriver1
+    ReadOnly = True
+    Left = 904
+  end
+  object BufDataset2: TBufDataset
+    FieldDefs = <>
+    Left = 904
+  end
+  object Datasource2: TDataSource
+    DataSet = BufDataset2
+    Left = 904
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = Timer1Timer
+    Left = 904
+  end
+  object ImageList1: TImageList
+    Height = 20
+    Width = 20
+    Left = 904
+    Bitmap = {
+      4C7A090000001400000014000000E90400000000000078DAEDD87B4C5B551C07
+      7046F68F3A261A4DF6F011C35FDBB23F808D0D228309A5CE814EB6E15C320111
+      04B2B5419CC6396232C72332484C8C423410B72C0D65C3B205D8989DB61B6E05
+      86D2B503D6166E8144FF5C328C7F38F3F59E63EE2CD0F6BE4E2D914BF24D9B9E
+      CBE79EC7EFDE7B5ABFDF0FFF324DEC899534D1F086C7875174AE044F37AE51E5
+      51C75C82B88627F0FCE9ED618F0FE78D4C8CA0ACAB02AB1A1EC7FAF62424DA4A
+      B1ED66956C2F942344AA27E6C8F18823CC4F92AD2CA8134D8FF57823B11E91AA
+      9748D573A4AE372D5AA21929752CD991789D858B92FB801C47CA7D4A8E23C763
+      759F8F94C77ABC91588F48D54BA4EA3952D79B162DFF45D69C5A4FEB95D42DAB
+      EF34CF7E9BC25FAFF128EA54EF128F5CEF49D7CAF1DC99543C5ABF1A6F98DEC4
+      E0D8A02A4F885A77A1A7D60DE53D74F9E78030BFA5E7CB978CC76ABCACD68365
+      BDB0AC67D6D79B162DD1FABD8BEC71E4D4B29847DAC85E8CECC9C8DE4CCC95E2
+      917B01D93392BD23D94392BD24D953AAF18488B9723D3157A91778AF17E697B8
+      4BC563355E56EBC1B25E58D633EBEB2DDABF7F6BD1B2301DC69D38FB6E0A0D79
+      AFD6230E3CD781091B7DCFC41BB302EE7E76DEED5E60F4A2222F70BE48CCC60C
+      E0670B70EB1CCC861DF3DA3A8C99B2FA233818EA001C67811BA7818176E0DAD7
+      80AD45527FA927E2E0872F00EBE7923C328679E3E5C728386643FAFCF11A3295
+      AD878CFE48F2AE3403973F63E7F5D5033D9F32F13A0C1901F395A1DD83B46859
+      A6CF5BB1FC1F9F1F61C7ABE0F9A1458B167971B926D1D737C1CC4A4CB4222E6E
+      1816CBB42ACBE7F3A1B6F62A56AC18424CCC2C6FFEA9D82456777737EC763BEA
+      EBFDBCF9176FFECA9B23E8ED1D97658D4DF870E8CBABE8B831048EE340FE1A1B
+      67111B7B0B9B377F0FA7D327CBCA6BBE82D50E0E4FDDBF8FD1B9DFE9E7A49F75
+      753FD2F95462C5CCCD61A5CB83849E61745A07F879B3C0EBF5AAB2E22D0E3CD3
+      7809C5A72ED1F9946535F507B5F23EB900F778742C92A6F34E3C3938B5C8DA73
+      E2223D971CCB393685E26617AA3AEFE211975755BF485A2DB751D8F44FAACFB8
+      F142D365C596C7EB437AF6AB283876817AA49FCDE651D96314623299909C9C8C
+      1779B3E53B1746F9B1ABB9D66D361B35493FB57BB21696F14E7951D353435F59
+      58D9ED3978AC211E59FCAB1A53B0D6B56EC2D6EB87B1B675A3A849DA82B5075A
+      293F1968C43CF279565B0E4DE031C2E7811679BFF0B850E70F3CAF927E911CEF
+      394EE798CC4BE0F9E5F64B6C4C4AAC70732E678C41F729533EE8DAF558FBD506
+      6CA59611EB5A3621E39B97E099F4A8AE33A5FD925A3B6A4D569696A593E9E919
+      916366657CBF98C1868DFD1818E042B6933DB8C9745792A5CB71E0FD630FA07F
+      79649149DAB3B21CA83CFC00AFECBE13D69C9C9C416A9A9D5A1FD600473F06B2
+      F5FF9A8156E511F0AF40FA8E5FF87D7EE87D535D9D13070E72D4AAFE0878EF03
+      DED48DA0AD6D7C91B5AFE01EF6EEBB293AD7B5BC597080A356D551C0580DE8F4
+      1E45D643B3D689FDBC492C431570C408C596908A8A21ECC9FF6D91B5658B55B6
+      156CEECB2B81B272329F2E49B512CE7AABE80F6A959601EF94027AFD1DC9F517
+      6C1D1312FA90F71A47AD9212E0ED627E8D74E2F5B76DBB3DE43A9E3CE9446E2E
+      47ADC2423E8780B4B4F0F547D6F5F5BD5CC87524E6AE5D1CB57277DF437EBEF8
+      3A93FFC9DCE90E5913A43D2DD52DC912D2D5E5097BAC58FB72CADF04FEFE63
+    }
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 904
+    object Menu2Open: TMenuItem
+      Caption = 'Open'
+      OnClick = Button3Click
+    end
+    object Menu2SaveBMP: TMenuItem
+      Caption = 'Save As BMP'
+      OnClick = Menu2SaveBMPClick
+    end
+    object Menu2SaveOBJ: TMenuItem
+      Caption = 'Save As OBJ'
+      OnClick = Menu2SaveOBJClick
+    end
+    object Menu2Clear: TMenuItem
+      Caption = 'Clear'
+      OnClick = Menu2ClearClick
+    end
+  end
+  object ImageList2: TImageList
+    Height = 128
+    Width = 128
+    Left = 904
+    Bitmap = {
+      4C7A020000008000000080000000A50300000000000078DAEDDD3B4EE3601886
+      5142C2554ACD1EEC9A25B86031B608120DCBCA5E42C34E4CE1D1E7511AAACC88
+      FF62F93CD25B4FE63F883816E069922449922449922449922449922449D29A3A
+      9D4ED3E17098D734CDB4DFEFA7ABAB2B4BB038DB38E3F379C7D9F3E79FBB711C
+      E7F57D3F6DB75B368516671F06678F5CF65DD7CD6350C7CE1E39BE06866170E6
+      952E6CF8F34F79ADE7FDBEEEEB8194D78471CDE99CEB5E18A5AA6D5B675CF9C2
+      883FFF14B9B7B38C7B44A9BAF4351C8F474BB04BCF9F3F7FFEFCF9AFCF7FB3D9
+      F0E7CF9F3F7FFEFCF9F35F91FFF5F5357FFEFCF9F3E7CF9F3FFF15F9C7CF00F1
+      E7CF9F3F7FFEFCD7E5BFDBEDF8F3E7CF9F3F7FFEFCF9F3E7BF12FF9B9B1BFEFC
+      F9F3E7CF9F3F7FFE2BF2BFBDBDE5CF9F3F7FFEFCF9F3E7BF22FFBBBB3BFEFCF9
+      F3E7CF9F3F7FFEFCF9AFC4FFFEFE9E3F7FFEFCF9F3E7CF9FFF8AFC1F1E1EF8F3
+      E7CF9F3F7FFEFCF9AFC8FFF1F1913F7FFEFCF9F3FFD53CFFABFE3D3D3DF1E79F
+      24CF7FAC7FCFCFCFC9FC3DFFB7FE7D7C7C24F3F7FCEFBA17BFFBFBF5F5C59F7F
+      B2866170D695EEFDFD7D4ADD388E53D775F39C791D7B797999F7FDFD3DE528BE
+      06627DDF7B3F28B8F85B6FAFAFAFB37B2E7BFEFC7F5E13C6E7C258D334EE1125
+      5C9C6D9CF1DBDBDBBCCFCFCF6CF7F4CDCCCCCCCCCCCCCCCCCC6C599324499224
+      49922449922449922449922449922449922449922449D2B2F2FC87DF79A6432C
+      CE30CEB3F63CFF25DDE23CE35C6371C6FCF9D766EFF96F7916675CDBD780E73F
+      E65D9C774DD77ABEDFE77F3F8873AFE1BA90FFBAFD3DFFBDCCCE9FAF4BD7B62D
+      8F028B738F95CEBD9D72F78862FCF997ECD2D77B3C1EEDC22DE9590DFCF9F3E7
+      CF9F3F7FFEFCF9F3E7CF9F3F7FFEFCF9FFAB7FCEFBA8B9FEFDD2FF7FFEFCF9F3
+      E7CF9F3F7FFEFCF9F3E7CF9F3F7FFEFCF9F3E7BF2C7FF7FFF9F3E7CF9F3F7FFE
+      FCD3B9F8F90FFEFCF9F3E7CF9F3F7FFEFC7DFE73FF9F3F7FFEFCF9F3E7CF7FD9
+      BFFFC79F3F7FFEFCF9F3E7CFDFF5BF9FFFE0CF9F3F7FFEFCF9F3E7CF9F3F7FFE
+      FCF9F3E7CF9F3F7FFEEEFFF3E7CF9F3F7FFEFCF9F3E7CF9F3F7FFEFCF9F3E7CF
+      9FBFB9FF6FFC8DBFF137FEC69F3F7FFEFCF9F3E75FB3FF7EBFCF7ABFD6FE2ECE
+      3DC69F7FC9DAB6E5516071EEB1D21D0E071E0516E71E2BDDE9749AB6DB2D938C
+      8BF38E738FF1E75FBA6118B8645C9C774D8DE338755D378F4FDAC519C779D756
+      BCA658DFF7DE0F127CBF8F738DD568CF9FFFCF6BC2F3E793A669DC23FA8F7B3B
+      716EB138C35AAEF32449922449922449922449D272FA031CB730A5
+    }
+  end
+end

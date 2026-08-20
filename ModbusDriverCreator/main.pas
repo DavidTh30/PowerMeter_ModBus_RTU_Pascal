@@ -128,6 +128,7 @@ type
     Menu2SaveOBJ: TMenuItem;
     Menu2SaveBMP: TMenuItem;
     Menu2Clear: TMenuItem;
+    MenuExportCSV: TMenuItem;
     MenuNew: TMenuItem;
     MenuSaveAs: TMenuItem;
     MenuOpen: TMenuItem;
@@ -216,6 +217,7 @@ type
     procedure Menu2ClearClick(Sender: TObject);
     procedure MenuExitClick(Sender: TObject);
     procedure Menu2SaveBMPClick(Sender: TObject);
+    procedure MenuExportCSVClick(Sender: TObject);
     procedure MenuNewClick(Sender: TObject);
     procedure MenuOpenClick(Sender: TObject);
     procedure MenuSaveAsClick(Sender: TObject);
@@ -1569,6 +1571,144 @@ begin
     StatusBar1.Panels.Items[0].Text:=S_Name;
   end;
 
+end;
+
+procedure TForm1.MenuExportCSVClick(Sender: TObject);
+var
+  i:integer;
+  fileout : TextFile;
+  S_Name, Directory_, CurrentFile:string;
+  Txt:String;
+  FileName_:string;
+  s:string;
+  FileStream :TFileStream;
+  Buffer1:A_Byte;
+  ObjectSize:integer;
+begin
+
+  FileName_:=FormatDateTime('DD MM YYYY hh nn ss',Now);
+
+  Directory_:=ExtractFilePath(ParamStr(0));
+  SaveDialog1.InitialDir:=ExtractFilePath(ParamStr(0));
+  SaveDialog1.FileName:=FileName_+'.csv';
+  SaveDialog1.Filter:='csv';
+  SaveDialog1.Filter := 'CSV files (*.csv)|*.csv|Text files (*.txt)|*.txt|All files (*.*)|*.*';
+  SaveDialog1.DefaultExt := 'csv';
+  SaveDialog1.FilterIndex := 1;
+  if SaveDialog1.Execute then
+  begin
+    S_Name:= SaveDialog1.FileName;
+    //showmessage(S_Name);
+    if FileExists(S_Name) then
+    begin
+      if MessageDlg('Confirmation', 'Do you want to proceed?', mtConfirmation, [mbYes, mbNo], 0) = 7 then
+      begin
+        //showmessage('exit');
+        exit;
+      end;
+    end;
+    //showmessage('Save');
+
+    StatusBar1.Panels.Items[0].Text:='';
+
+    try
+      AssignFile(fileout, S_Name);
+    except
+      on E: EInOutError do
+      begin
+        showmessage('AssignFile: '+E.ClassName+'/'+ E.Message+'/'+IntToStr(E.ErrorCode));
+        exit;
+      end;
+    end;
+
+    //if FileExists(S_Name) then
+    //try
+    //  Append(fileout);
+    //except
+    //  on E: EInOutError do
+    //  begin
+    //    showmessage('Append: '+E.ClassName+'/'+ E.Message+'/'+IntToStr(E.ErrorCode));
+    //    exit;
+    //  end;
+    //end;
+
+    //if not FileExists(S_Name) then
+    //begin
+      try
+        rewrite (fileout);
+      except
+        on E: EInOutError do
+        begin
+          showmessage('Append: '+E.ClassName+'/'+ E.Message+'/'+IntToStr(E.ErrorCode));
+          exit;
+        end;
+      end;
+    //end;
+
+    OnBootFinish:=false;
+    BufDataset1.First;
+    CurrentFile := ExtractFileName(S_Name);
+    form1.Caption:=Version_+' ['+CurrentFile+']';
+
+    Txt:='[DriverInfo]';
+    writeln(fileout, Txt);
+    Txt:='Device_Name='+Device_Name.Caption;
+    writeln(fileout, Txt);
+    Txt:='Device_MFG='+Device_MFG.Caption;
+    writeln(fileout, Txt);
+    Txt:='Device_Model='+Device_Model.Caption;
+    writeln(fileout, Txt);
+    Txt:='Device_SN='+Device_SN.Caption;
+    writeln(fileout, Txt);
+    Txt:='Device_Ver='+Device_Ver.Caption;
+    writeln(fileout, Txt);
+    if Trim(Drv_Name.Caption)='' then Drv_Name.Caption:=FileName_;
+    Txt:='Drv_Name='+Drv_Name.Caption;
+    writeln(fileout, Txt);
+    if Trim(Drv_SN.Caption)='' then Drv_SN.Caption:=RandomSerial();
+    Txt:='Drv_SN='+Drv_SN.Caption;
+    writeln(fileout, Txt);
+    if Trim(Drv_Ver.Caption)='' then Drv_Ver.Caption:='0.1';
+    Txt:='Drv_Ver='+Drv_Ver.Caption;
+    writeln(fileout, Txt);
+    Txt:='Drv_Other_Information='+Drv_Other_Information.Caption;
+    writeln(fileout, Txt);
+    if Trim(Drv_CreatDate.Caption)='' then Drv_CreatDate.Caption:= FormatDateTime('DD/MM/YYYY hh:nn:ss',Now);
+    Txt:='Drv_CreatDate='+Drv_CreatDate.Caption;
+    writeln(fileout, Txt);
+
+    Txt:='';
+    for i := 0 to BufDataset1.FieldCount - 1 do
+    begin
+      Txt:=Txt+BufDataset1.Fields[i].FieldName;
+      if i<(BufDataset1.FieldCount - 1) then Txt:=Txt+',';
+    end;
+      writeln(fileout, Txt);
+
+    while not BufDataset1.EOF do
+    begin
+      Txt:='';
+      for i := 0 to BufDataset1.FieldCount - 1 do
+      begin
+        s:=BufDataset1.FieldByName(BufDataset1.Fields[i].FieldName).AsString;
+        if (BufDataset1.Fields[i].FieldName = 'Type') then
+        if BufDataset1.FieldByName('Type').AsString = ''then  s:=EditType.Items[0];
+        if (BufDataset1.Fields[i].FieldName = 'RegisterType') then
+        if BufDataset1.FieldByName('RegisterType').AsString = ''then  s:=EditRegisterType.Items[2];
+        Txt:=Txt+s;
+        if i<(BufDataset1.FieldCount - 1) then Txt:=Txt+',';
+      end;
+      //log({$I %LINE%}+' '+Txt);
+      writeln(fileout, Txt);
+      BufDataset1.Next;
+    end;
+    OnBootFinish:=true;
+
+    CloseFile(fileout);
+    BufDataset1.First;
+
+    StatusBar1.Panels.Items[0].Text:=S_Name;
+  end;
 end;
 
 procedure TForm1.MenuNewClick(Sender: TObject);

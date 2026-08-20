@@ -1195,6 +1195,10 @@ object Form1: TForm1
         Caption = 'Open'
         OnClick = MenuOpenClick
       end
+      object MenuExportCSV: TMenuItem
+        Caption = 'Export To CSV'
+        OnClick = MenuExportCSVClick
+      end
       object MenuExit: TMenuItem
         Caption = 'Exit'
         OnClick = MenuExitClick

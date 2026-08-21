@@ -1076,6 +1076,7 @@ object Form1: TForm1
         MaxLength = 15
         TabOrder = 6
         Visible = False
+        OnEditingDone = MaskEditIPEditingDone
         EditMask = '999.999.999.999;1;0'
         Text = '192.168.   . 2 '
         SpaceChar = '0'
@@ -1231,7 +1232,7 @@ object Form1: TForm1
         OnClick = MenuExitClick
       end
     end
-    object MenuItem2: TMenuItem
+    object MenuConnect: TMenuItem
       Caption = 'Connect'
       object MenuTCP: TMenuItem
         Caption = 'TCP'
@@ -1380,5 +1381,18 @@ object Form1: TForm1
       BCA658DFF7DE0F127CBF8F738DD568CF9FFFCF6BC2F3E793A669DC23FA8F7B3B
       716EB138C35AAEF32449922449922449922449D272FA031CB730A5
     }
+  end
+  object TCP_UDPPort1: TTCP_UDPPort
+    Host = '192.168.0.20'
+    Timeout = 300
+    ExclusiveDevice = False
+    Left = 895
+    Top = 3
+  end
+  object ModBusTCPDriver1: TModBusTCPDriver
+    CommunicationPort = TCP_UDPPort1
+    ReadOnly = False
+    Left = 948
+    Top = 3
   end
 end

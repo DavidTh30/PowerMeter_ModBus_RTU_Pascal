@@ -8,8 +8,8 @@ uses
   Classes, SysUtils, db, BufDataset, FileUtil, SpinEx, Forms, Controls,
   Graphics, Dialogs, DbCtrls, DBGrids, StdCtrls, Menus, Spin, ExtCtrls,
   ComCtrls, MaskEdit, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag,
-  PLCTagNumber, hmi_draw_basic_vector_control, TypInfo, registry, Math,
-  IniFiles, strutils, LazFileUtils;
+  PLCTagNumber, tcp_udpport, ModBusTCP, hmi_draw_basic_vector_control, TypInfo,
+  registry, Math, IniFiles, strutils, LazFileUtils;
 
 type
   A_Byte = array of Byte;
@@ -131,7 +131,7 @@ type
     Menu2SaveBMP: TMenuItem;
     Menu2Clear: TMenuItem;
     MenuExportCSV: TMenuItem;
-    MenuItem2: TMenuItem;
+    MenuConnect: TMenuItem;
     MenuTCP: TMenuItem;
     MenuRTU: TMenuItem;
     MenuNew: TMenuItem;
@@ -139,6 +139,7 @@ type
     MenuOpen: TMenuItem;
     MenuExit: TMenuItem;
     ModBusRTUDriver1: TModBusRTUDriver;
+    ModBusTCPDriver1: TModBusTCPDriver;
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
     PopupMenu1: TPopupMenu;
@@ -152,6 +153,7 @@ type
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
     TabSheet4: TTabSheet;
+    TCP_UDPPort1: TTCP_UDPPort;
     Timer1: TTimer;
     ToolBar1: TToolBar;
     CmdMoveFirst: TToolButton;
@@ -219,6 +221,7 @@ type
     procedure FloatSpinEditEx2EditingDone(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure MaskEditIPEditingDone(Sender: TObject);
     procedure Menu2ClearClick(Sender: TObject);
     procedure MenuExitClick(Sender: TObject);
     procedure Menu2SaveBMPClick(Sender: TObject);
@@ -548,6 +551,12 @@ begin
   OnBootFinish:=true;
 end;
 
+procedure TForm1.MaskEditIPEditingDone(Sender: TObject);
+begin
+  TCP_UDPPort1.Host:=MaskEditIP.EditText;
+  //showmessage(MaskEditIP.EditText);
+end;
+
 procedure TForm1.Menu2ClearClick(Sender: TObject);
 begin
   if Image1 <> nil then freeandnil(Image1);
@@ -628,6 +637,7 @@ begin
   end;
   SerialPortDriver1.Active:= false;
   SerialPortDriver1.AcceptAnyPortName:=false;
+  TCP_UDPPort1.Active:=false;
 end;
 
 procedure TForm1.EditAddressEditingDone(Sender: TObject);
@@ -1074,9 +1084,24 @@ begin
 
   SerialPortDriver1.Active:= false;
   SerialPortDriver1.AcceptAnyPortName:=false;
+  TCP_UDPPort1.Active:=false;
 
-  if (not SerialPortDriver1.Active) then CmdConnect.Caption:='Connect';
-  if (SerialPortDriver1.Active) then CmdConnect.Caption:='Disconnect';
+  if (not SerialPortDriver1.Active) and (not TCP_UDPPort1.Active) then
+  begin
+    CmdConnect.Caption:='Connect';
+    timer1.Enabled:=false;
+    ComportEdit.Enabled:=true;
+    MaskEditIP.Enabled:=true;
+    MenuConnect.Enabled:=true;
+  end;
+  if (SerialPortDriver1.Active) or (TCP_UDPPort1.Active) then
+  begin
+    CmdConnect.Caption:='Disconnect';
+    timer1.Enabled:=true;
+    ComportEdit.Enabled:=false;
+    MaskEditIP.Enabled:=false;
+    MenuConnect.Enabled:=false;
+  end;
 
 end;
 
@@ -1184,6 +1209,7 @@ begin
   end;
   BufDataset2.CreateDataset;
 
+  if ComportEdit.Visible= true then
   if (ComportEdit.Text='') and (not SerialPortDriver1.Active) then
   begin
     showmessage('No comport found');
@@ -1209,9 +1235,24 @@ begin
 
   SerialPortDriver1.Active:= false;
   SerialPortDriver1.AcceptAnyPortName:=false;
+  TCP_UDPPort1.Active:=false;
 
-  if (not SerialPortDriver1.Active) then CmdConnect.Caption:='Connect';
-  if (SerialPortDriver1.Active) then CmdConnect.Caption:='Disconnect';
+  if (not SerialPortDriver1.Active) and (not TCP_UDPPort1.Active) then
+  begin
+    CmdConnect.Caption:='Connect';
+    timer1.Enabled:=false;
+    ComportEdit.Enabled:=true;
+    MaskEditIP.Enabled:=true;
+    MenuConnect.Enabled:=true;
+  end;
+  if (SerialPortDriver1.Active) or (TCP_UDPPort1.Active) then
+  begin
+    CmdConnect.Caption:='Disconnect';
+    timer1.Enabled:=true;
+    ComportEdit.Enabled:=false;
+    MaskEditIP.Enabled:=false;
+    MenuConnect.Enabled:=false;
+  end;
 
 
   OnBootFinish:=false;
@@ -1231,7 +1272,8 @@ begin
     end;
     //showmessage({$I %LINE%}+chr(13)+addrStr);
     DynamicTag.Name:=addrStr;
-    DynamicTag.ProtocolDriver:=ModBusRTUDriver1;
+    if ComportEdit.Visible= true then DynamicTag.ProtocolDriver:=ModBusRTUDriver1;
+    if MaskEditIP.Visible= true then DynamicTag.ProtocolDriver:=ModBusTCPDriver1;
     DynamicTag.UpdateTime:=500;
     DynamicTag.AutoRead:=false;
     DynamicTag.AutoWrite:=false;
@@ -1306,6 +1348,7 @@ var
 begin
   timer1.Enabled:=false;
 
+  if ComportEdit.Visible= true then
   if (ComportEdit.Text='') and (not SerialPortDriver1.Active) then
   begin
     showmessage('No comport found');
@@ -1321,20 +1364,32 @@ begin
         TPLCTagNumber(CurrentObj).AutoRead:=not TPLCTagNumber(CurrentObj).AutoRead;
       end;
   end;
-  SerialPortDriver1.Active:= not SerialPortDriver1.Active;
-  SerialPortDriver1.AcceptAnyPortName:=not SerialPortDriver1.AcceptAnyPortName;
 
-  if (not SerialPortDriver1.Active) then
+  if ComportEdit.Visible= true then
+  begin
+    SerialPortDriver1.Active:= not SerialPortDriver1.Active;
+    SerialPortDriver1.AcceptAnyPortName:=not SerialPortDriver1.AcceptAnyPortName;
+  end;
+  if MaskEditIP.Visible= true then
+  begin
+    TCP_UDPPort1.Active:=not TCP_UDPPort1.Active;
+  end;
+
+  if (not SerialPortDriver1.Active) and (not TCP_UDPPort1.Active) then
   begin
     CmdConnect.Caption:='Connect';
     timer1.Enabled:=false;
     ComportEdit.Enabled:=true;
+    MaskEditIP.Enabled:=true;
+    MenuConnect.Enabled:=true;
   end;
-  if (SerialPortDriver1.Active) then
+  if (SerialPortDriver1.Active) or (TCP_UDPPort1.Active) then
   begin
     CmdConnect.Caption:='Disconnect';
     timer1.Enabled:=true;
     ComportEdit.Enabled:=false;
+    MaskEditIP.Enabled:=false;
+    MenuConnect.Enabled:=false;
   end;
 end;
 

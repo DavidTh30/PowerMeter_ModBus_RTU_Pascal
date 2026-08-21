@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, db, BufDataset, FileUtil, SpinEx, Forms, Controls,
   Graphics, Dialogs, DbCtrls, DBGrids, StdCtrls, Menus, Spin, ExtCtrls,
-  ComCtrls, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag,
+  ComCtrls, MaskEdit, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag,
   PLCTagNumber, hmi_draw_basic_vector_control, TypInfo, registry, Math,
   IniFiles, strutils, LazFileUtils;
 
@@ -116,6 +116,7 @@ type
     Label29: TLabel;
     Label3: TLabel;
     Label30: TLabel;
+    Label31: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
@@ -123,12 +124,16 @@ type
     Label8: TLabel;
     Label9: TLabel;
     MainMenu1: TMainMenu;
+    MaskEditIP: TMaskEdit;
     MenuItem1: TMenuItem;
     Menu2Open: TMenuItem;
     Menu2SaveOBJ: TMenuItem;
     Menu2SaveBMP: TMenuItem;
     Menu2Clear: TMenuItem;
     MenuExportCSV: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuTCP: TMenuItem;
+    MenuRTU: TMenuItem;
     MenuNew: TMenuItem;
     MenuSaveAs: TMenuItem;
     MenuOpen: TMenuItem;
@@ -218,6 +223,8 @@ type
     procedure MenuExitClick(Sender: TObject);
     procedure Menu2SaveBMPClick(Sender: TObject);
     procedure MenuExportCSVClick(Sender: TObject);
+    procedure MenuTCPClick(Sender: TObject);
+    procedure MenuRTUClick(Sender: TObject);
     procedure MenuNewClick(Sender: TObject);
     procedure MenuOpenClick(Sender: TObject);
     procedure MenuSaveAsClick(Sender: TObject);
@@ -1714,6 +1721,26 @@ begin
 
     StatusBar1.Panels.Items[0].Text:=S_Name;
   end;
+end;
+
+procedure TForm1.MenuTCPClick(Sender: TObject);
+begin
+  MenuTCP.ImageIndex:=7;
+  MenuRTU.ImageIndex:=9;
+  Label31.Visible:=true;
+  MaskEditIP.Visible:=true;
+  Label20.Visible:=false;
+  ComportEdit.Visible:=false;
+end;
+
+procedure TForm1.MenuRTUClick(Sender: TObject);
+begin
+  MenuTCP.ImageIndex:=9;
+  MenuRTU.ImageIndex:=7;
+  Label31.Visible:=false;
+  MaskEditIP.Visible:=false;
+  Label20.Visible:=true;
+  ComportEdit.Visible:=true;
 end;
 
 procedure TForm1.MenuNewClick(Sender: TObject);

@@ -554,6 +554,7 @@ end;
 procedure TForm1.MaskEditIPEditingDone(Sender: TObject);
 begin
   TCP_UDPPort1.Host:=MaskEditIP.EditText;
+  Label27.Caption:='IP: '+MaskEditIP.EditText;
   //showmessage(MaskEditIP.EditText);
 end;
 
@@ -1254,6 +1255,8 @@ begin
     MenuConnect.Enabled:=false;
   end;
 
+  if (Label31.Visible) then Label27.Caption:='IP: '+MaskEditIP.EditText;
+  if (Label20.Visible) then Label27.Caption:='Port: '+ComportEdit.Text;
 
   OnBootFinish:=false;
   BufDataset1.First;
@@ -1390,6 +1393,8 @@ begin
     ComportEdit.Enabled:=false;
     MaskEditIP.Enabled:=false;
     MenuConnect.Enabled:=false;
+    if (TCP_UDPPort1.Active) then Label27.Caption:='IP: '+MaskEditIP.EditText;
+    if (SerialPortDriver1.Active) then Label27.Caption:='Port: '+ComportEdit.Text;
   end;
 end;
 
@@ -1786,6 +1791,8 @@ begin
   MaskEditIP.Visible:=true;
   Label20.Visible:=false;
   ComportEdit.Visible:=false;
+  if (Label31.Visible) then Label27.Caption:='IP: '+MaskEditIP.EditText;
+  if (Label20.Visible) then Label27.Caption:='Port: '+ComportEdit.Text;
 end;
 
 procedure TForm1.MenuRTUClick(Sender: TObject);
@@ -1796,6 +1803,8 @@ begin
   MaskEditIP.Visible:=false;
   Label20.Visible:=true;
   ComportEdit.Visible:=true;
+  if (Label31.Visible) then Label27.Caption:='IP: '+MaskEditIP.EditText;
+  if (Label20.Visible) then Label27.Caption:='Port: '+ComportEdit.Text;
 end;
 
 procedure TForm1.MenuNewClick(Sender: TObject);

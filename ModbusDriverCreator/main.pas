@@ -157,8 +157,10 @@ type
     Timer1: TTimer;
     ToolBar1: TToolBar;
     CmdMoveFirst: TToolButton;
+    CmdAppend: TToolButton;
     ToolButton10: TToolButton;
     CmdDelete: TToolButton;
+    CmdSwapDown: TToolButton;
     ToolButton12: TToolButton;
     CmdEdit: TToolButton;
     ToolButton14: TToolButton;
@@ -167,12 +169,16 @@ type
     CmdCancel: TToolButton;
     ToolButton2: TToolButton;
     CmdPrior: TToolButton;
+    ToolButton3: TToolButton;
     ToolButton4: TToolButton;
     CmdMoveNext: TToolButton;
+    ToolButton5: TToolButton;
     ToolButton6: TToolButton;
     CmdMoveLast: TToolButton;
+    CmdSwapUp: TToolButton;
     ToolButton8: TToolButton;
     CmdInsert: TToolButton;
+    ToolButton9: TToolButton;
     procedure B0MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure BufDataset1AfterCancel(DataSet: TDataSet);
@@ -240,6 +246,9 @@ type
     procedure CmdMoveFirstClick(Sender: TObject);
     procedure CmdMoveLastClick(Sender: TObject);
     procedure CmdPriorClick(Sender: TObject);
+    procedure CmdSwapDownClick(Sender: TObject);
+    procedure CmdAppendClick(Sender: TObject);
+    procedure CmdSwapUpClick(Sender: TObject);
   private
     { private declarations }
   public
@@ -258,6 +267,162 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+procedure SwapUpDataSetRecord(Source:TDataSet);
+var
+  I: Integer;
+  BB : TBufDataset;
+  BB2: TBufDataset;
+begin
+  BB := TBufDataset.Create(nil);
+  BB.FieldDefs.Clear;
+  BB.Fields.Clear;
+  BB.FieldDefs.Assign(Source.FieldDefs);
+  BB.CreateDataset;
+
+  BB2 := TBufDataset.Create(nil);
+  BB2.FieldDefs.Clear;
+  BB2.Fields.Clear;
+  BB2.FieldDefs.Assign(Source.FieldDefs);
+  BB2.CreateDataset;
+
+  BB.Append; // Open a new record in the destination
+  for I := 0 to Source.FieldCount - 1 do
+  begin
+    if not Source.Fields[I].IsNull then
+      BB.Fields[I].Value := Source.Fields[I].Value;
+  end;
+  BB.Post; // Save the new record
+
+  Source.MoveBy(-1);
+  if Source.BOF then
+  begin
+    BB.Free;
+    BB2.Free;
+    exit;
+  end;
+
+  BB2.Append; // Open a new record in the destination
+  for I := 0 to Source.FieldCount - 1 do
+  begin
+    if not Source.Fields[I].IsNull then
+      BB2.Fields[I].Value := Source.Fields[I].Value;
+  end;
+  BB2.Post; // Save the new record
+
+  Source.MoveBy(1);
+  if Source.EOF then
+  begin
+    BB.Free;
+    BB2.Free;
+    exit;
+  end;
+
+  Source.Edit;
+  for I := 0 to BB2.FieldCount - 1 do
+  begin
+    if not BB2.Fields[I].IsNull then
+      Source.Fields[I].Value:=BB2.Fields[I].Value;
+  end;
+  Source.Post; // Save the new record
+
+  Source.MoveBy(-1);
+  Source.Edit;
+  for I := 0 to BB.FieldCount - 1 do
+  begin
+    if not BB.Fields[I].IsNull then
+      Source.Fields[I].Value:=BB.Fields[I].Value;
+  end;
+  Source.Post; // Save the new record
+
+  BB.Free;
+  BB2.Free;
+end;
+
+procedure SwapDownDataSetRecord(Source:TDataSet);
+var
+  I: Integer;
+  BB : TBufDataset;
+  BB2: TBufDataset;
+begin
+  BB := TBufDataset.Create(nil);
+  BB.FieldDefs.Clear;
+  BB.Fields.Clear;
+  BB.FieldDefs.Assign(Source.FieldDefs);
+  BB.CreateDataset;
+
+  BB2 := TBufDataset.Create(nil);
+  BB2.FieldDefs.Clear;
+  BB2.Fields.Clear;
+  BB2.FieldDefs.Assign(Source.FieldDefs);
+  BB2.CreateDataset;
+
+  BB.Append; // Open a new record in the destination
+  for I := 0 to Source.FieldCount - 1 do
+  begin
+    if not Source.Fields[I].IsNull then
+      BB.Fields[I].Value := Source.Fields[I].Value;
+  end;
+  BB.Post; // Save the new record
+
+  Source.MoveBy(1);
+  if Source.EOF then
+  begin
+    BB.Free;
+    BB2.Free;
+    exit;
+  end;
+
+  BB2.Append; // Open a new record in the destination
+  for I := 0 to Source.FieldCount - 1 do
+  begin
+    if not Source.Fields[I].IsNull then
+      BB2.Fields[I].Value := Source.Fields[I].Value;
+  end;
+  BB2.Post; // Save the new record
+
+  Source.MoveBy(-1);
+  if Source.BOF then
+  begin
+    BB.Free;
+    BB2.Free;
+    exit;
+  end;
+
+  Source.Edit;
+  for I := 0 to BB2.FieldCount - 1 do
+  begin
+    if not BB2.Fields[I].IsNull then
+      Source.Fields[I].Value:=BB2.Fields[I].Value;
+  end;
+  Source.Post; // Save the new record
+
+  Source.MoveBy(1);
+  Source.Edit;
+  for I := 0 to BB.FieldCount - 1 do
+  begin
+    if not BB.Fields[I].IsNull then
+      Source.Fields[I].Value:=BB.Fields[I].Value;
+  end;
+  Source.Post; // Save the new record
+
+  BB.Free;
+  BB2.Free;
+end;
+
+procedure CopyDataSetRecord(Source, Dest: TDataSet);
+var
+  I: Integer;
+begin
+  Dest.Append; // Open a new record in the destination
+  for I := 0 to Source.FieldCount - 1 do
+  begin
+    if not Source.Fields[I].IsNull then
+      Dest.Fields[I].Value := Source.Fields[I].Value;
+  end;
+  Dest.Post; // Save the new record
+end;
+
 procedure BufferToFile(Buffer_: A_Byte; File_ : string);
 var
   FileStream: TFileStream;
@@ -516,6 +681,8 @@ begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
     CmdDelete.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end
   else
   begin
@@ -524,17 +691,21 @@ begin
     CmdMoveNext.Enabled:=true;
     CmdMoveLast.Enabled:=true;
     CmdDelete.Enabled:=true;
+    CmdSwapUp.Enabled:=true;
+    CmdSwapDown.Enabled:=true;
   end;
 
   if BufDataset1.BOF then
   begin
     CmdMoveFirst.Enabled:=false;
     CmdPrior.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
   end;
   if BufDataset1.EOF then
   begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end;
 
   if BufDataset1.State in [dsEdit, dsInsert] then
@@ -667,6 +838,8 @@ begin
   CmdPost.Enabled:=false;
   CmdCancel.Enabled:=false;
   CmdEdit.Enabled:=true;
+  CmdSwapUp.Enabled:=true;
+  CmdSwapDown.Enabled:=true;
 
   if BufDataset1.RecordCount = 0 then
   begin
@@ -675,6 +848,8 @@ begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
     CmdDelete.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end
   else
   begin
@@ -688,11 +863,13 @@ begin
   begin
     CmdMoveFirst.Enabled:=false;
     CmdPrior.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
   end;
   if BufDataset1.EOF then
   begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end;
 end;
 
@@ -735,6 +912,8 @@ begin
   CmdPost.Enabled:=false;
   CmdCancel.Enabled:=false;
   CmdEdit.Enabled:=true;
+  CmdSwapUp.Enabled:=true;
+  CmdSwapDown.Enabled:=true;
 
   if BufDataset1.RecordCount = 0 then
   begin
@@ -743,6 +922,8 @@ begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
     CmdDelete.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end
   else
   begin
@@ -756,11 +937,13 @@ begin
   begin
     CmdMoveFirst.Enabled:=false;
     CmdPrior.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
   end;
   if BufDataset1.EOF then
   begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end;
 end;
 
@@ -783,6 +966,8 @@ begin
     CmdMoveLast.Enabled:=false;
 
     CmdEdit.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
 end;
 
 procedure TForm1.BufDataset1AfterPost(DataSet: TDataSet);
@@ -792,6 +977,8 @@ begin
   CmdPost.Enabled:=false;
   CmdCancel.Enabled:=false;
   CmdEdit.Enabled:=true;
+  CmdSwapUp.Enabled:=true;
+  CmdSwapDown.Enabled:=true;
 
   if BufDataset1.RecordCount = 0 then
   begin
@@ -800,6 +987,8 @@ begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
     CmdDelete.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end
   else
   begin
@@ -813,11 +1002,13 @@ begin
   begin
     CmdMoveFirst.Enabled:=false;
     CmdPrior.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
   end;
   if BufDataset1.EOF then
   begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end;
 end;
 
@@ -831,6 +1022,41 @@ begin
   if BufDataset1.State in [dsEdit, dsInsert] then exit;
 
   log({$I %LINE%}+' Update');
+
+  if BufDataset1.RecordCount = 0 then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdDelete.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
+  end
+  else
+  begin
+    CmdMoveFirst.Enabled:=true;
+    CmdPrior.Enabled:=true;
+    CmdMoveNext.Enabled:=true;
+    CmdMoveLast.Enabled:=true;
+    CmdDelete.Enabled:=true;
+    CmdSwapUp.Enabled:=true;
+    CmdSwapDown.Enabled:=true;
+  end;
+
+  if BufDataset1.BOF then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+  end;
+  if BufDataset1.EOF then
+  begin
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
+  end;
+
   EditAddress.Value:= BufDataset1.FieldByName('Address').AsInteger;
   EditSymbol.Caption:= BufDataset1.FieldByName('Symbol').AsString;
   EditUnit.Caption:= BufDataset1.FieldByName('Unit').AsString;
@@ -1109,6 +1335,7 @@ end;
 procedure TForm1.CmdMoveNextClick(Sender: TObject);
 begin
   BufDataset1.Next;
+  //Datasource1.DataSet.MoveBy(1);
   CmdPost.Enabled:=false;
   CmdCancel.Enabled:=false;
   if BufDataset1.RecordCount = 0 then
@@ -1118,6 +1345,8 @@ begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
     CmdDelete.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end
   else
   begin
@@ -1126,17 +1355,21 @@ begin
     CmdMoveNext.Enabled:=true;
     CmdMoveLast.Enabled:=true;
     CmdDelete.Enabled:=true;
+    CmdSwapUp.Enabled:=true;
+    CmdSwapDown.Enabled:=true;
   end;
 
   if BufDataset1.BOF then
   begin
     CmdMoveFirst.Enabled:=false;
     CmdPrior.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
   end;
   if BufDataset1.EOF then
   begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end;
 end;
 
@@ -1425,6 +1658,8 @@ begin
     CmdPost.Enabled:=true;
     CmdCancel.Enabled:=true;
     CmdEdit.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
 
     DBGrid1.Enabled:=false;
     DBNavigator1.VisibleButtons := DBNavigator1.VisibleButtons - [nbFirst, nbPrior, nbNext, nbLast, nbInsert,nbDelete];
@@ -1488,6 +1723,8 @@ begin
     CmdPost.Enabled:=false;
     CmdCancel.Enabled:=false;
     CmdEdit.Enabled:=true;
+    CmdSwapUp.Enabled:=true;
+    CmdSwapDown.Enabled:=true;
 
     DBGrid1.Enabled:=true;
     DBNavigator1.VisibleButtons := [nbFirst,nbPrior,nbNext,nbLast,nbInsert,nbDelete,nbEdit,nbPost,nbCancel];
@@ -1881,6 +2118,8 @@ begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
     CmdDelete.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end;
 
   OnBootFinish:=true;
@@ -2044,6 +2283,8 @@ begin
       CmdMoveNext.Enabled:=false;
       CmdMoveLast.Enabled:=false;
       CmdDelete.Enabled:=false;
+      CmdSwapUp.Enabled:=false;
+      CmdSwapDown.Enabled:=false;
     end
     else
     begin
@@ -2057,11 +2298,13 @@ begin
     begin
       CmdMoveFirst.Enabled:=false;
       CmdPrior.Enabled:=false;
+      CmdSwapUp.Enabled:=false;
     end;
     if BufDataset1.EOF then
     begin
       CmdMoveNext.Enabled:=false;
       CmdMoveLast.Enabled:=false;
+      CmdSwapDown.Enabled:=false;
     end;
 
     MyIni := TIniFile.Create(S_Name);
@@ -2455,6 +2698,8 @@ begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
     CmdDelete.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end
   else
   begin
@@ -2463,17 +2708,21 @@ begin
     CmdMoveNext.Enabled:=true;
     CmdMoveLast.Enabled:=true;
     CmdDelete.Enabled:=true;
+    CmdSwapUp.Enabled:=true;
+    CmdSwapDown.Enabled:=true;
   end;
 
   if BufDataset1.BOF then
   begin
     CmdMoveFirst.Enabled:=false;
     CmdPrior.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
   end;
   if BufDataset1.EOF then
   begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end;
 end;
 
@@ -2489,6 +2738,8 @@ begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
     CmdDelete.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end
   else
   begin
@@ -2497,23 +2748,28 @@ begin
     CmdMoveNext.Enabled:=true;
     CmdMoveLast.Enabled:=true;
     CmdDelete.Enabled:=true;
+    CmdSwapUp.Enabled:=true;
+    CmdSwapDown.Enabled:=true;
   end;
 
   if BufDataset1.BOF then
   begin
     CmdMoveFirst.Enabled:=false;
     CmdPrior.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
   end;
   if BufDataset1.EOF then
   begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end;
 end;
 
 procedure TForm1.CmdPriorClick(Sender: TObject);
 begin
   BufDataset1.Prior;
+  //Datasource1.DataSet.MoveBy(-1);
   CmdPost.Enabled:=false;
   CmdCancel.Enabled:=false;
   if BufDataset1.RecordCount = 0 then
@@ -2523,6 +2779,8 @@ begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
     CmdDelete.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end
   else
   begin
@@ -2531,17 +2789,108 @@ begin
     CmdMoveNext.Enabled:=true;
     CmdMoveLast.Enabled:=true;
     CmdDelete.Enabled:=true;
+    CmdSwapUp.Enabled:=true;
+    CmdSwapDown.Enabled:=true;
   end;
 
   if BufDataset1.BOF then
   begin
     CmdMoveFirst.Enabled:=false;
     CmdPrior.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
   end;
   if BufDataset1.EOF then
   begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
+  end;
+end;
+
+procedure TForm1.CmdSwapDownClick(Sender: TObject);
+begin
+  DBGrid1.Enabled:=false;
+  SwapDownDataSetRecord(BufDataset1);
+  DBGrid1.Enabled:=true;
+  if BufDataset1.RecordCount = 0 then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdDelete.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
+  end
+  else
+  begin
+    CmdMoveFirst.Enabled:=true;
+    CmdPrior.Enabled:=true;
+    CmdMoveNext.Enabled:=true;
+    CmdMoveLast.Enabled:=true;
+    CmdDelete.Enabled:=true;
+    CmdSwapUp.Enabled:=true;
+    CmdSwapDown.Enabled:=true;
+  end;
+
+  if BufDataset1.BOF then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+  end;
+  if BufDataset1.EOF then
+  begin
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
+  end;
+end;
+
+procedure TForm1.CmdAppendClick(Sender: TObject);
+begin
+  DBGrid1.Enabled:=false;
+  Datasource1.DataSet.Append;
+  //DataSet.AppendRecord([1, 'John Doe', 25]);
+end;
+
+procedure TForm1.CmdSwapUpClick(Sender: TObject);
+begin
+  DBGrid1.Enabled:=false;
+  SwapUpDataSetRecord(BufDataset1);
+  DBGrid1.Enabled:=true;
+  if BufDataset1.RecordCount = 0 then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdDelete.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
+  end
+  else
+  begin
+    CmdMoveFirst.Enabled:=true;
+    CmdPrior.Enabled:=true;
+    CmdMoveNext.Enabled:=true;
+    CmdMoveLast.Enabled:=true;
+    CmdDelete.Enabled:=true;
+    CmdSwapUp.Enabled:=true;
+    CmdSwapDown.Enabled:=true;
+  end;
+
+  if BufDataset1.BOF then
+  begin
+    CmdMoveFirst.Enabled:=false;
+    CmdPrior.Enabled:=false;
+    CmdSwapUp.Enabled:=false;
+  end;
+  if BufDataset1.EOF then
+  begin
+    CmdMoveNext.Enabled:=false;
+    CmdMoveLast.Enabled:=false;
+    CmdSwapDown.Enabled:=false;
   end;
 end;
 

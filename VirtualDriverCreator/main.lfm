@@ -23,9 +23,9 @@ object Form1: TForm1
     Height = 450
     Top = 0
     Width = 974
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Info'
@@ -604,14 +604,14 @@ object Form1: TForm1
         Anchors = [akTop, akRight]
         Caption = 'Node: '
       end
-      object CmdConnect: TButton
+      object CmdSimulate: TButton
         Left = 8
         Height = 28
         Top = 16
-        Width = 81
-        Caption = 'Connect'
+        Width = 104
+        Caption = 'Start Simulate'
         TabOrder = 1
-        OnClick = CmdConnectClick
+        OnClick = CmdSimulateClick
       end
       object DBGrid2: TDBGrid
         AnchorSideLeft.Control = TabSheet3
@@ -744,7 +744,8 @@ object Form1: TForm1
     DataSet = BufDataset1
     OnStateChange = Datasource1StateChange
     OnUpdateData = Datasource1UpdateData
-    Left = 904
+    Left = 864
+    Top = 8
   end
   object BufDataset1: TBufDataset
     FieldDefs = <>
@@ -760,10 +761,12 @@ object Form1: TForm1
     BeforeScroll = BufDataset1BeforeScroll
     OnCalcFields = BufDataset1CalcFields
     OnNewRecord = BufDataset1NewRecord
-    Left = 904
+    Left = 840
+    Top = 8
   end
   object MainMenu1: TMainMenu
-    Left = 904
+    Left = 848
+    Top = 8
     object MenuItem1: TMenuItem
       Caption = 'File'
       object MenuNew: TMenuItem
@@ -789,39 +792,33 @@ object Form1: TForm1
     end
   end
   object OpenDialog1: TOpenDialog
-    Left = 904
+    Left = 856
+    Top = 8
   end
   object SaveDialog1: TSaveDialog
-    Left = 904
-  end
-  object SerialPortDriver1: TSerialPortDriver
-    Timeout = 300
-    BackupPortSettings = True
-    Left = 904
-  end
-  object ModBusRTUDriver1: TModBusRTUDriver
-    CommunicationPort = SerialPortDriver1
-    ReadOnly = True
-    Left = 904
+    Left = 864
+    Top = 8
   end
   object BufDataset2: TBufDataset
     FieldDefs = <>
-    Left = 904
+    Left = 776
+    Top = 8
   end
   object Datasource2: TDataSource
     DataSet = BufDataset2
-    Left = 904
+    Left = 752
   end
   object Timer1: TTimer
     Enabled = False
     Interval = 500
     OnTimer = Timer1Timer
-    Left = 904
+    Left = 800
+    Top = 8
   end
   object ImageList1: TImageList
     Height = 20
     Width = 20
-    Left = 904
+    Left = 808
     Bitmap = {
       4C7A090000001400000014000000E90400000000000078DAEDD87B4C5B551C07
       7046F68F3A261A4DF6F011C35FDBB23F808D0D228309A5CE814EB6E15C320111
@@ -866,7 +863,8 @@ object Form1: TForm1
     }
   end
   object PopupMenu1: TPopupMenu
-    Left = 904
+    Left = 768
+    Top = 8
     object Menu2Open: TMenuItem
       Caption = 'Open'
       OnClick = Button3Click
@@ -887,7 +885,8 @@ object Form1: TForm1
   object ImageList2: TImageList
     Height = 128
     Width = 128
-    Left = 904
+    Left = 792
+    Top = 8
     Bitmap = {
       4C7A020000008000000080000000A50300000000000078DAEDDD3B4EE3601886
       5142C2554ACD1EEC9A25B86031B608120DCBCA5E42C34E4CE1D1E7511AAACC88

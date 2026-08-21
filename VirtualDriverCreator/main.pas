@@ -27,7 +27,7 @@ type
     CmdRandomSerial: TButton;
     Button2: TButton;
     CmdInitDriver: TButton;
-    CmdConnect: TButton;
+    CmdSimulate: TButton;
     Datasource2: TDataSource;
     DBGrid2: TDBGrid;
     IntMax: TSpinEditEx;
@@ -84,12 +84,10 @@ type
     MenuSaveAs: TMenuItem;
     MenuOpen: TMenuItem;
     MenuExit: TMenuItem;
-    ModBusRTUDriver1: TModBusRTUDriver;
     OpenDialog1: TOpenDialog;
     PageControl1: TPageControl;
     PopupMenu1: TPopupMenu;
     SaveDialog1: TSaveDialog;
-    SerialPortDriver1: TSerialPortDriver;
     Shape1: TShape;
     SpinEditNode: TSpinEditEx;
     IntMin: TSpinEditEx;
@@ -138,7 +136,7 @@ type
     procedure CmdRandomSerialClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure CmdInitDriverClick(Sender: TObject);
-    procedure CmdConnectClick(Sender: TObject);
+    procedure CmdSimulateClick(Sender: TObject);
     procedure Datasource1StateChange(Sender: TObject);
     procedure Datasource1UpdateData(Sender: TObject);
     procedure Drv_CreatDateEditingDone(Sender: TObject);
@@ -245,16 +243,12 @@ begin
 end;
 
 procedure PopulateEnumList(out AList: TStringList);
-var
-  T_TagType: TTagType;
 begin
   AList := TStringList.Create;
-
-  for T_TagType := Low(TTagType) to High(TTagType) do
-  begin
-    AList.Add(GetEnumName(TypeInfo(TTagType), Ord(T_TagType)));
-  end;
-
+  AList.Add('Bit');
+  AList.Add('Integer');
+  AList.Add('Float');
+  AList.Add('Integer64');
 end;
 
 procedure log(message_: string);
@@ -285,7 +279,7 @@ begin
   PopulateEnumList(s);
   EditType.Items := s;
   s.Free;
-  EditType.ItemIndex:=0;
+  EditType.ItemIndex:=1;
 
   //showmessage(BufDataset1.FieldDefs.Count.ToString);
 
@@ -460,8 +454,7 @@ begin
       TPLCTagNumber(CurrentObj).Free;
     end;
   end;
-  SerialPortDriver1.Active:= false;
-  SerialPortDriver1.AcceptAnyPortName:=false;
+
 end;
 
 procedure TForm1.IntMinEditingDone(Sender: TObject);
@@ -830,11 +823,14 @@ begin
     end;
   end;
 
-  SerialPortDriver1.Active:= false;
-  SerialPortDriver1.AcceptAnyPortName:=false;
-
-  if (not SerialPortDriver1.Active) then CmdConnect.Caption:='Connect';
-  if (SerialPortDriver1.Active) then CmdConnect.Caption:='Disconnect';
+  if (not timer1.Enabled) then
+  begin
+    CmdSimulate.Caption:='Start Simulate';
+  end;
+  if (timer1.Enabled) then
+  begin
+    CmdSimulate.Caption:='Stop Simulate';
+  end;
 
 end;
 
@@ -908,8 +904,6 @@ end;
 procedure TForm1.CmdInitDriverClick(Sender: TObject);
 var
   i, i2: integer;
-  CurrentObj: TComponent;
-  DynamicTag: TPLCTagNumber;
   addrStr:String;
 begin
   if BufDataset1.State in [dsEdit, dsInsert] then
@@ -938,25 +932,15 @@ begin
   BufDataset2.CreateDataset;
 
   i2:=0;
-  for i := 0 to ComponentCount - 1 do
+
+  if (not timer1.Enabled) then
   begin
-    if i>(ComponentCount - 1) then i2:= (ComponentCount - 1);
-    if i<=(ComponentCount - 1) then i2:=i;
-    CurrentObj := Components[i2];
-    if (CurrentObj is TPLCTagNumber)then
-    begin
-      log({$I %LINE%}+' Found TPLCTagNumber: '+TPLCTagNumber(CurrentObj).Name);
-      TPLCTagNumber(CurrentObj).AutoRead:=false;
-      TPLCTagNumber(CurrentObj).DestroyComponents;
-      TPLCTagNumber(CurrentObj).Free;
-    end;
+    CmdSimulate.Caption:='Start Simulate';
   end;
-
-  SerialPortDriver1.Active:= false;
-  SerialPortDriver1.AcceptAnyPortName:=false;
-
-  if (not SerialPortDriver1.Active) then CmdConnect.Caption:='Connect';
-  if (SerialPortDriver1.Active) then CmdConnect.Caption:='Disconnect';
+  if (timer1.Enabled) then
+  begin
+    CmdSimulate.Caption:='Stop Simulate';
+  end;
 
 
   OnBootFinish:=false;
@@ -964,33 +948,16 @@ begin
   i2:=0;
   while not BufDataset1.EOF do
   begin
-    DynamicTag := TPLCTagNumber.Create(Self);
-
     addrStr:='H'+RightStr(StringToHex(BufDataset1.FieldByName('Symbol').AsString),10);
-    CurrentObj := Self.FindComponent(addrStr);
-    if (CurrentObj <> nil) then
-    begin
-      addrStr:=addrStr+i2.ToString; //+RandomSerial()
-      i2:=i2+1;
-      //showmessage({$I %LINE%}+chr(13)+addrStr);
-    end;
-    //showmessage({$I %LINE%}+chr(13)+addrStr);
-    DynamicTag.Name:=addrStr;
-    DynamicTag.ProtocolDriver:=ModBusRTUDriver1;
-    DynamicTag.UpdateTime:=500;
-    DynamicTag.AutoRead:=false;
-    DynamicTag.AutoWrite:=false;
-    DynamicTag.PLCStation:=SpinEditNode.Value;
-    DynamicTag.MemAddress:=BufDataset1.FieldByName('Address').AsInteger;
-    DynamicTag.TagType:=TTagType(GetEnumValue(TypeInfo(TTagType), BufDataset1.FieldByName('Type').AsString));
-    //if DynamicTag.TagType = pttfloat then showmessage('ok');
-    if BufDataset1.FieldByName('RegisterType').AsString = 'Coils (Outputs)' then DynamicTag.MemReadFunction:=1;
-    if BufDataset1.FieldByName('RegisterType').AsString = 'Inputs' then DynamicTag.MemReadFunction:=2;
-    if BufDataset1.FieldByName('RegisterType').AsString = 'Holding Registers' then DynamicTag.MemReadFunction:=3;
-    if BufDataset1.FieldByName('RegisterType').AsString = 'Input Registers' then DynamicTag.MemReadFunction:=4;
-    DynamicTag.SwapBytes:=BufDataset1.FieldByName('SwapBytes').AsBoolean;
-    DynamicTag.SwapDWords:=BufDataset1.FieldByName('SwapDwords').AsBoolean;
-    DynamicTag.SwapWords:=BufDataset1.FieldByName('SwapWords').AsBoolean;
+
+    //CurrentObj := Self.FindComponent(addrStr);
+    //if (CurrentObj <> nil) then
+    //begin
+    //  addrStr:=addrStr+i2.ToString; //+RandomSerial()
+    //  i2:=i2+1;
+    //  //showmessage({$I %LINE%}+chr(13)+addrStr);
+    //end;
+    ////showmessage({$I %LINE%}+chr(13)+addrStr);
 
     if not (BufDataset2.State in [dsEdit, dsInsert]) then
     BufDataset2.Edit;
@@ -999,12 +966,9 @@ begin
     BufDataset2.FieldByName('Symbol').AsString := BufDataset1.FieldByName('Symbol').AsString;
     BufDataset2.FieldByName('Result').AsString := '';
     BufDataset2.FieldByName('Unit').AsString := BufDataset1.FieldByName('Unit').AsString;
-    BufDataset2.FieldByName('Obj').AsString := DynamicTag.Name;
+    BufDataset2.FieldByName('Type').AsString := BufDataset1.FieldByName('Type').AsString;
+    BufDataset2.FieldByName('Obj').AsString := addrStr;
 
-    if (BufDataset1.FieldByName('UseBit').AsBoolean) and (BufDataset1.FieldByName('BitNumber').AsLargeInt>0) then
-    begin
-      BufDataset2.FieldByName('UseBit').AsLargeInt := BufDataset1.FieldByName('BitNumber').AsLargeInt;
-    end;
 
     BufDataset2.Post;
 
@@ -1018,34 +982,17 @@ begin
   label26.Caption:= 'Device: '+Drv_Name.Caption;
 end;
 
-procedure TForm1.CmdConnectClick(Sender: TObject);
-var
-  i:integer;
-  CurrentObj: TComponent;
+procedure TForm1.CmdSimulateClick(Sender: TObject);
 begin
-  timer1.Enabled:=false;
+  timer1.Enabled:=not timer1.Enabled;
 
-  for i := 0 to ComponentCount - 1 do
+  if (not timer1.Enabled) then
   begin
-    CurrentObj := Components[i];
-      if (CurrentObj is TPLCTagNumber)then
-      begin
-        log({$I %LINE%}+' Found TPLCTagNumber: '+TPLCTagNumber(CurrentObj).Name);
-        TPLCTagNumber(CurrentObj).AutoRead:=not TPLCTagNumber(CurrentObj).AutoRead;
-      end;
+    CmdSimulate.Caption:='Start Simulate';
   end;
-  SerialPortDriver1.Active:= not SerialPortDriver1.Active;
-  SerialPortDriver1.AcceptAnyPortName:=not SerialPortDriver1.AcceptAnyPortName;
-
-  if (not SerialPortDriver1.Active) then
+  if (timer1.Enabled) then
   begin
-    CmdConnect.Caption:='Connect';
-    timer1.Enabled:=false;
-  end;
-  if (SerialPortDriver1.Active) then
-  begin
-    CmdConnect.Caption:='Disconnect';
-    timer1.Enabled:=true;
+    CmdSimulate.Caption:='Stop Simulate';
   end;
 end;
 
@@ -1321,7 +1268,6 @@ begin
         s:=BufDataset1.FieldByName(BufDataset1.Fields[i].FieldName).AsString;
         if (BufDataset1.Fields[i].FieldName = 'Type') then
         if BufDataset1.FieldByName('Type').AsString = ''then  s:=EditType.Items[0];
-        if (BufDataset1.Fields[i].FieldName = 'RegisterType') then
         Txt:=Txt+s;
         if i<(BufDataset1.FieldCount - 1) then Txt:=Txt+',';
       end;
@@ -1361,8 +1307,13 @@ begin
   Drv_CreatDate.Caption:=FormatDateTime('DD/MM/YYYY hh:nn:ss',Now);
 
   IntMin.Value:=0;
+  IntMax.Value:=100;
+  FloatMin.Value:=0.00;
+  FloatMax.Value:=100.00;
+  Int64Startup.Value:=0;
+  CheckBoxStartupReset.Checked:=false;
   EditSymbol.Caption:='';
-  EditType.ItemIndex:=0;
+  EditType.ItemIndex:=1;
   EditUnit.Caption:='';
 
   for i := 0 to 31 do
@@ -1723,7 +1674,6 @@ begin
         s:=BufDataset1.FieldByName(BufDataset1.Fields[i].FieldName).AsString;
         if (BufDataset1.Fields[i].FieldName = 'Type') then
         if BufDataset1.FieldByName('Type').AsString = ''then  s:=EditType.Items[0];
-        if (BufDataset1.Fields[i].FieldName = 'RegisterType') then
         Txt:=Txt+s;
         if i<(BufDataset1.FieldCount - 1) then Txt:=Txt+',';
       end;

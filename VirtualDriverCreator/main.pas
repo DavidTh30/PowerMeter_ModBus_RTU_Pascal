@@ -13,6 +13,20 @@ uses
 
 type
   A_Byte = array of Byte;
+  RandomSimulator = Record
+      RandomTimePerMinSet: Integer;
+      RandomTimePerMinCounter: Integer;
+      RamdomIntMin:Integer;
+      RandomIntMax:Integer;
+      RamdomFloatMin:float;
+      RandomFloatMax:float;
+      Int64StartupReset:boolean;
+      Int64Act:int64;
+      RandomType:string;
+      Object_: string;
+      RandomResult:string;
+   End;
+  A_Sim = array of RandomSimulator;
 
 type
 
@@ -21,15 +35,16 @@ type
   TForm1 = class(TForm)
     BufDataset1: TBufDataset;
     BufDataset2: TBufDataset;
-    Button3: TButton;
+    CmdOpenFileImage: TButton;
     CheckBoxStartupReset: TCheckBox;
     CmdClearList: TButton;
     CmdRandomSerial: TButton;
-    Button2: TButton;
+    CmdAutoCreateDate: TButton;
     CmdInitDriver: TButton;
     CmdSimulate: TButton;
     Datasource2: TDataSource;
     DBGrid2: TDBGrid;
+    ImageList1: TImageList;
     IntMax: TSpinEditEx;
     Int64Startup: TSpinEditEx;
     RandomPerMin: TSpinEditEx;
@@ -53,7 +68,6 @@ type
     Image1: TImage;
     Image2: TImage;
     Image3: TImage;
-    ImageList1: TImageList;
     ImageList2: TImageList;
     Label10: TLabel;
     Label11: TLabel;
@@ -99,8 +113,10 @@ type
     Timer1: TTimer;
     ToolBar1: TToolBar;
     CmdMoveFirst: TToolButton;
+    ToolButton1: TToolButton;
     ToolButton10: TToolButton;
     CmdDelete: TToolButton;
+    ToolButton11: TToolButton;
     ToolButton12: TToolButton;
     CmdEdit: TToolButton;
     ToolButton14: TToolButton;
@@ -109,12 +125,16 @@ type
     CmdCancel: TToolButton;
     ToolButton2: TToolButton;
     CmdPrior: TToolButton;
+    ToolButton3: TToolButton;
     ToolButton4: TToolButton;
     CmdMoveNext: TToolButton;
+    ToolButton5: TToolButton;
     ToolButton6: TToolButton;
     CmdMoveLast: TToolButton;
+    ToolButton7: TToolButton;
     ToolButton8: TToolButton;
     CmdInsert: TToolButton;
+    ToolButton9: TToolButton;
     procedure BufDataset1AfterCancel(DataSet: TDataSet);
     procedure BufDataset1AfterDelete(DataSet: TDataSet);
     procedure BufDataset1AfterEdit(DataSet: TDataSet);
@@ -127,14 +147,14 @@ type
     procedure BufDataset1BeforeScroll(DataSet: TDataSet);
     procedure BufDataset1CalcFields(DataSet: TDataSet);
     procedure BufDataset1NewRecord(DataSet: TDataSet);
-    procedure Button3Click(Sender: TObject);
+    procedure CmdOpenFileImageClick(Sender: TObject);
     procedure CheckBoxStartupResetEditingDone(Sender: TObject);
     procedure CmdCancelClick(Sender: TObject);
     procedure CmdClearListClick(Sender: TObject);
     procedure CmdMoveNextClick(Sender: TObject);
     procedure CmdPostClick(Sender: TObject);
     procedure CmdRandomSerialClick(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    procedure CmdAutoCreateDateClick(Sender: TObject);
     procedure CmdInitDriverClick(Sender: TObject);
     procedure CmdSimulateClick(Sender: TObject);
     procedure Datasource1StateChange(Sender: TObject);
@@ -171,6 +191,7 @@ type
     procedure CmdMoveFirstClick(Sender: TObject);
     procedure CmdMoveLastClick(Sender: TObject);
     procedure CmdPriorClick(Sender: TObject);
+    procedure ToolButton1Click(Sender: TObject);
   private
     { private declarations }
   public
@@ -182,6 +203,7 @@ var
   OnBootFinish:boolean;
   BitNumber:int64;
   Version_:string;
+  Simulate : A_Sim;
 
 implementation
 
@@ -253,7 +275,9 @@ end;
 
 procedure log(message_: string);
 begin
-  SendDebug(message_);
+  {$IFDEF DEBUG}
+    SendDebug(message_);
+  {$ENDIF}
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -261,11 +285,21 @@ var
   i: integer;
   s:TStringList;
 begin
+  {$IFDEF DEBUG}
+    Form1.Caption := 'Debug Mode '+Form1.Caption;
+  {$ELSE}
+    //Form1.Caption := 'Running in Release Mode';
+  {$ENDIF}
+
   Version_:=Form1.Caption;
 
   Label28.Caption:='Node: '+SpinEditNode.Value.ToString;
 
   OnBootFinish:=false;
+
+  Simulate:=default(A_Sim);
+  SetLength(Simulate,0);
+  //showmessage(Length(Simulate).ToString);
 
   BufDataset1.Clear;
   BufDataset1.Fields.Clear;
@@ -597,9 +631,10 @@ end;
 procedure TForm1.BufDataset1AfterScroll(DataSet: TDataSet);
 var
   i:integer;
-  CurrentObj: TComponent;
 begin
+
   log({$I %LINE%}+' AfterScroll');
+
   if not OnBootFinish then exit;
   if BufDataset1.State in [dsEdit, dsInsert] then exit;
 
@@ -655,7 +690,7 @@ begin
   log({$I %LINE%}+' NewRecord');
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure TForm1.CmdOpenFileImageClick(Sender: TObject);
 var
   i:integer;
   S_Name, Directory_, CurrentFile:string;
@@ -896,7 +931,7 @@ begin
   Drv_SN.Caption:=RandomSerial();
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TForm1.CmdAutoCreateDateClick(Sender: TObject);
 begin
   Drv_CreatDate.Caption:= FormatDateTime('DD/MM/YYYY hh:nn:ss',Now);
 end;
@@ -920,6 +955,7 @@ begin
   BufDataset2.FieldDefs.Clear;
   for i:=0 to DBGrid2.Columns.Count-1  do
     DBGrid2.Columns.Delete(0);
+  SetLength(Simulate,0);
 
   with BufDataset2.FieldDefs do
   begin
@@ -930,6 +966,7 @@ begin
     Add('Obj', ftString, 600);
   end;
   BufDataset2.CreateDataset;
+  SetLength(Simulate,DBGrid1.Columns.Count);
 
   i2:=0;
 
@@ -969,8 +1006,21 @@ begin
     BufDataset2.FieldByName('Type').AsString := BufDataset1.FieldByName('Type').AsString;
     BufDataset2.FieldByName('Obj').AsString := addrStr;
 
-
     BufDataset2.Post;
+
+    Simulate[i2].RandomType:=BufDataset1.FieldByName('Type').AsString;
+    Simulate[i2].RandomTimePerMinSet:=BufDataset1.FieldByName('RandomTimePerMin').AsInteger;
+    Simulate[i2].RandomTimePerMinCounter:=0;
+    Simulate[i2].RamdomIntMin:=BufDataset1.FieldByName('I_Min').AsInteger;
+    Simulate[i2].RandomIntMax:=BufDataset1.FieldByName('I_Max').AsInteger;
+    Simulate[i2].RamdomFloatMin:=BufDataset1.FieldByName('F_Min').AsFloat;
+    Simulate[i2].RandomFloatMax:=BufDataset1.FieldByName('F_Max').AsFloat;
+    Simulate[i2].Int64Act:=BufDataset1.FieldByName('I64_Start').AsLargeInt;
+    Simulate[i2].Int64StartupReset:=BufDataset1.FieldByName('StartupReset').AsBoolean;
+    Simulate[i2].Object_:=addrStr;
+    Simulate[i2].RandomResult:='';
+
+    i2:=i2+1;
 
     BufDataset1.Next;
   end;
@@ -1976,6 +2026,12 @@ begin
     CmdMoveNext.Enabled:=false;
     CmdMoveLast.Enabled:=false;
   end;
+end;
+
+procedure TForm1.ToolButton1Click(Sender: TObject);
+begin
+  DBGrid1.Enabled:=false;
+  BufDataset1.Append;
 end;
 
 initialization

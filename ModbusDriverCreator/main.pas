@@ -579,7 +579,9 @@ end;
 
 procedure log(message_: string);
 begin
-  SendDebug(message_);
+  {$IFDEF DEBUG}
+    SendDebug(message_);
+  {$ENDIF}
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -2597,8 +2599,8 @@ begin
       end;
     end;
     //log({$I %LINE%}+' Save;);
-    WriteComponentResFile(FileName_+'.obj',Image1);
-    StatusBar1.Panels.Items[0].Text:=FileName_+'.obj';
+    WriteComponentResFile(S_Name,Image1);
+    StatusBar1.Panels.Items[0].Text:=S_Name;
   end;
 end;
 

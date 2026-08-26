@@ -7,12 +7,12 @@ object Form1: TForm1
   ClientHeight = 450
   ClientWidth = 1033
   Menu = MainMenu1
-  OnClose = FormClose
-  OnCreate = FormCreate
   Position = poWorkAreaCenter
   ShowHint = True
-  LCLVersion = '3.4.0.0'
+  LCLVersion = '4.8.0.0'
   Scaled = False
+  OnClose = FormClose
+  OnCreate = FormCreate
   object PageControl1: TPageControl
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
@@ -334,10 +334,10 @@ object Form1: TForm1
         AnchorSideTop.Control = EditType
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = EditType
-        Left = 26
+        Left = 25
         Height = 15
         Top = 63
-        Width = 30
+        Width = 31
         Anchors = [akTop, akRight]
         Caption = 'Type: '
       end
@@ -941,6 +941,7 @@ object Form1: TForm1
         Width = 131
         Enabled = False
         MaxLength = 0
+        SpinButtonWidth = 17
         TabOrder = 11
         OnEditingDone = EditAddressEditingDone
         NullValue = 0
@@ -954,6 +955,7 @@ object Form1: TForm1
         Width = 109
         Enabled = False
         MaxLength = 0
+        SpinButtonWidth = 17
         TabOrder = 12
         UpDownVisible = False
         Value = 1
@@ -965,6 +967,7 @@ object Form1: TForm1
         Width = 109
         Enabled = False
         MaxLength = 0
+        SpinButtonWidth = 17
         TabOrder = 13
         OnEditingDone = FloatSpinEditEx2EditingDone
         UpDownVisible = False
@@ -977,6 +980,7 @@ object Form1: TForm1
         Width = 109
         Enabled = False
         MaxLength = 0
+        SpinButtonWidth = 17
         TabOrder = 14
         UpDownVisible = False
       end
@@ -1024,6 +1028,7 @@ object Form1: TForm1
         Top = 21
         Width = 80
         MaxLength = 0
+        SpinButtonWidth = 17
         TabOrder = 0
         OnEditingDone = SpinEditNodeEditingDone
         MaxValue = 255
@@ -1109,20 +1114,6 @@ object Form1: TForm1
         TabOrder = 5
         OnClick = CmdClearListClick
       end
-      object MaskEditIP: TMaskEdit
-        Left = 144
-        Height = 23
-        Top = 21
-        Width = 92
-        EnableSets = False
-        MaxLength = 15
-        TabOrder = 6
-        Visible = False
-        OnEditingDone = MaskEditIPEditingDone
-        EditMask = '999.999.999.999;1;0'
-        Text = '192.168.   . 2 '
-        SpaceChar = '0'
-      end
       object Label31: TLabel
         AnchorSideTop.Control = MaskEditIP
         AnchorSideTop.Side = asrCenter
@@ -1134,6 +1125,42 @@ object Form1: TForm1
         Anchors = [akTop, akRight]
         Caption = 'IP: '
         Visible = False
+      end
+      object Label32: TLabel
+        AnchorSideTop.Control = EditPort
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EditPort
+        Left = 647
+        Height = 15
+        Top = 25
+        Width = 28
+        Anchors = [akTop, akRight]
+        Caption = 'Port: '
+        Visible = False
+      end
+      object EditPort: TSpinEditEx
+        Left = 675
+        Height = 23
+        Top = 21
+        Width = 80
+        MaxLength = 0
+        SpinButtonWidth = 17
+        TabOrder = 6
+        Visible = False
+        OnEditingDone = EditPortEditingDone
+        NullValue = 0
+        UpDownVisible = False
+        Value = 105
+      end
+      object MaskEditIP: TEdit
+        Left = 144
+        Height = 23
+        Top = 21
+        Width = 136
+        TabOrder = 7
+        Text = '192.168.0.20'
+        Visible = False
+        OnEditingDone = MaskEditIPEditingDone
       end
     end
     object TabSheet4: TTabSheet
@@ -1306,12 +1333,12 @@ object Form1: TForm1
   end
   object BufDataset2: TBufDataset
     FieldDefs = <>
-    Left = 256
-    Top = 8
+    Left = 856
   end
   object Datasource2: TDataSource
     DataSet = BufDataset2
-    Left = 224
+    Left = 880
+    Top = 48
   end
   object Timer1: TTimer
     Enabled = False
@@ -1433,7 +1460,8 @@ object Form1: TForm1
     }
   end
   object TCP_UDPPort1: TTCP_UDPPort
-    Host = '192.168.0.20'
+    Host = '010.200.004.191'
+    Port = 502
     Timeout = 300
     ExclusiveDevice = False
     Left = 895
@@ -1444,5 +1472,23 @@ object Form1: TForm1
     ReadOnly = False
     Left = 948
     Top = 3
+  end
+  object T_ag1_: TPLCTagNumber
+    TagGUID = '{A83C718B-4A16-447B-A305-56C843C8C6AC}'
+    AutoRead = False
+    PLCRack = 0
+    PLCSlot = 0
+    PLCStation = 1
+    MemFile_DB = 0
+    MemAddress = 0
+    MemSubElement = 0
+    MemReadFunction = 3
+    MemWriteFunction = 16
+    ProtocolDriver = ModBusTCPDriver1
+    LongAddress = ''
+    EnableMaxValue = False
+    EnableMinValue = False
+    Left = 712
+    Top = 40
   end
 end

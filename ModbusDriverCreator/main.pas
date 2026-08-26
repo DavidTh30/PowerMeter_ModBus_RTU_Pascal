@@ -8,8 +8,8 @@ uses
   Classes, SysUtils, db, BufDataset, FileUtil, SpinEx, Forms, Controls,
   Graphics, Dialogs, DbCtrls, DBGrids, StdCtrls, Menus, Spin, ExtCtrls,
   ComCtrls, MaskEdit, SerialPort, ModBusSerial, csvdocument, dbugintf, Tag,
-  PLCTagNumber, tcp_udpport, ModBusTCP, hmi_draw_basic_vector_control, TypInfo,
-  registry, Math, IniFiles, strutils, LazFileUtils;
+  PLCTagNumber, tcp_udpport, ModBusTCP, hmi_draw_basic_vector_control, HMILabel,
+  TypInfo, registry, Math, IniFiles, strutils, LazFileUtils;
 
 type
   A_Byte = array of Byte;
@@ -65,6 +65,7 @@ type
     CmdConnect: TButton;
     Datasource2: TDataSource;
     DBGrid2: TDBGrid;
+    MaskEditIP: TEdit;
     HMIBasicVectorControl1: THMIBasicVectorControl;
     Label25: TLabel;
     Label26: TLabel;
@@ -117,6 +118,7 @@ type
     Label3: TLabel;
     Label30: TLabel;
     Label31: TLabel;
+    Label32: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
@@ -124,7 +126,6 @@ type
     Label8: TLabel;
     Label9: TLabel;
     MainMenu1: TMainMenu;
-    MaskEditIP: TMaskEdit;
     MenuItem1: TMenuItem;
     Menu2Open: TMenuItem;
     Menu2SaveOBJ: TMenuItem;
@@ -148,11 +149,13 @@ type
     Shape1: TShape;
     SpinEditNode: TSpinEditEx;
     EditAddress: TSpinEditEx;
+    EditPort: TSpinEditEx;
     StatusBar1: TStatusBar;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
     TabSheet4: TTabSheet;
+    T_ag1_: TPLCTagNumber;
     TCP_UDPPort1: TTCP_UDPPort;
     Timer1: TTimer;
     ToolBar1: TToolBar;
@@ -218,6 +221,7 @@ type
     procedure Drv_Other_InformationEditingDone(Sender: TObject);
     procedure Drv_SNEditingDone(Sender: TObject);
     procedure Drv_VerEditingDone(Sender: TObject);
+    procedure MaskEditIPEditingDone(Sender: TObject);
     procedure EditAddressEditingDone(Sender: TObject);
     procedure ComportEditEditingDone(Sender: TObject);
     procedure EditRegisterTypeEditingDone(Sender: TObject);
@@ -227,7 +231,6 @@ type
     procedure FloatSpinEditEx2EditingDone(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure MaskEditIPEditingDone(Sender: TObject);
     procedure Menu2ClearClick(Sender: TObject);
     procedure MenuExitClick(Sender: TObject);
     procedure Menu2SaveBMPClick(Sender: TObject);
@@ -238,6 +241,7 @@ type
     procedure MenuOpenClick(Sender: TObject);
     procedure MenuSaveAsClick(Sender: TObject);
     procedure Menu2SaveOBJClick(Sender: TObject);
+    procedure EditPortEditingDone(Sender: TObject);
     procedure SpinEditNodeEditingDone(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure CmdInsertClick(Sender: TObject);
@@ -254,6 +258,7 @@ type
   public
     { public declarations }
     procedure GetSerialPortExt();
+    Function RepairIPAddress(s: string):string;
   end; 
 
 var
@@ -267,6 +272,109 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
+Function TForm1.RepairIPAddress(s: string):string;
+var
+  i:integer;
+  k:integer;
+  s2:string;
+  c:integer;
+  A_s: TStringArray;
+begin
+
+  //MaskEditIP.Text:=chr(ord('0'));
+  //MaskEditIP.Text:=IntToStr(ord('9');
+
+  s:=Trim(s);
+  //s:=leftstr(s,15);
+
+  s2:='';
+  for i:=1 to length(s) do
+  begin
+    if (((ord(s[i]) >= 48) and (ord(s[i]) <= 57)) or (s[i] = '.')) then s2:=s2+s[i];
+  end;
+  s:=s2;
+
+  if length(s) = 0 then s:=s+'0.0.0.0';
+
+  if (s[1] = '.') then s:='0'+s;
+
+  k:=0;
+  for i:=1 to length(s) do
+  begin
+    if(s[i] = '.') then k:=k+1;
+  end;
+  if k=0 then s:=s+'.0.0.0';
+  if k=1 then s:=s+'.0.0';
+  if k=2 then s:=s+'.0';
+  if s[length(s)]='.' then s:=s+'0';
+
+  k:=0;
+  c:=0;
+  s2:='';
+  for i:=1 to length(s) do
+  begin
+    if(s[i] = '.') then begin k:=k+1; c:=0; end;
+    if (k>3) then
+      begin
+        s2:=s2;
+      end
+    else
+      begin
+        if not(s[i] = '.')then c:=c+1;
+        if (c<=3) then s2:=s2+s[i];
+      end;
+  end;
+  s:=s2;
+
+  A_s:=SplitString(s,'.');
+
+  k:=0;
+  Try
+    k:=StrToInt(A_s[0]);
+  except
+    On E : EConvertError do
+      k:=0;
+  end;
+  if (k>255) then k:=255;
+  if (k<0) then k:=0;
+  s:=IntToStr(k);
+
+  k:=0;
+  Try
+    k:=StrToInt(A_s[1]);
+  except
+    On E : EConvertError do
+      k:=0;
+  end;
+  if (k>255) then k:=255;
+  if (k<0) then k:=0;
+  s:=s+'.'+IntToStr(k);
+
+  k:=0;
+  Try
+    k:=StrToInt(A_s[2]);
+  except
+    On E : EConvertError do
+      k:=0;
+  end;
+  if (k>255) then k:=255;
+  if (k<0) then k:=0;
+  s:=s+'.'+IntToStr(k);
+
+  k:=0;
+  Try
+    k:=StrToInt(A_s[3]);
+  except
+    On E : EConvertError do
+      k:=0;
+  end;
+  if (k>255) then k:=255;
+  if (k<0) then k:=0;
+  s:=s+'.'+IntToStr(k);
+
+  result := s;
+end;
 
 procedure SwapUpDataSetRecord(Source:TDataSet);
 var
@@ -722,13 +830,6 @@ begin
   end;
 
   OnBootFinish:=true;
-end;
-
-procedure TForm1.MaskEditIPEditingDone(Sender: TObject);
-begin
-  TCP_UDPPort1.Host:=MaskEditIP.EditText;
-  Label27.Caption:='IP: '+MaskEditIP.EditText;
-  //showmessage(MaskEditIP.EditText);
 end;
 
 procedure TForm1.Menu2ClearClick(Sender: TObject);
@@ -1321,6 +1422,7 @@ begin
     timer1.Enabled:=false;
     ComportEdit.Enabled:=true;
     MaskEditIP.Enabled:=true;
+    EditPort.Enabled:=true;
     MenuConnect.Enabled:=true;
   end;
   if (SerialPortDriver1.Active) or (TCP_UDPPort1.Active) then
@@ -1329,6 +1431,7 @@ begin
     timer1.Enabled:=true;
     ComportEdit.Enabled:=false;
     MaskEditIP.Enabled:=false;
+    EditPort.Enabled:=false;
     MenuConnect.Enabled:=false;
   end;
 
@@ -1479,6 +1582,7 @@ begin
     timer1.Enabled:=false;
     ComportEdit.Enabled:=true;
     MaskEditIP.Enabled:=true;
+    EditPort.Enabled:=true;
     MenuConnect.Enabled:=true;
   end;
   if (SerialPortDriver1.Active) or (TCP_UDPPort1.Active) then
@@ -1487,10 +1591,11 @@ begin
     timer1.Enabled:=true;
     ComportEdit.Enabled:=false;
     MaskEditIP.Enabled:=false;
+    EditPort.Enabled:=false;
     MenuConnect.Enabled:=false;
   end;
 
-  if (Label31.Visible) then Label27.Caption:='IP: '+MaskEditIP.EditText;
+  if (Label31.Visible) then Label27.Caption:='IP: '+MaskEditIP.Text + ' Port: '+EditPort.Value.ToString;
   if (Label20.Visible) then Label27.Caption:='Port: '+ComportEdit.Text;
 
   OnBootFinish:=false;
@@ -1619,6 +1724,7 @@ begin
     timer1.Enabled:=false;
     ComportEdit.Enabled:=true;
     MaskEditIP.Enabled:=true;
+    EditPort.Enabled:=true;
     MenuConnect.Enabled:=true;
   end;
   if (SerialPortDriver1.Active) or (TCP_UDPPort1.Active) then
@@ -1627,8 +1733,9 @@ begin
     timer1.Enabled:=true;
     ComportEdit.Enabled:=false;
     MaskEditIP.Enabled:=false;
+    EditPort.Enabled:=false;
     MenuConnect.Enabled:=false;
-    if (TCP_UDPPort1.Active) then Label27.Caption:='IP: '+MaskEditIP.EditText;
+    if (TCP_UDPPort1.Active) then Label27.Caption:='IP: '+MaskEditIP.Text + ' Port: '+EditPort.Value.ToString;
     if (SerialPortDriver1.Active) then Label27.Caption:='Port: '+ComportEdit.Text;
   end;
 end;
@@ -1843,6 +1950,14 @@ begin
   Drv_Ver.Caption:=DelChars(Drv_Ver.Caption, '=');
 end;
 
+procedure TForm1.MaskEditIPEditingDone(Sender: TObject);
+begin
+  MaskEditIP.Caption:=RepairIPAddress(MaskEditIP.Caption);
+  TCP_UDPPort1.Host:=MaskEditIP.Text;
+  Label27.Caption:='IP: '+MaskEditIP.Text + ' Port: '+EditPort.Value.ToString;
+  //showmessage(MaskEditIP.Caption);
+end;
+
 procedure TForm1.MenuExitClick(Sender: TObject);
 begin
   halt;
@@ -2028,9 +2143,11 @@ begin
   MenuRTU.ImageIndex:=9;
   Label31.Visible:=true;
   MaskEditIP.Visible:=true;
+  EditPort.Visible:=true;
   Label20.Visible:=false;
+  Label32.Visible:=true;
   ComportEdit.Visible:=false;
-  if (Label31.Visible) then Label27.Caption:='IP: '+MaskEditIP.EditText;
+  if (Label31.Visible) then Label27.Caption:='IP: '+MaskEditIP.Text +' Port: '+EditPort.Value.ToString;
   if (Label20.Visible) then Label27.Caption:='Port: '+ComportEdit.Text;
 end;
 
@@ -2040,9 +2157,11 @@ begin
   MenuRTU.ImageIndex:=7;
   Label31.Visible:=false;
   MaskEditIP.Visible:=false;
+  EditPort.Visible:=false;
   Label20.Visible:=true;
+  Label32.Visible:=false;
   ComportEdit.Visible:=true;
-  if (Label31.Visible) then Label27.Caption:='IP: '+MaskEditIP.EditText;
+  if (Label31.Visible) then Label27.Caption:='IP: '+MaskEditIP.Text + ' Port: '+EditPort.Value.ToString;
   if (Label20.Visible) then Label27.Caption:='Port: '+ComportEdit.Text;
 end;
 
@@ -2604,6 +2723,16 @@ begin
   end;
 end;
 
+procedure TForm1.EditPortEditingDone(Sender: TObject);
+var
+  Active_:boolean;
+begin
+  Active_:=TCP_UDPPort1.Active;
+  TCP_UDPPort1.Active:=false;
+  TCP_UDPPort1.Port:=EditPort.Value;
+  TCP_UDPPort1.Active:=Active_;
+end;
+
 procedure TForm1.SpinEditNodeEditingDone(Sender: TObject);
 var
   i: integer;
@@ -2633,6 +2762,8 @@ begin
     CurrentObj := Self.FindComponent(BufDataset2.FieldByName('Obj').AsString);
     if (CurrentObj is TPLCTagNumber) then
     begin
+      //log({$I %LINE%}+' Found TPLCTagNumber: '+TPLCTagNumber(CurrentObj).Name + ' ' +TPLCTagNumber(CurrentObj).PLCStation.ToString + ' ' + TPLCTagNumber(CurrentObj).MemAddress.ToString + ' ' +TPLCTagNumber(CurrentObj).MemReadFunction.ToString);
+      //log({$I %LINE%}+' Found TPLCTagNumber: '+TPLCTagNumber(CurrentObj).AutoRead.ToInteger.ToString + ' ' +TCP_UDPPort1.Active.ToInteger.ToString + ' ' + TCP_UDPPort1.Port.ToString);
       if not (BufDataset2.State in [dsEdit, dsInsert]) then BufDataset2.Edit;
 
       if BufDataset2.FieldByName('UseBit').AsLargeInt = 0 then

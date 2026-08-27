@@ -687,9 +687,14 @@ end;
 
 procedure log(message_: string);
 begin
-  {$IFDEF DEBUG}
-    SendDebug(message_);
-  {$ENDIF}
+//  {$IFDEF DEBUG}
+//    SendDebug(message_);
+//  {$ENDIF}
+{$IFOPT D+}
+  SendDebug(message_);
+{$ELSE}
+
+{$ENDIF}
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

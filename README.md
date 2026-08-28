@@ -10,3 +10,9 @@ Power Meter Modbus RTU for Lazarus IDE
 <img src="ModbusDriverCreator/SS02.png" width="400" height="400">
 
 https://github.com/user-attachments/assets/72fa1ddb-6869-4c80-914a-a3b0dbefbe3c
+
+Icon:
+https://github.com/google/material-design-icons/tree/master
+
+SVG Arrow Icon:
+https://fontawesome.com/icons/classic/solid/arrow-right

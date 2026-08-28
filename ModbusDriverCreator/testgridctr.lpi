@@ -13,6 +13,12 @@
         <DpiAware Value="True"/>
       </XPManifest>
     </General>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <MinorVersionNr Value="7"/>
+      <Attributes pvaPreRelease="True"/>
+      <StringTable Comments="-" CompanyName="-" FileDescription="ModbusDriverCreator" InternalName="ModbusDriverCreator" ProductName="ModbusDriverCreator" ProductVersion="0.7"/>
+    </VersionInfo>
     <BuildModes>
       <Item Name="Default" Default="True"/>
       <Item Name="Release">

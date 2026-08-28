@@ -1,9 +1,9 @@
 object Form1: TForm1
-  Left = 469
+  Left = 677
   Height = 450
-  Top = 236
+  Top = 161
   Width = 1033
-  Caption = 'ModbusDriverCreator V0.5'
+  Caption = 'ModbusDriverCreator V0.7'
   ClientHeight = 450
   ClientWidth = 1033
   Menu = MainMenu1
@@ -1018,6 +1018,149 @@ object Form1: TForm1
         Caption = 'Offset: '
       end
     end
+    object TabSheet5: TTabSheet
+      Caption = 'Port Setting'
+      ClientHeight = 422
+      ClientWidth = 1025
+      object Label33: TLabel
+        AnchorSideTop.Control = MaskEditIP_1
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = MaskEditIP_1
+        Left = 72
+        Height = 15
+        Top = 36
+        Width = 16
+        Anchors = [akTop, akRight]
+        Caption = 'IP: '
+        Visible = False
+      end
+      object MaskEditIP_1: TEdit
+        Left = 88
+        Height = 23
+        Top = 32
+        Width = 136
+        TabStop = False
+        TabOrder = 0
+        Text = '192.168.0.20'
+        Visible = False
+        OnEditingDone = MaskEditIP_1EditingDone
+      end
+      object EditPort_1: TSpinEditEx
+        Left = 280
+        Height = 23
+        Top = 32
+        Width = 80
+        MaxLength = 0
+        SpinButtonWidth = 17
+        TabOrder = 1
+        TabStop = False
+        Visible = False
+        OnEditingDone = EditPort_1EditingDone
+        NullValue = 0
+        UpDownVisible = False
+        Value = 105
+      end
+      object Label34: TLabel
+        AnchorSideTop.Control = EditPort_1
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EditPort_1
+        Left = 252
+        Height = 15
+        Top = 36
+        Width = 28
+        Anchors = [akTop, akRight]
+        Caption = 'Port: '
+        Visible = False
+      end
+      object BaudRateEdit: TComboBox
+        Left = 120
+        Height = 23
+        Top = 32
+        Width = 140
+        ItemHeight = 15
+        ReadOnly = True
+        TabOrder = 2
+        TabStop = False
+        OnEditingDone = BaudRateEditEditingDone
+      end
+      object Label35: TLabel
+        AnchorSideTop.Control = BaudRateEdit
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = BaudRateEdit
+        Left = 64
+        Height = 15
+        Top = 36
+        Width = 56
+        Anchors = [akTop, akRight]
+        Caption = 'BaudRate: '
+      end
+      object Label36: TLabel
+        AnchorSideTop.Control = DataBitsEdit
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = DataBitsEdit
+        Left = 71
+        Height = 15
+        Top = 64
+        Width = 49
+        Anchors = [akTop, akRight]
+        Caption = 'DataBits: '
+      end
+      object DataBitsEdit: TComboBox
+        Left = 120
+        Height = 23
+        Top = 60
+        Width = 140
+        ItemHeight = 15
+        ReadOnly = True
+        TabOrder = 3
+        TabStop = False
+        OnEditingDone = DataBitsEditEditingDone
+      end
+      object StopBitsEdit: TComboBox
+        Left = 120
+        Height = 23
+        Top = 116
+        Width = 140
+        ItemHeight = 15
+        ReadOnly = True
+        TabOrder = 4
+        TabStop = False
+        OnEditingDone = StopBitsEditEditingDone
+      end
+      object Label37: TLabel
+        AnchorSideTop.Control = StopBitsEdit
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = StopBitsEdit
+        Left = 71
+        Height = 15
+        Top = 120
+        Width = 49
+        Anchors = [akTop, akRight]
+        Caption = 'StopBits: '
+      end
+      object ParidadeEdit: TComboBox
+        Left = 120
+        Height = 23
+        Top = 88
+        Width = 140
+        ItemHeight = 15
+        ReadOnly = True
+        TabOrder = 5
+        TabStop = False
+        OnEditingDone = ParidadeEditEditingDone
+      end
+      object Label38: TLabel
+        AnchorSideTop.Control = ParidadeEdit
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = ParidadeEdit
+        Left = 68
+        Height = 15
+        Top = 92
+        Width = 52
+        Anchors = [akTop, akRight]
+        Caption = 'Paridade: '
+      end
+    end
     object TabSheet3: TTabSheet
       Caption = 'Online Tester'
       ClientHeight = 422
@@ -1030,6 +1173,7 @@ object Form1: TForm1
         MaxLength = 0
         SpinButtonWidth = 17
         TabOrder = 0
+        TabStop = False
         OnEditingDone = SpinEditNodeEditingDone
         MaxValue = 255
         NullValue = 0
@@ -1064,6 +1208,7 @@ object Form1: TForm1
         ItemHeight = 15
         ReadOnly = True
         TabOrder = 2
+        TabStop = False
         OnEditingDone = ComportEditEditingDone
       end
       object Label20: TLabel
@@ -1130,7 +1275,7 @@ object Form1: TForm1
         AnchorSideTop.Control = EditPort
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = EditPort
-        Left = 647
+        Left = 296
         Height = 15
         Top = 25
         Width = 28
@@ -1139,13 +1284,14 @@ object Form1: TForm1
         Visible = False
       end
       object EditPort: TSpinEditEx
-        Left = 675
+        Left = 324
         Height = 23
         Top = 21
         Width = 80
         MaxLength = 0
         SpinButtonWidth = 17
         TabOrder = 6
+        TabStop = False
         Visible = False
         OnEditingDone = EditPortEditingDone
         NullValue = 0
@@ -1157,6 +1303,7 @@ object Form1: TForm1
         Height = 23
         Top = 21
         Width = 136
+        TabStop = False
         TabOrder = 7
         Text = '192.168.0.20'
         Visible = False
@@ -1323,6 +1470,7 @@ object Form1: TForm1
   end
   object SerialPortDriver1: TSerialPortDriver
     Timeout = 300
+    BaudRate = br9600
     BackupPortSettings = True
     Left = 520
   end

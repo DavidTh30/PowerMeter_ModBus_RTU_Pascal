@@ -51,6 +51,9 @@ type
     B7: TShape;
     B8: TShape;
     B9: TShape;
+    DataBitsEdit: TComboBox;
+    StopBitsEdit: TComboBox;
+    ParidadeEdit: TComboBox;
     BufDataset1: TBufDataset;
     BufDataset2: TBufDataset;
     Button3: TButton;
@@ -63,8 +66,16 @@ type
     CheckBoxSwapWords: TCheckBox;
     CheckBoxUseBit: TCheckBox;
     CmdConnect: TButton;
+    BaudRateEdit: TComboBox;
     Datasource2: TDataSource;
     DBGrid2: TDBGrid;
+    EditPort_1: TSpinEditEx;
+    Label33: TLabel;
+    Label34: TLabel;
+    Label35: TLabel;
+    Label36: TLabel;
+    Label37: TLabel;
+    Label38: TLabel;
     MaskEditIP: TEdit;
     HMIBasicVectorControl1: THMIBasicVectorControl;
     Label25: TLabel;
@@ -126,6 +137,7 @@ type
     Label8: TLabel;
     Label9: TLabel;
     MainMenu1: TMainMenu;
+    MaskEditIP_1: TEdit;
     MenuItem1: TMenuItem;
     Menu2Open: TMenuItem;
     Menu2SaveOBJ: TMenuItem;
@@ -155,6 +167,7 @@ type
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
     TabSheet4: TTabSheet;
+    TabSheet5: TTabSheet;
     T_ag1_: TPLCTagNumber;
     TCP_UDPPort1: TTCP_UDPPort;
     Timer1: TTimer;
@@ -184,6 +197,7 @@ type
     ToolButton9: TToolButton;
     procedure B0MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure BaudRateEditEditingDone(Sender: TObject);
     procedure BufDataset1AfterCancel(DataSet: TDataSet);
     procedure BufDataset1AfterDelete(DataSet: TDataSet);
     procedure BufDataset1AfterEdit(DataSet: TDataSet);
@@ -209,6 +223,7 @@ type
     procedure CheckBoxSwapWordsEditingDone(Sender: TObject);
     procedure CheckBoxUseBitEditingDone(Sender: TObject);
     procedure CmdConnectClick(Sender: TObject);
+    procedure DataBitsEditEditingDone(Sender: TObject);
     procedure Datasource1StateChange(Sender: TObject);
     procedure Datasource1UpdateData(Sender: TObject);
     procedure Device_MFGEditingDone(Sender: TObject);
@@ -221,6 +236,7 @@ type
     procedure Drv_Other_InformationEditingDone(Sender: TObject);
     procedure Drv_SNEditingDone(Sender: TObject);
     procedure Drv_VerEditingDone(Sender: TObject);
+    procedure EditPort_1EditingDone(Sender: TObject);
     procedure MaskEditIPEditingDone(Sender: TObject);
     procedure EditAddressEditingDone(Sender: TObject);
     procedure ComportEditEditingDone(Sender: TObject);
@@ -231,6 +247,7 @@ type
     procedure FloatSpinEditEx2EditingDone(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure MaskEditIP_1EditingDone(Sender: TObject);
     procedure Menu2ClearClick(Sender: TObject);
     procedure MenuExitClick(Sender: TObject);
     procedure Menu2SaveBMPClick(Sender: TObject);
@@ -242,7 +259,9 @@ type
     procedure MenuSaveAsClick(Sender: TObject);
     procedure Menu2SaveOBJClick(Sender: TObject);
     procedure EditPortEditingDone(Sender: TObject);
+    procedure ParidadeEditEditingDone(Sender: TObject);
     procedure SpinEditNodeEditingDone(Sender: TObject);
+    procedure StopBitsEditEditingDone(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure CmdInsertClick(Sender: TObject);
     procedure CmdDeleteClick(Sender: TObject);
@@ -266,6 +285,7 @@ var
   OnBootFinish:boolean;
   BitNumber:int64;
   Version_:string;
+  DebugIsActive:boolean;
 
 implementation
 
@@ -672,7 +692,7 @@ begin
   BinToHex(PChar(InputStr), PChar(Result), Length(InputStr));
 end;
 
-procedure PopulateEnumList(out AList: TStringList);
+procedure TTagTypeEnumList(out AList: TStringList);
 var
   T_TagType: TTagType;
 begin
@@ -682,19 +702,67 @@ begin
   begin
     AList.Add(GetEnumName(TypeInfo(TTagType), Ord(T_TagType)));
   end;
+end;
 
+procedure TSerialBaudRateEnumList(out AList: TStringList);
+var
+  T_TSerialBaudRate: TSerialBaudRate;
+begin
+  AList := TStringList.Create;
+
+  for T_TSerialBaudRate := Low(TSerialBaudRate) to High(TSerialBaudRate) do
+  begin
+    AList.Add(GetEnumName(TypeInfo(TSerialBaudRate), Ord(T_TSerialBaudRate)));
+  end;
+end;
+
+procedure TSerialDataBitsEnumList(out AList: TStringList);
+var
+  T_TSerialDataBits: TSerialDataBits;
+begin
+  AList := TStringList.Create;
+
+  for T_TSerialDataBits := Low(TSerialDataBits) to High(TSerialDataBits) do
+  begin
+    AList.Add(GetEnumName(TypeInfo(TSerialDataBits), Ord(T_TSerialDataBits)));
+  end;
+end;
+
+procedure TSerialParityEnumList(out AList: TStringList);
+var
+  T_TSerialParity: TSerialParity;
+begin
+  AList := TStringList.Create;
+
+  for T_TSerialParity := Low(TSerialParity) to High(TSerialParity) do
+  begin
+    AList.Add(GetEnumName(TypeInfo(TSerialParity), Ord(T_TSerialParity)));
+  end;
+end;
+
+procedure TSerialStopBitsEnumList(out AList: TStringList);
+var
+  T_TSerialStopBits: TSerialStopBits;
+begin
+  AList := TStringList.Create;
+
+  for T_TSerialStopBits := Low(TSerialStopBits) to High(TSerialStopBits) do
+  begin
+    AList.Add(GetEnumName(TypeInfo(TSerialStopBits), Ord(T_TSerialStopBits)));
+  end;
 end;
 
 procedure log(message_: string);
 begin
+  if not DebugIsActive then exit;
 //  {$IFDEF DEBUG}
 //    SendDebug(message_);
 //  {$ENDIF}
-{$IFOPT D+}
-  SendDebug(message_);
-{$ELSE}
+  {$IFOPT D+}
+    SendDebug(message_);
+  {$ELSE}
 
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -703,6 +771,19 @@ var
   s:TStringList;
 begin
   Version_:=Form1.Caption;
+
+  DebugIsActive:=false;
+  {$IFOPT D+}
+    try
+      //if IsDebuggerPresent > 0 then
+      //DebugIsActive:=true;
+      DebugIsActive:=IsAppAlreadyRunning(dbugintf.DefaultDebugServer)
+    except
+      DebugIsActive:=false;
+    end;
+  {$ELSE}
+    DebugIsActive:=false;
+  {$ENDIF}
 
   Label27.Caption:='Port: '+ComportEdit.Text;
   Label28.Caption:='Node: '+SpinEditNode.Value.ToString;
@@ -720,10 +801,31 @@ begin
   for i:=0 to DBGrid1.Columns.Count-1  do
   DBGrid1.Columns.Delete(0);
 
-  PopulateEnumList(s);
+  TTagTypeEnumList(s);
   EditType.Items := s;
   s.Free;
   EditType.ItemIndex:=0;
+
+  TSerialBaudRateEnumList(s);
+  BaudRateEdit.Items := s;
+  s.Free;
+  BaudRateEdit.ItemIndex:=6;
+
+  TSerialDataBitsEnumList(s);
+  DataBitsEdit.Items := s;
+  s.Free;
+  DataBitsEdit.ItemIndex:=3;
+
+  TSerialParityEnumList(s);
+  ParidadeEdit.Items := s;
+  s.Free;
+  ParidadeEdit.ItemIndex:=0;
+
+  TSerialStopBitsEnumList(s);
+  StopBitsEdit.Items := s;
+  s.Free;
+  StopBitsEdit.ItemIndex:=0;
+
 
   //showmessage(BufDataset1.FieldDefs.Count.ToString);
 
@@ -837,6 +939,14 @@ begin
   OnBootFinish:=true;
 end;
 
+procedure TForm1.MaskEditIP_1EditingDone(Sender: TObject);
+begin
+  MaskEditIP_1.Caption:=RepairIPAddress(MaskEditIP_1.Caption);
+  MaskEditIP.Caption:=MaskEditIP_1.Caption;
+  TCP_UDPPort1.Host:=MaskEditIP.Text;
+  Label27.Caption:='IP: '+MaskEditIP.Text + ' Port: '+EditPort.Value.ToString;
+end;
+
 procedure TForm1.Menu2ClearClick(Sender: TObject);
 begin
   if Image1 <> nil then freeandnil(Image1);
@@ -929,7 +1039,11 @@ end;
 procedure TForm1.ComportEditEditingDone(Sender: TObject);
 begin
   SerialPortDriver1.COMPort:=ComportEdit.Text;
-  Label27.Caption:='Port: '+ComportEdit.Text;
+  Label27.Caption:='Port: '+ComportEdit.Text + #13#10 +
+                   'BaudRate: '+BaudRateEdit.Text + #13#10 +
+                   'DataBits: '+DataBitsEdit.Text + #13#10 +
+                   'Paridade: '+ParidadeEdit.Text + #13#10 +
+                   'StopBits: '+StopBitsEdit.Text;
 end;
 
 procedure TForm1.EditRegisterTypeEditingDone(Sender: TObject);
@@ -1010,6 +1124,14 @@ begin
     BufDataset1.FieldByName('BitNumber').AsLargeInt := BitNumber;
     //showmessage(BitNumber.ToString);
   end;
+end;
+
+procedure TForm1.BaudRateEditEditingDone(Sender: TObject);
+var
+  i:integer;
+begin
+  i := GetEnumValue(TypeInfo(TSerialBaudRate), BaudRateEdit.Text);
+  SerialPortDriver1.BaudRate:=TSerialBaudRate(i);
 end;
 
 procedure TForm1.BufDataset1AfterDelete(DataSet: TDataSet);
@@ -1426,8 +1548,14 @@ begin
     CmdConnect.Caption:='Connect';
     timer1.Enabled:=false;
     ComportEdit.Enabled:=true;
+    BaudRateEdit.Enabled:=true;
+    DataBitsEdit.Enabled:=true;
+    ParidadeEdit.Enabled:=true;
+    StopBitsEdit.Enabled:=true;
     MaskEditIP.Enabled:=true;
+    MaskEditIP_1.Enabled:=true;
     EditPort.Enabled:=true;
+    EditPort_1.Enabled:=true;
     MenuConnect.Enabled:=true;
   end;
   if (SerialPortDriver1.Active) or (TCP_UDPPort1.Active) then
@@ -1435,8 +1563,14 @@ begin
     CmdConnect.Caption:='Disconnect';
     timer1.Enabled:=true;
     ComportEdit.Enabled:=false;
+    BaudRateEdit.Enabled:=false;
+    DataBitsEdit.Enabled:=false;
+    ParidadeEdit.Enabled:=false;
+    StopBitsEdit.Enabled:=false;
     MaskEditIP.Enabled:=false;
+    MaskEditIP_1.Enabled:=false;
     EditPort.Enabled:=false;
+    EditPort_1.Enabled:=false;
     MenuConnect.Enabled:=false;
   end;
 
@@ -1586,8 +1720,14 @@ begin
     CmdConnect.Caption:='Connect';
     timer1.Enabled:=false;
     ComportEdit.Enabled:=true;
+    BaudRateEdit.Enabled:=true;
+    DataBitsEdit.Enabled:=true;
+    ParidadeEdit.Enabled:=true;
+    StopBitsEdit.Enabled:=true;
     MaskEditIP.Enabled:=true;
+    MaskEditIP_1.Enabled:=true;
     EditPort.Enabled:=true;
+    EditPort_1.Enabled:=true;
     MenuConnect.Enabled:=true;
   end;
   if (SerialPortDriver1.Active) or (TCP_UDPPort1.Active) then
@@ -1595,13 +1735,23 @@ begin
     CmdConnect.Caption:='Disconnect';
     timer1.Enabled:=true;
     ComportEdit.Enabled:=false;
+    BaudRateEdit.Enabled:=false;
+    DataBitsEdit.Enabled:=false;
+    ParidadeEdit.Enabled:=false;
+    StopBitsEdit.Enabled:=false;
     MaskEditIP.Enabled:=false;
+    MaskEditIP_1.Enabled:=false;
     EditPort.Enabled:=false;
+    EditPort_1.Enabled:=false;
     MenuConnect.Enabled:=false;
   end;
 
   if (Label31.Visible) then Label27.Caption:='IP: '+MaskEditIP.Text + ' Port: '+EditPort.Value.ToString;
-  if (Label20.Visible) then Label27.Caption:='Port: '+ComportEdit.Text;
+  if (Label20.Visible) then Label27.Caption:='Port: '+ComportEdit.Text + #13#10 +
+                                             'BaudRate: '+BaudRateEdit.Text + #13#10 +
+                                             'DataBits: '+DataBitsEdit.Text + #13#10 +
+                                             'Paridade: '+ParidadeEdit.Text + #13#10 +
+                                             'StopBits: '+StopBitsEdit.Text;
 
   OnBootFinish:=false;
   BufDataset1.First;
@@ -1728,8 +1878,14 @@ begin
     CmdConnect.Caption:='Connect';
     timer1.Enabled:=false;
     ComportEdit.Enabled:=true;
+    BaudRateEdit.Enabled:=true;
+    DataBitsEdit.Enabled:=true;
+    ParidadeEdit.Enabled:=true;
+    StopBitsEdit.Enabled:=true;
     MaskEditIP.Enabled:=true;
+    MaskEditIP_1.Enabled:=true;
     EditPort.Enabled:=true;
+    EditPort_1.Enabled:=true;
     MenuConnect.Enabled:=true;
   end;
   if (SerialPortDriver1.Active) or (TCP_UDPPort1.Active) then
@@ -1737,12 +1893,30 @@ begin
     CmdConnect.Caption:='Disconnect';
     timer1.Enabled:=true;
     ComportEdit.Enabled:=false;
+    BaudRateEdit.Enabled:=false;
+    DataBitsEdit.Enabled:=false;
+    ParidadeEdit.Enabled:=false;
+    StopBitsEdit.Enabled:=false;
     MaskEditIP.Enabled:=false;
+    MaskEditIP_1.Enabled:=false;
     EditPort.Enabled:=false;
+    EditPort_1.Enabled:=false;
     MenuConnect.Enabled:=false;
     if (TCP_UDPPort1.Active) then Label27.Caption:='IP: '+MaskEditIP.Text + ' Port: '+EditPort.Value.ToString;
-    if (SerialPortDriver1.Active) then Label27.Caption:='Port: '+ComportEdit.Text;
+    if (SerialPortDriver1.Active) then Label27.Caption:='Port: '+ComportEdit.Text + #13#10 +
+                                             'BaudRate: '+BaudRateEdit.Text + #13#10 +
+                                             'DataBits: '+DataBitsEdit.Text + #13#10 +
+                                             'Paridade: '+ParidadeEdit.Text + #13#10 +
+                                             'StopBits: '+StopBitsEdit.Text;
   end;
+end;
+
+procedure TForm1.DataBitsEditEditingDone(Sender: TObject);
+var
+  i:integer;
+begin
+  i := GetEnumValue(TypeInfo(TSerialDataBits), DataBitsEdit.Text);
+  SerialPortDriver1.DataBits:=TSerialDataBits(i);
 end;
 
 procedure TForm1.Datasource1StateChange(Sender: TObject);
@@ -1955,9 +2129,21 @@ begin
   Drv_Ver.Caption:=DelChars(Drv_Ver.Caption, '=');
 end;
 
+procedure TForm1.EditPort_1EditingDone(Sender: TObject);
+var
+  Active_:boolean;
+begin
+  EditPort.Value:=EditPort_1.Value;
+  Active_:=TCP_UDPPort1.Active;
+  TCP_UDPPort1.Active:=false;
+  TCP_UDPPort1.Port:=EditPort.Value;
+  TCP_UDPPort1.Active:=Active_;
+end;
+
 procedure TForm1.MaskEditIPEditingDone(Sender: TObject);
 begin
   MaskEditIP.Caption:=RepairIPAddress(MaskEditIP.Caption);
+  MaskEditIP_1.Caption:=MaskEditIP.Caption;
   TCP_UDPPort1.Host:=MaskEditIP.Text;
   Label27.Caption:='IP: '+MaskEditIP.Text + ' Port: '+EditPort.Value.ToString;
   //showmessage(MaskEditIP.Caption);
@@ -2147,13 +2333,33 @@ begin
   MenuTCP.ImageIndex:=7;
   MenuRTU.ImageIndex:=9;
   Label31.Visible:=true;
+  BaudRateEdit.Visible:=false;
+  DataBitsEdit.Visible:=false;
+  ParidadeEdit.Visible:=false;
+  StopBitsEdit.Visible:=false;
+  Label35.Visible:=false;
+  Label36.Visible:=false;
+  Label38.Visible:=false;
+  Label37.Visible:=false;
   MaskEditIP.Visible:=true;
   EditPort.Visible:=true;
   Label20.Visible:=false;
   Label32.Visible:=true;
+  SpinEditNode.Visible:=false;
+  Label19.Visible:=false;
   ComportEdit.Visible:=false;
+
+  Label33.Visible:=true;
+  MaskEditIP_1.Visible:=true;
+  Label34.Visible:=true;
+  EditPort_1.Visible:=true;
+
   if (Label31.Visible) then Label27.Caption:='IP: '+MaskEditIP.Text +' Port: '+EditPort.Value.ToString;
-  if (Label20.Visible) then Label27.Caption:='Port: '+ComportEdit.Text;
+  if (Label20.Visible) then Label27.Caption:='Port: '+ComportEdit.Text + #13#10 +
+                                             'BaudRate: '+BaudRateEdit.Text + #13#10 +
+                                             'DataBits: '+DataBitsEdit.Text + #13#10 +
+                                             'Paridade: '+ParidadeEdit.Text + #13#10 +
+                                             'StopBits: '+StopBitsEdit.Text;
 end;
 
 procedure TForm1.MenuRTUClick(Sender: TObject);
@@ -2161,13 +2367,33 @@ begin
   MenuTCP.ImageIndex:=9;
   MenuRTU.ImageIndex:=7;
   Label31.Visible:=false;
+  BaudRateEdit.Visible:=true;
+  DataBitsEdit.Visible:=true;
+  ParidadeEdit.Visible:=true;
+  StopBitsEdit.Visible:=true;
+  Label35.Visible:=true;
+  Label36.Visible:=true;
+  Label38.Visible:=true;
+  Label37.Visible:=true;
   MaskEditIP.Visible:=false;
   EditPort.Visible:=false;
   Label20.Visible:=true;
   Label32.Visible:=false;
+  SpinEditNode.Visible:=true;
+  Label19.Visible:=true;
   ComportEdit.Visible:=true;
+
+  Label33.Visible:=false;
+  MaskEditIP_1.Visible:=false;
+  Label34.Visible:=false;
+  EditPort_1.Visible:=false;
+
   if (Label31.Visible) then Label27.Caption:='IP: '+MaskEditIP.Text + ' Port: '+EditPort.Value.ToString;
-  if (Label20.Visible) then Label27.Caption:='Port: '+ComportEdit.Text;
+  if (Label20.Visible) then Label27.Caption:='Port: '+ComportEdit.Text + #13#10 +
+                                             'BaudRate: '+BaudRateEdit.Text + #13#10 +
+                                             'DataBits: '+DataBitsEdit.Text + #13#10 +
+                                             'Paridade: '+ParidadeEdit.Text + #13#10 +
+                                             'StopBits: '+StopBitsEdit.Text;
 end;
 
 procedure TForm1.MenuNewClick(Sender: TObject);
@@ -2732,10 +2958,19 @@ procedure TForm1.EditPortEditingDone(Sender: TObject);
 var
   Active_:boolean;
 begin
+  EditPort_1.Value:=EditPort.Value;
   Active_:=TCP_UDPPort1.Active;
   TCP_UDPPort1.Active:=false;
   TCP_UDPPort1.Port:=EditPort.Value;
   TCP_UDPPort1.Active:=Active_;
+end;
+
+procedure TForm1.ParidadeEditEditingDone(Sender: TObject);
+var
+  i:integer;
+begin
+  i := GetEnumValue(TypeInfo(TSerialParity), ParidadeEdit.Text);
+  SerialPortDriver1.Paridade:=TSerialParity(i);
 end;
 
 procedure TForm1.SpinEditNodeEditingDone(Sender: TObject);
@@ -2753,6 +2988,14 @@ begin
       Label28.Caption:='Node: '+SpinEditNode.Value.ToString;
     end;
   end;
+end;
+
+procedure TForm1.StopBitsEditEditingDone(Sender: TObject);
+var
+  i:integer;
+begin
+  i := GetEnumValue(TypeInfo(TSerialStopBits), StopBitsEdit.Text);
+  SerialPortDriver1.StopBits:=TSerialStopBits(i);
 end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
